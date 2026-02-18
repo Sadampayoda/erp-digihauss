@@ -7,7 +7,7 @@
             <p class="text-sm font-medium text-slate-400">Pelanggan untuk melakukan uang muka penjualan</p>
         </div>
 
-        <a href="{{ route('advance-sales.create') }}"
+        <a href="{{ route('contacts.create') }}"
             class="
                             group flex items-center justify-center gap-2
                             bg-emerald-400 text-white
@@ -25,18 +25,21 @@
 
         </a>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3
-                px-2 py-1 mx-3 sm:mx-5 my-1 gap-4">
 
+    <form id="generalForm"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3
+                px-2 py-1 mx-3 sm:mx-5 my-1 gap-4">
         <div class="sm:col-span-2">
-            <x-input-select name="customer" label="Cari Pelanggan" placeholder="Pelanggan..." class="rounded-sm" />
+            <x-input-select name="customer" label="Pelanggan" :required="true"
+                :route="route('contacts.index')" :params="['type' => 0]" class="rounded-sm" />
         </div>
 
         <div>
-            <x-input-text type="date" border_color="border-stone-300" name="transaction_date"
+            <x-input-text type="date" :required="true" border_color="border-stone-300" name="transaction_date"
                 label="Tanggal Uang Muka" class="rounded-sm p-1 md:p-2" :value="\Carbon\Carbon::now()->format('Y-m-d')" />
         </div>
-    </div>
+    </form>
+
 
     <div class="p-3 sm:p-4 mx-2 sm:mx-3">
         <div
@@ -49,19 +52,19 @@
                     src="{{ asset('image/default-profile.jpg') }}" alt="default">
 
                 <div class="flex flex-col gap-1 sm:border-e sm:pe-4 border-slate-300">
-                    <p class="text-slate-700 font-bold text-lg sm:text-xl">
-                        Alby Sultan Ardira
+                    <p id="customer-name" class="text-slate-700 font-bold text-lg sm:text-xl">
+                        -
                     </p>
-                    <p class="text-slate-400 text-sm sm:text-md break-all">
-                        Email : albysultanardira@gmail.com
+                    <p id="customer-email" class="text-slate-400 text-sm sm:text-md break-all">
+                        Email : - @gmail.com
                     </p>
                 </div>
                 <div class="flex-1">
                     <p class="text-slate-500 font-medium text-sm sm:text-lg">
                         ASAL KOTA
                     </p>
-                    <p class="text-slate-400 text-sm sm:text-md">
-                        Surabaya
+                    <p id="customer-city" class="text-slate-400 text-sm sm:text-md">
+                        -
                     </p>
                 </div>
 
@@ -69,8 +72,8 @@
                     <p class="text-slate-500 font-medium text-sm sm:text-lg">
                         ALAMAT
                     </p>
-                    <p class="text-slate-400 text-sm sm:text-md">
-                        Perumahan Lavender Blok S no 1, Bangkalan Madura Mlajeh
+                    <p id="customer-address" class="text-slate-400 text-sm sm:text-md">
+                        -
                     </p>
                 </div>
 
@@ -78,3 +81,34 @@
         </div>
     </div>
 </div>
+
+
+<script>
+    document.getElementById('customer').addEventListener('change', function() {
+        const customerId = this.value;
+        if (!customerId) return;
+
+
+        $.ajax({
+            url: "{{ url('contacts') }}/" + customerId,
+            method: 'GET',
+            processData: false,
+            contentType: false,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(res) {
+                const data = res.data;
+
+                $('#customer-name').text(data.name ?? '-');
+                $('#customer-email').text('Email : ' + (data.email ?? '-'));
+                $('#customer-city').text(data.city ?? '-');
+                $('#customer-address').text(data.address ?? '-');
+            },
+            error: function(err) {
+                console.log(err.responseJSON.errors);
+                console.log(err);
+            }
+        });
+    })
+</script>

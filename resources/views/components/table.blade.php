@@ -1,13 +1,21 @@
-@props(['labels', 'data' => []])
+@props(['labels', 'data' => [], 'onEdit' => null, 'onDelete' => null, 'checkbox' => false])
 <div class="overflow-x-auto w-screen lg:w-full h-120">
     <table class="w-full text-sm text-left ">
         <thead class="bg-slate-100 text-slate-600 uppercase text-xs">
             <tr>
-                <th class="px-4 py-3">No</th>
+                @if ($checkbox)
+                    <th class="px-4 py-3">
+                        Checkbox
+                    </th>
+                @else
+                    <th class="px-4 py-3">No</th>
+                @endif
                 @foreach ($labels as $key => $value)
                     <th class="px-4 py-3">{{ $value }}</th>
                 @endforeach
-                <th class="px-4 py-3 text-center">Action</th>
+                @if ($onEdit || $onDelete)
+                    <th class="px-4 py-3 text-center">Action</th>
+                @endif
             </tr>
         </thead>
 
@@ -15,39 +23,46 @@
         <tbody class="divide-y">
             @foreach ($data as $item)
                 <tr class="hover:bg-slate-50 transition">
-                    <td class="px-4 py-3">1</td>
-                    @foreach ($label as $key => $value)
+                    @if ($checkbox)
+                        <td class="flex px-4 py-3 justify-center items-center mt-1">
+                            <input type="checkbox" name="selected[]" value="{{ $item->id }}" class="rowCheckbox">
+                        </td>
+                    @else
+                        <td class="px-4 py-3">{{ $loop->iteration }}</td>
+                    @endif
+                    @foreach ($labels as $key => $value)
                         <td class="px-4 py-3">{{ $item->$key }}</td>
                     @endforeach
-                    <td class="px-4 py-3 text-center relative">
-                        <button onclick="toggleMenuAction(event, this)" class="p-2 rounded-full hover:bg-slate-200">
-                            <i data-lucide="more-vertical" class="w-5 h-5"></i>
-                        </button>
-                        <div
-                            class="action-menu hidden absolute right-0 mt-2 w-44
+                    @if ($onEdit || $onDelete)
+                        <td class="px-4 py-3 text-center relative">
+                            <button onclick="toggleMenuAction(event, this)" class="p-2 rounded-full hover:bg-slate-200">
+                                <i data-lucide="more-vertical" class="w-5 h-5"></i>
+                            </button>
+                            <div
+                                class="action-menu hidden absolute right-0 mt-2 w-44
                                 bg-white rounded-xl shadow-lg border z-50 border-slate-200">
-                            <a href="#"
-                                class="flex items-center text-slate-700 gap-2 px-4 py-2 text-sm hover:bg-slate-100">
-                                <i data-lucide="pencil" class="w-4 h-4"></i>
-                                Edit
-                            </a>
+                                <button onclick="{{ $onEdit }}({{ $item->id }}, {{ json_encode($item) }})"
+                                    class="w-full flex items-center gap-2 px-4 py-2 text-sm hover:bg-slate-100 cursor-pointer">
+                                    <i data-lucide="pencil" class="w-4 h-4"></i>
+                                    Edit
+                                </button>
 
-                            <a href="#"
-                                class="flex items-center text-slate-700 gap-2 px-4 py-2 text-sm hover:bg-slate-100">
-                                <i data-lucide="file-text" class="w-4 h-4"></i>
-                                Bukti
-                            </a>
+                                <a href="#"
+                                    class="flex items-center text-slate-700 gap-2 px-4 py-2 text-sm hover:bg-slate-100">
+                                    <i data-lucide="file-text" class="w-4 h-4"></i>
+                                    Bukti
+                                </a>
 
-                            <form method="POST">
-                                <button
+                                <button onclick="{{ $onDelete }}({{ $item->id }})"
                                     class="w-full flex items-center gap-2 px-4 py-2 text-sm
                                         text-red-600 hover:bg-red-50">
                                     <i data-lucide="trash-2" class="w-4 h-4"></i>
                                     Delete
                                 </button>
-                            </form>
-                        </div>
-                    </td>
+
+                            </div>
+                        </td>
+                    @endif
                 </tr>
             @endforeach
         </tbody>

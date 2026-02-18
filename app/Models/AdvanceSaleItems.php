@@ -19,7 +19,8 @@ class AdvanceSaleItems extends Model
         'item_name',
         'quantity',
         'sale_price',
-        'payment_amount',
+        'purchase_price',
+        'service'
         'notes',
     ];
 

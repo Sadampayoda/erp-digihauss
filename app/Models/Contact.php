@@ -24,20 +24,18 @@ class Contact extends Model
         'province',
         'postal_code',
         'country',
-
-        'payment_terms',
         'credit_limit',
-        'currency',
 
         'bank_name',
-        'bank_account',
-        'bank_account_name',
-
-        'is_active',
-        'notes',
 
         'created_by',
         'updated_by',
         'deleted_by',
+    ];
+
+
+    public static array $type = [
+        0 => 'Customer',
+        1 => 'Vendor',
     ];
 }

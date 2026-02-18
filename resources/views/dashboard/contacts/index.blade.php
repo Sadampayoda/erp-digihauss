@@ -39,12 +39,50 @@
             </a>
         </div>
 
-        <x-table :labels="[
+        <x-table :data="$contacts" :labels="[
             'name' => 'Nama',
             'email' => 'Email',
             'phone' => 'No. Telepon',
             'address' => 'Alamat',
             'city' => 'Kota',
-        ]" />
+        ]" onEdit="onEdit" onDelete="onDelete" />
     </div>
+
+    <script>
+        function onEdit(id, data) {
+            let url = "{{ route('contacts.edit', ':id') }}";
+            url = url.replace(':id', id);
+            window.location.href = url;
+        }
+
+        const onDelete = (id) => {
+            Swal.fire({
+                title: 'Yakin mau hapus?',
+                text: 'Data Kontak ini akan dihapus permanen!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Ya, hapus',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `/contacts/${id}`,
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            _method: 'DELETE'
+                        },
+                        success: function(res) {
+                            showAlert('Sukses', res.message);
+                        },
+                        error: function(err) {
+                            showAlert('Gagal', message, 'errors', true);
+                        }
+                    });
+                }
+            });
+        }
+    </script>
 @endsection

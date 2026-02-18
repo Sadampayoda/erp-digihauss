@@ -9,6 +9,23 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, .4);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin .6s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
     @stack('styles')
 </head>
 
@@ -31,16 +48,18 @@
         lucide.createIcons();
 
 
+        setTimeout(() => {
+            const splash = document.getElementById('splash');
+
+            splash.classList.remove('opacity-100', 'scale-100');
+            splash.classList.add('opacity-0', 'scale-95');
+
             setTimeout(() => {
-                const splash = document.getElementById('splash');
+                splash.remove();
+            }, 1000);
+        }, 2000);
 
-                splash.classList.remove('opacity-100', 'scale-100');
-                splash.classList.add('opacity-0', 'scale-95');
 
-                setTimeout(() => {
-                    splash.remove();
-                }, 1000);
-            }, 2000);
 
         function handleLoading(button) {
 
@@ -57,6 +76,24 @@
                 button.classList.add('cursor-pointer');
             }, 10000);
 
+        }
+
+        function setButtonLoading(isLoading) {
+            const btn = document.getElementById('btn-submit');
+            const text = btn.querySelector('.btn-text');
+
+            if (isLoading) {
+                btn.disabled = true;
+                btn.classList.add('opacity-70', 'cursor-not-allowed');
+                text.innerHTML = `
+            <span class="spinner"></span>
+            <span>Menyimpan...</span>
+        `;
+            } else {
+                btn.disabled = false;
+                btn.classList.remove('opacity-70', 'cursor-not-allowed');
+                text.innerHTML = 'Simpan';
+            }
         }
     </script>
 

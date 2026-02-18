@@ -16,8 +16,8 @@ return new class extends Migration
 
             $table->string('item_code')->unique();
             $table->string('name');
-            $table->string('brand')->index();
-            $table->string('series')->index();
+            $table->integer('brand')->index();
+            $table->integer('series')->index();
             $table->string('model')->index();
             $table->string('variant')->nullable();
 
@@ -27,6 +27,7 @@ return new class extends Migration
             $table->unsignedTinyInteger('condition')->default(1);
             $table->string('network')->nullable();
             $table->string('region')->nullable();
+            $table->string('sku')->nullable();
 
             $table->unsignedTinyInteger('status')->default(1);
 
@@ -41,9 +42,9 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->json('images')->nullable();
 
-            $table->integer('created_by');
-            $table->integer('updated_by');
-            $table->integer('deleted_by');
+            // $table->integer('created_by');
+            // $table->integer('updated_by');
+            // $table->integer('deleted_by');
 
             $table->softDeletes();
             $table->timestamps();

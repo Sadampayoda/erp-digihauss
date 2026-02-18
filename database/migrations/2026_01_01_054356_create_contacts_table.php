@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
 
             $table->string('code')->unique();
-            $table->string('type');
+            $table->integer('type');
 
             $table->string('name');
             $table->string('contact_person')->nullable();
@@ -30,20 +30,13 @@ return new class extends Migration
             $table->string('postal_code')->nullable();
             $table->string('country')->default('Indonesia');
 
-            $table->integer('payment_terms')->default(0);
             $table->decimal('credit_limit', 15, 2)->default(0);
-            $table->string('currency')->default('IDR');
 
             $table->string('bank_name')->nullable();
-            $table->string('bank_account')->nullable();
-            $table->string('bank_account_name')->nullable();
 
-            $table->boolean('is_active')->default(true);
-            $table->text('notes')->nullable();
-
-            $table->integer('created_by');
-            $table->integer('updated_by');
-            $table->integer('deleted_by');
+            $table->integer('created_by')->nullable();
+            $table->integer('updated_by')->nullable();
+            $table->integer('deleted_by')->nullable();
 
             $table->timestamps();
             $table->softDeletes();

@@ -1,10 +1,10 @@
 <aside id="sidebar"
     class="
     fixed lg:static inset-y-0 left-0 z-40
-    w-screen lg:w-75 bg-white px-4 py-6
+    w-75 bg-white px-4 py-6
     shadow-[4px_0_10px_-2px_rgba(0,0,0,0.1)]
     transform -translate-x-full lg:translate-x-0
-    transition-transform duration-300 ease-in-out
+    transition-transform
 ">
     <div class="h-15 mb-5 flex justify-between items-center">
         <x-image-digihaus />
@@ -168,25 +168,25 @@
             </button>
 
             <div id="menu-master" class="ml-10 mt-1 space-y-1 overflow-hidden max-h-0 transition-all duration-300">
+                <a href="{{ route('brands.index') }}"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
+                    <i data-lucide="book" class="w-4 h-4"></i>
+                    <span>Brand</span>
+                </a>
+                <a href="{{ route('series.index') }}"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
+                    <i data-lucide="book" class="w-4 h-4"></i>
+                    <span>Series</span>
+                </a>
+                <a href="{{ route('payment-methods.index') }}"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
+                    <i data-lucide="book" class="w-4 h-4"></i>
+                    <span>Metode Bayar</span>
+                </a>
                 <a href="/master/coa"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
                     <i data-lucide="book" class="w-4 h-4"></i>
                     <span>COA</span>
-                </a>
-                <a href="/master/type"
-                    class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
-                    <i data-lucide="tag" class="w-4 h-4"></i>
-                    <span>Tipe</span>
-                </a>
-                <a href="/master/type"
-                    class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
-                    <i data-lucide="tag" class="w-4 h-4"></i>
-                    <span>Bank</span>
-                </a>
-                <a href="/master/type"
-                    class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
-                    <i data-lucide="tag" class="w-4 h-4"></i>
-                    <span>Negara</span>
                 </a>
                 <a href="/master/type"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">

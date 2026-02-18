@@ -17,8 +17,8 @@ return new class extends Migration
             $table->date('transaction_date');
             $table->integer('customer');
             $table->integer('sales')->nullable();
-            $table->decimal('advance_amount')->default(0);
-            $table->decimal('remaining_amount')->default(0);
+            $table->decimal('advance_amount', 15, 2)->default(0);
+            $table->decimal('remaining_amount', 15, 2)->default(0);
             $table->integer('payment_method');
             $table->integer('status')->default(0);
             $table->string('description')->nullable();

@@ -20,8 +20,9 @@ return new class extends Migration
             $table->string('item_code')->nullable();
             $table->string('item_name')->nullable();
             $table->integer('quantity')->default(0);
-            $table->decimal('sale_price')->default(0);
-            $table->decimal('payment_amount')->default(0);
+            $table->decimal('sale_price', 15, 2)->default(0);
+            $table->decimal('purchase_price', 15, 2)->default(0);
+            $table->decimal('service',15,2)->default(0);
             $table->text('notes')->nullable();
             $table->timestamps();
         });

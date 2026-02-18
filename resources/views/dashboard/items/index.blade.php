@@ -39,13 +39,22 @@
             </a>
         </div>
 
-        <x-table :labels="[
-            'series' => 'Nama Barang',
+        <x-table :data="$items" :labels="[
+            'name' => 'Nama Barang',
             'model' => 'Model',
             'Varian' => 'variant',
             'storage_gb' => 'Storage',
             'color' => 'Warna',
             'ram_gb' => 'RAM',
-        ]" />
+        ]" onEdit="openEditItemModal" />
+
     </div>
+
+    <script>
+        function openEditItemModal(id, data) {
+            let url = "{{ route('items.edit', ':id') }}";
+            url = url.replace(':id', id);
+            window.location.href = url;
+        }
+    </script>
 @endsection
