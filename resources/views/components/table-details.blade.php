@@ -59,7 +59,6 @@
                                     class="w-20 text-center border rounded-md p-1" :value="$value->$column ?? 0" />
                             </div>
                         </td>
-
                         {{-- NORMAL COLUMN --}}
                     @else
                         <td class="px-6 py-4 whitespace-nowrap">
@@ -233,5 +232,33 @@
 
             return result;
         };
+
+        window.clearDetailTable = function() {
+            const tbody = document.getElementById(`${initialTable}-body`)
+            if (!tbody) return
+
+            tbody.querySelectorAll('tr[data-id]').forEach(row => row.remove())
+
+
+            tbody.innerHTML = `
+                <tr class="empty-row">
+                    <td colspan="{{ count($setupColumn) }}"
+                        class="text-center py-6 text-slate-400">
+                        Data tidak tersedia
+                    </td>
+                </tr>
+            `
+
+            if (typeof summaryForm === 'function') {
+                summaryForm()
+            }
+        }
+
+        window.getDetailTableLength = function() {
+            const tbody = document.getElementById(`${initialTable}-body`)
+            if (!tbody) return 0
+
+            return tbody.querySelectorAll('tr[data-id]').length
+        }
     }
 </script>

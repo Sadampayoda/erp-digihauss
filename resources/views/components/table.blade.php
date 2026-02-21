@@ -31,7 +31,18 @@
                         <td class="px-4 py-3">{{ $loop->iteration }}</td>
                     @endif
                     @foreach ($labels as $key => $value)
-                        <td class="px-4 py-3">{{ $item->$key }}</td>
+                        @if ($key === 'status')
+                            @php
+                                $status = transactionStatusBadge($item->$key);
+                            @endphp
+                            <td class="px-4 py-3">
+                                <span class="px-3 py-1 rounded-full text-xs font-medium {{ $status['class'] }}">
+                                    {{ $status['label'] }}
+                                </span>
+                            </td>
+                        @else
+                            <td class="px-4 py-3">{{ $item->$key }}</td>
+                        @endif
                     @endforeach
                     @if ($onEdit || $onDelete)
                         <td class="px-4 py-3 text-center relative">

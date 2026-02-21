@@ -25,11 +25,11 @@ class CreateItemRequest extends FormRequest
         $itemId = $this->route('item');
         return [
 
-            'item_code' => [
+            'code' => [
                 'required',
                 'string',
                 'max:100',
-                Rule::unique('items', 'item_code')->ignore($itemId),
+                Rule::unique('items', 'code')->ignore($itemId),
             ],
 
             'name'   => 'required|string|max:255',

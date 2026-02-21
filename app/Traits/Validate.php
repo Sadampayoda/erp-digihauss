@@ -7,7 +7,7 @@ use InvalidArgumentException;
 
 trait Validate
 {
-    public function existsWhereId($model, int $id)
+    public function existsWhereId($model, int $id, $with = [])
     {
 
         if (!$model) {
@@ -20,6 +20,10 @@ trait Validate
 
         if (! $exists) {
             throw new ModelNotFoundException("Data dengan ID {$id} tidak ditemukan");
+        }
+
+        if(!empty($with)) {
+            $exists->load($with);
         }
 
         return $exists;

@@ -9,9 +9,12 @@
     'columnServiceTable' => null,
     'columnMarginTable' => null,
     'columnMarginPercentageTable' => null,
-    'parentSubTotal',
-    'parentMargin',
-    'parentMarginPercentage',
+    'parentSubTotal' => 'sub_total',
+    'parentPurchasePrice' => 'purchase_price',
+    'parentService' => 'service',
+    'parentMargin' => 'margin',
+    'parentMarginPercentage' => 'margin_percentage',
+    'parentPaidAmount' => null
 ])
 
 <x-modal id="{{ $summaryFormModal }}" title="Sub total" onSubmit="submit" width="w-[100%] sm:max-w-4xl">
@@ -22,22 +25,26 @@
             <x-input-text :readonly="true" type="number" name="item_quantity" label="Jumlah Barang"
                 class="rounded-lg px-3 py-2" value="0" />
 
-            <x-input-text :readonly="true" type="number" name="sub_total" label="Total" class="rounded-lg px-3 py-2"
+            <x-input-text :readonly="true" type="number" :name="$parentSubTotal" label="Total" class="rounded-lg px-3 py-2"
                 value="0" />
 
-            <x-input-text :readonly="true" type="number" name="purchase_price" label="Hpp"
-                class="rounded-lg px-3 py-2" value="0" />
+            <x-input-text :readonly="true" type="number" :name="$parentPurchasePrice" label="Hpp" class="rounded-lg px-3 py-2"
+                value="0" />
         </div>
 
         {{-- ROW 2 --}}
-        <x-input-text :readonly="true" type="number" name="service" label="Service" class="rounded-lg px-3 py-2"
-            value="0" />
+        <div class="md:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-4 pb-4 border-b border-slate-300">
+            <x-input-text :readonly="true" type="number" :name="$parentService" label="Service"
+                class="rounded-lg px-3 py-2" value="0" />
 
-        <x-input-text :readonly="true" type="number" name="margin" label="Margin" class="rounded-lg px-3 py-2"
-            value="0" />
+            <x-input-text :readonly="true" type="number" :name="$parentMargin" label="Margin" class="rounded-lg px-3 py-2"
+                value="0" />
 
-        <x-input-text :readonly="true" type="number" name="margin_percentage" label="Margin (%)"
-            class="rounded-lg px-3 py-2" value="0" />
+            <x-input-text :readonly="true" type="number" :name="$parentMarginPercentage" label="Margin (%)"
+                class="rounded-lg px-3 py-2" value="0" />
+        </div>
+        <x-input-text :readonly="true" type="number" :name="$parentPaidAmount" label="Total Transaksi" class="rounded-lg px-3 py-2"
+            value="0" />
 
     </form>
 
@@ -63,6 +70,12 @@
         columnServiceTable: "{{ $columnServiceTable }}",
         columnMarginTable: "{{ $columnMarginTable }}",
         columnMarginPercentageTable: "{{ $columnMarginPercentageTable }}",
+        parentSubTotal: "{{ $parentSubTotal }}",
+        parentPurchasePrice: "{{ $parentPurchasePrice }}",
+        parentService: "{{ $parentService }}",
+        parentMargin: "{{ $parentMargin }}",
+        parentMarginPercentage: "{{ $parentMarginPercentage }}",
+        parentPaidAmount: "{{ $parentPaidAmount }}",
 
     }
 
@@ -125,11 +138,13 @@
         const form = document.getElementById('subTotalForm');
 
         form.querySelector('[name="item_quantity"]').value = rows.length;
-        form.querySelector('[name="sub_total"]').value = subTotal;
-        form.querySelector('[name="purchase_price"]').value = purchasePrice;
-        form.querySelector('[name="service"]').value = service;
-        form.querySelector('[name="margin"]').value = margin;
-        form.querySelector('[name="margin_percentage"]').value = marginPercentage;
+        form.querySelector(`[name="${ids.parentSubTotal}"]`).value = subTotal;
+        form.querySelector(`[name="${ids.parentPurchasePrice}"]`).value = purchasePrice;
+        form.querySelector(`[name="${ids.parentService}"]`).value = service;
+        form.querySelector(`[name="${ids.parentMargin}"]`).value = margin;
+        form.querySelector(`[name="${ids.parentMarginPercentage}"]`).value = marginPercentage;
+        form.querySelector(`[name="${ids.parentPaidAmount}"]`).value = subTotal - service;
+
     }
 
 

@@ -33,7 +33,7 @@
                 summaryForm();
                 showAlert('Sukses Tambah', res.message, 'success', false);
                 setButtonLoading(false);
-                $('#advance-item-modal').addClass('hidden').removeClass('flex');
+                $('#sales-invoices-modal').addClass('hidden').removeClass('flex');
             },
             error: function(err) {
 

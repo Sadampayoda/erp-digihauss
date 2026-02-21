@@ -22,6 +22,7 @@ class CreateAdvanceSaleRequest extends FormRequest
     public function rules(): array
     {
 
+
         return [
             'customer'          => ['required', 'integer', 'exists:contacts,id'],
             'transaction_date'  => ['required', 'date'],
@@ -38,7 +39,7 @@ class CreateAdvanceSaleRequest extends FormRequest
             'margin_percentage' => ['nullable', 'numeric'],
 
             'items'                     => ['required', 'array', 'min:1'],
-
+            'items.*.detail_id'           => ['nullable'],
             'items.*.item_id'                => ['required', 'integer', 'exists:items,id'],
             'items.*.name'              => ['required', 'string', 'max:255'],
             'items.*.variant'           => ['nullable', 'string', 'max:255'],

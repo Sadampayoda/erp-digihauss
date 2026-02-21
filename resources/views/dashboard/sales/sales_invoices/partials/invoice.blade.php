@@ -4,19 +4,26 @@
     <div class="py-8 border-b border-b-slate-300">
         <p class="text-xl font-medium">Ringkasan Informasi</p>
         <p class="text-sm font-medium text-slate-400">
-            Informasi pembayaran uang muka penjualan
+            Informasi pembayaran invoice penjualan
         </p>
     </div>
 
     {{-- FORM CONTENT --}}
     <div class="flex flex-col gap-4 py-6">
-        <form id="informationForm">
+        <form id="informationForm" class="flex flex-col gap-4">
             {{-- SALES (SELECT) --}}
             <x-input-select name="sales" label="Sales" :route="route('contacts.index')" placeholder="Pilih Sales"
                 border_color="border-stone-300" class="rounded-sm p-1 md:p-2" :selected="$data->sales ?? null" required />
 
-            <x-input-text type="number" name="advance_amount" label="Pembayaran Uang Muka"
-                border_color="border-stone-300" class="rounded-sm p-1 md:p-2" :value="$data->advance_amount ?? 0" required />
+            <x-input-text type="number" name="paid_amount" label="Pembayaran Invoice" border_color="border-stone-300"
+                class="rounded-sm p-1 md:p-2" :value="$data->paid_amount ?? 0" required />
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 ">
+                <x-input-text type="number" name="advance_amount" label="Biaya sesudah Uang Muka" description="Potongan dari uang muka sebelumnya"
+                border_color="border-stone-300" class="rounded-sm p-1 md:p-2" :value="$data->advance_amount ?? 0" readonly />
+                <x-input-text type="number" name="remaining_amount" label="Sisa Pembayaran" description="Sisa yang harus di bayar Uang Muka"
+                    border_color="border-stone-300" class="rounded-sm p-1 md:p-2" :value="$data->remaining_amount ?? 0" readonly />
+            </div>
 
             <x-input-select name="payment_method" label="Metode Pembayaran" :route="route('payment-methods.index')"
                 placeholder="Pilih Metode Pembayaran" border_color="border-stone-300" class="rounded-sm p-1 md:p-2"
@@ -34,7 +41,7 @@
 
     {{-- SUBMIT --}}
     <div class="flex pt-4 border-t border-slate-200 gap-3">
-        <button onclick="submit()" id="advance-sale-modal-button"
+        <button onclick="submit()" id="sales-invoices-modal-button"
             class="
                 group flex items-center justify-center gap-2
                 bg-emerald-400 text-white
@@ -44,12 +51,12 @@
                 active:scale-95 w-full
                 cursor-pointer
             ">
-            <span class="flex flex-row gap-2 text-sm lg:text-base font-medium btn-text-advance-sale">
+            <span  class="flex flex-row gap-2 text-sm lg:text-base font-medium btn-text-sales-invoice">
                 <i data-lucide="save" class="w-5 h-5 transition-transform duration-300 group-hover:rotate-90"></i>
                 Simpan
             </span>
         </button>
-        <button type="button" id="total-advance-sale-modal-button"
+        <button type="button" id="total-sales-invoices-modal-button"
             class="
                 group flex items-center justify-center gap-2
                 bg-blue-400 text-white
@@ -70,9 +77,9 @@
 
 
 
-<x-summary-form summaryFormModalButton="total-advance-sale-modal-button" summaryFormModal="total-advance-sale-modal"
+<x-summary-form summaryFormModalButton="total-sales-invoices-modal-button" summaryFormModal="total-sales-invoices-modal"
     columnPriceTable="sale_price" columnQuantityTable="quantity" columnSubTotalTable="sub_total"
     columnServiceTable="service" columnPurchasePriceTable="purchase_price" columnMarginTable="margin"
-    columnMarginPercentageTable="margin_percentage" />
+    columnMarginPercentageTable="margin_percentage" parentPaidAmount="grand_total" />
 
 <script></script>

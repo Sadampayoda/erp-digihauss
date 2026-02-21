@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('items', function (Blueprint $table) {
             $table->id();
 
-            $table->string('item_code')->unique();
+            $table->string('code')->unique();
             $table->string('name');
             $table->integer('brand')->index();
             $table->integer('series')->index();

@@ -4,7 +4,7 @@
                 p-4 border-b border-slate-100 mx-3 sm:mx-5 gap-3">
         <div>
             <p class="text-xl font-medium">Informasi Pelanggan</p>
-            <p class="text-sm font-medium text-slate-400">Pelanggan untuk melakukan uang muka penjualan</p>
+            <p class="text-sm font-medium text-slate-400">Pelanggan untuk melakukan invoice penjualan</p>
         </div>
 
         <a href="{{ route('contacts.create') }}"
@@ -37,7 +37,7 @@
 
         <div>
             <x-input-text type="date" :required="true" border_color="border-stone-300" name="transaction_date"
-                label="Tanggal Uang Muka" class="rounded-sm p-1 md:p-2" :value="isset($data->transaction_date)
+                label="Tanggal Invoice Penjualan" class="rounded-sm p-1 md:p-2" :value="isset($data->transaction_date)
                     ? \Carbon\Carbon::parse($data->transaction_date)->format('Y-m-d')
                     : \Carbon\Carbon::now()->format('Y-m-d')" />
         </div>
@@ -123,3 +123,78 @@
 
     searchCustomer(customerId)
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

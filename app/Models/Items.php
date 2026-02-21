@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Items extends Model
 {
     protected $fillable = [
-        'item_code',
+        'code',
         'name',
         'brand',
         'series',
@@ -33,5 +33,9 @@ class Items extends Model
 
         'image',
         'images',
+    ];
+
+    protected $casts = [
+        'images' => 'array',
     ];
 }

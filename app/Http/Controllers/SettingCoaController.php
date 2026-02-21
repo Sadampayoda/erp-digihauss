@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreateBrandRequest;
-use App\Models\Brand;
+use App\Http\Requests\CreateSettingCoaRequest;
+use App\Models\SettingCoa;
 use App\Traits\ApiResponse;
 use App\Traits\HandleErroMessage;
 use App\Traits\Validate;
@@ -12,30 +12,22 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class BrandController extends Controller
+class SettingCoaController extends Controller
 {
     use ApiResponse, Validate, HandleErroMessage;
+
     protected $model;
     public function __construct()
     {
-        $this->model = new Brand();
+        $this->model = new SettingCoa();
     }
-
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        if ((bool) $request->select) {
-            try {
-                return $this->sendSuccess($this->model->all(),message: 'Berhasil Mendapatkan Brand');
-            } catch (Exception $e) {
-                return $this->sendErrors(message: $e);
-            }
-
-        }
-        return view('dashboard.master.brand.index', [
-            'brands' => Brand::all()
+        return view('dashboard.settings.coa.index', [
+            'settings' => $this->model->all()
         ]);
     }
 
@@ -44,23 +36,24 @@ class BrandController extends Controller
      */
     public function create()
     {
-
+        return view('dashboard.settings.coa.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CreateBrandRequest $request)
+    public function store(CreateSettingCoaRequest $request)
     {
         try {
             DB::beginTransaction();
-            Brand::create([
-                'code'   => strtoupper($request->code),
-                'name'   => $request->name,
-            ]);
+            $this->model->create(array_merge($request->validated(),[
+                'created_by' => 1,
+                'updated_by' => 1,
+                'deleted_by' => 1,
+            ]));
             DB::commit();
 
-            return $this->sendSuccess(message: 'Berhasil Menambahkan Brand');
+            return $this->sendSuccess(message: 'Berhasil Menambahkan Konfigurasi Coa');
         } catch (QueryException $e) {
             DB::rollBack();
             return $this->sendErrors(message: $this->handleDatabaseError($e));
@@ -70,35 +63,31 @@ class BrandController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Brand $brand)
-    {
-        //
-    }
+    public function show(SettingCoa $settingCoa) {}
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Brand $brand)
+    public function edit(int $id)
     {
-        //
+        return view('dashboard.settings.coa.create', [
+            'data' => $this->existsWhereId($this->model, $id),
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(CreateBrandRequest $request, int $id)
+    public function update(CreateSettingCoaRequest $request, int $id)
     {
         try {
             DB::beginTransaction();
-            $brand = $this->existsWhereId($this->model,$id);
+            $settingCoa = $this->existsWhereId($this->model, $id);
 
-            $brand->update([
-                'code'   => strtoupper($request->code),
-                'name'   => $request->name,
-            ]);
+            $settingCoa->update($request->validated());
             DB::commit();
 
-            return $this->sendSuccess(message: 'Berhasil memperbarui Brand');
+            return $this->sendSuccess(message: 'Berhasil memperbarui Konfigurasi Coa');
         } catch (QueryException $e) {
             DB::rollBack();
             return $this->sendErrors(message: $this->handleDatabaseError($e));
@@ -112,12 +101,12 @@ class BrandController extends Controller
     {
         try {
             DB::beginTransaction();
-            $brand = $this->existsWhereId($this->model,$id);
+            $settingCoa = $this->existsWhereId($this->model,$id);
 
-            $brand->delete();
+            $settingCoa->delete();
             DB::commit();
 
-            return $this->sendSuccess(message: 'Berhasil menghapus Brand');
+            return $this->sendSuccess(message: 'Berhasil menghapus Konfigurasi Coa');
         } catch (Exception $e) {
             DB::rollBack();
             return $this->sendErrors(message: $e);

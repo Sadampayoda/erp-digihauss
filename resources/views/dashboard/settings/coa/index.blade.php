@@ -20,7 +20,7 @@
                     Filter
                 </p>
             </button>
-            <a href="{{ route('items.create') }}"
+            <a href="{{ route('setting-coas.create') }}"
                 class="
                     group flex items-center gap-2
                     bg-emerald-400 text-white
@@ -34,27 +34,54 @@
                 <i data-lucide="plus" class="w-5 h-5 transition-transform duration-300 group-hover:rotate-90"></i>
 
                 <p class="hidden sm:block text-sm lg:text-base font-medium">
-                    Tambah Barang
+                    Pengaturan Coa
                 </p>
             </a>
         </div>
 
-        <x-table :data="$items" :labels="[
-            'name' => 'Nama Barang',
-            'model' => 'Model',
-            'Varian' => 'variant',
-            'storage_gb' => 'Storage',
-            'color' => 'Warna',
-            'ram_gb' => 'RAM',
-        ]" onEdit="openEditItemModal"  />
-
+        <x-table :data="$settings" :labels="[
+            'module_name' => 'Fitur',
+            'action_name' => 'Aksi',
+            'payment_method_name' => 'Metode Pembayaran',
+            'position' => 'Posisi',
+        ]" onEdit="onEdit" onDelete="onDelete" />
     </div>
 
     <script>
-        function openEditItemModal(id, data) {
-            let url = "{{ route('items.edit', ':id') }}";
+        const onEdit = (id, data) => {
+            let url = "{{ route('setting-coas.edit', ':id') }}";
             url = url.replace(':id', id);
             window.location.href = url;
+        }
+
+        const onDelete = (id) => {
+            Swal.fire({
+                title: 'Yakin mau hapus?',
+                text: 'Data Pengaturan Coa ini akan dihapus permanen!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Ya, hapus',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `/setting-coas/${id}`,
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            _method: 'DELETE'
+                        },
+                        success: function(res) {
+                            showAlert('Sukses', res.message);
+                        },
+                        error: function(err) {
+                            showAlert('Gagal', message, 'errors', true);
+                        }
+                    });
+                }
+            });
         }
     </script>
 @endsection

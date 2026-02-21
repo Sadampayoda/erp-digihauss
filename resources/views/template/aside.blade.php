@@ -69,7 +69,7 @@
                     <i data-lucide="wallet" class="w-4 h-4"></i>
                     <span>Uang Muka Penjualan</span>
                 </a>
-                <a href="/sales/invoice"
+                <a href="{{ route('sales-invoices.index') }}"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
                     <i data-lucide="file-text" class="w-4 h-4"></i>
                     <span>Sales Invoice</span>
@@ -78,6 +78,11 @@
                     class="flex items-center gap-2 p-2 text-sm rounded-lg {{ Request::is('contacts*') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }} hover:bg-stone-200">
                     <i data-lucide="users" class="w-4 h-4"></i>
                     <span>Manage Customer</span>
+                </a>
+                <a href="{{ route('setting-coas.index') }}"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg {{ Request::is('setting-coas*') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }} hover:bg-stone-200">
+                    <i data-lucide="setting" class="w-4 h-4"></i>
+                    <span>Pengaturan COA Sales</span>
                 </a>
             </div>
         </div>
@@ -183,7 +188,7 @@
                     <i data-lucide="book" class="w-4 h-4"></i>
                     <span>Metode Bayar</span>
                 </a>
-                <a href="/master/coa"
+                <a href="{{ route('coas.index') }}"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
                     <i data-lucide="book" class="w-4 h-4"></i>
                     <span>COA</span>

@@ -20,12 +20,17 @@ class AdvanceSaleItems extends Model
         'quantity',
         'sale_price',
         'purchase_price',
-        'service'
+        'service',
         'notes',
     ];
 
     public function advanceSale()
     {
         return $this->belongsTo(AdvanceSale::class, 'advance_sale_id');
+    }
+
+    public function item()
+    {
+        return $this->hasOne(Items::class,'id','item_id');
     }
 }

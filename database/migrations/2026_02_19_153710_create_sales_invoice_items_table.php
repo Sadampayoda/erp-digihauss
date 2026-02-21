@@ -11,20 +11,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('advance_sale_items', function (Blueprint $table) {
+        Schema::create('sales_invoice_items', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('advance_sale_id');
-            $table->string('coa')->nullable();
-            $table->bigInteger('item_id');
-            $table->string('image')->nullable();
+
+            $table->unsignedBigInteger('sales_invoice_id');
+            $table->unsignedBigInteger('item_id')->nullable();
+            $table->unsignedBigInteger('advance_sale_items_id')->nullable();
+            $table->unsignedBigInteger('coa_id')->nullable();
             $table->string('item_code')->nullable();
             $table->string('item_name')->nullable();
-            $table->integer('quantity')->default(0);
-            $table->integer('sales_invoice_items_quantity')->default(0);
+            $table->string('image')->nullable();
+            $table->integer('quantity')->default(1);
             $table->decimal('sale_price', 15, 2)->default(0);
             $table->decimal('purchase_price', 15, 2)->default(0);
-            $table->decimal('service',15,2)->default(0);
+            $table->decimal('sub_total', 15, 2)->default(0);
+            $table->decimal('service', 15, 2)->default(0);
+            $table->decimal('margin', 15, 2)->default(0);
             $table->text('notes')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -34,6 +38,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('advance_sale_items');
+        Schema::dropIfExists('sales_invoice_items');
     }
 };

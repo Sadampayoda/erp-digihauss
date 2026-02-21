@@ -10,6 +10,7 @@
     'route' => null,
     'params' => null,
     'required' => false,
+    'columnShowView' => 'name',
 ])
 
 
@@ -26,14 +27,21 @@
         </label>
     @endif
     <select name="{{ $name }}" id="{{ $id ?? $name }}" {{ $required ? 'required' : '' }}>
-        <option class="p-4" {{ $selected ? 'selected' : '' }}>{{ $placeholder }}</option>
+
         @foreach ($options as $key => $value)
             <option value="{{ $key }}" {{ (string) $key === (string) $selected ? 'selected' : '' }}>
                 {{ $value }}
             </option>
         @endforeach
-
     </select>
+
+    <input type="hidden" name="select-value-{{ $name ?? $id }}" id="select-value-{{ $name ?? $id }}"
+        value="{{ $selected }}">
+
+    <a class="reload-select-{{ $name ?? $id }} text-blue-400 text-end text-xs md:text-sm cursor-pointer"
+        data-route="{{ $route }}" data-params='@json($params)'>
+        <i data-lucide="refresh-cw" class="w-4 h-4 reload-icon"></i>
+    </a>
 
     @error($error ?? $name)
         <p class="text-red-400 text-xs md:text-sm">{{ $message }}</p>
@@ -43,6 +51,22 @@
 <script>
     {
         const selectId = @json($name ?? $id);
+        const options = @json($options ?? []);
+        const columnShowView = @json($columnShowView);
+        document.querySelectorAll(`[class^="reload-select-${selectId}"]`).forEach(el => {
+            el.addEventListener('click', () => {
+                const icon = el.querySelector('.reload-icon');
+                const route = el.dataset.route;
+                const params = JSON.parse(el.dataset.params || '{}');
+
+                icon.classList.add('spin');
+
+                getDataForSelect(route, params, () => {
+                    icon.classList.remove('spin');
+                });
+            });
+        });
+
         const placeholder = @json($placeholder);
         const route = @json($route);
         const params = @json($params);
@@ -60,11 +84,17 @@
 
         const getDataForSelect = (
             route,
-            params
+            params,
+            done = null
         ) => {
             const data = {
                 ...params,
                 select: true
+            };
+
+            if (!route) {
+                if (typeof done === 'function') done();
+                return;
             };
             $.ajax({
                 url: route,
@@ -73,22 +103,28 @@
                 success: function(response) {
                     tomSelectInstance.clearOptions();
                     const result = response.data ?? null
+                    const valueOld = $(`#select-value-${selectId}`).val()
 
+                    
                     result.forEach(item => {
                         tomSelectInstance.addOption({
                             value: item.id,
-                            text: item.name
+                            text: item[columnShowView]
                         });
                     });
 
                     tomSelectInstance.refreshOptions(false);
 
-                    if (selected) {
+                    if (valueOld) {
+                        tomSelectInstance.setValue(valueOld);
+                    } else if (selected) {
                         tomSelectInstance.setValue(selected);
                     }
+                    if (typeof done === 'function') done();
                 },
                 error: function(err) {
                     console.log(err);
+                    if (typeof done === 'function') done();
                 }
             })
         }
@@ -96,6 +132,13 @@
 
         if (route) {
             getDataForSelect(route, params);
+        }
+
+        window.tomSelectInstances = window.tomSelectInstances || {};
+        window.tomSelectInstances[selectId] = tomSelectInstance;
+
+        window.accessSelect = (name) => {
+            return window.tomSelectInstances?.[name]
         }
     }
 </script>
