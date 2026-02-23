@@ -23,6 +23,7 @@ return new class extends Migration
             $table->decimal('discount', 15, 2)->default(0);
             $table->decimal('grand_total', 15, 2)->default(0);
             $table->decimal('paid_amount', 15, 2)->default(0);
+            $table->decimal('advance_amount', 15, 2)->default(0);
             $table->decimal('remaining_amount', 15, 2)->default(0);
             $table->integer('payment_method')->nullable();
             $table->unsignedBigInteger('coa_id')->nullable();

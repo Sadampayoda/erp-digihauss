@@ -22,7 +22,8 @@
         <div>
             <x-input-select name="advance_sale_id" label="Pilih Transaksi AS" placeholder="Transaksi AS"
                 columnShowView="transaction_number" :required="true" :route="route('advance-sales.index')" :selected="@$data->advance_sale_id"
-                class="rounded-sm" />
+                :paramsInput="['customer']"
+                :params="['status' => [2,3]]" class="rounded-sm" />
 
         </div>
     </form>
@@ -40,7 +41,7 @@
 
     const refreshSource = () => {
         const source = document.getElementById('source').value;
-        console.log(sourceSelect.value,previousSource)
+        console.log(sourceSelect.value, previousSource)
         const ts = accessSelect('advance_sale_id')
         const createItems = document.getElementById('btn-sales-invoices-modal');
 
@@ -48,7 +49,7 @@
 
         if (source === 'sales-invoice') {
             const getCountData = getDetailTableLength();
-            if (getCountData > 0) {
+            if (getCountData > 0 && previousSource == 'advance-sales') {
                 Swal.fire({
                     title: 'Yakin mengubah sumber ?',
                     text: 'Data barang akan terhapus semua !',
@@ -66,7 +67,8 @@
                         createItems.disabled = false
                         previousSource = source
                         document.getElementById('remaining_amount').value = 0
-                        document.getElementById('outstanding_amount').value = 0
+                        document.getElementById('advance_amount').value = 0
+                        unlockDetailTableColumns([ 'sale_price', 'service'])
                     } else {
                         const sourceTs = accessSelect('source');
                         sourceTs.setValue(previousSource)
@@ -84,6 +86,33 @@
             createItems.disabled = false;
             previousSource = source
         } else if (source === 'advance-sales') {
+            const getCountData = getDetailTableLength();
+            if (getCountData > 0 && previousSource == 'sales-invoice') {
+                Swal.fire({
+                    title: 'Yakin mengubah sumber ?',
+                    text: 'Data barang akan terhapus semua !',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ef4444',
+                    cancelButtonColor: '#64748b',
+                    confirmButtonText: 'Ya, Lakukan',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        clearDetailTable()
+                        ts.enable()
+                        createItems.disabled = false
+                        previousSource = source
+                        document.getElementById('remaining_amount').value = 0
+                        document.getElementById('advance_amount').value = 0
+                    } else {
+                        const sourceTs = accessSelect('source');
+                        sourceTs.setValue(previousSource)
+                    }
+                });
+
+                return;
+            }
             createItems.disabled = true;
             ts.enable()
             previousSource = source
@@ -125,11 +154,12 @@
                         }
 
                         data.items.forEach((item) => {
-                            item.detail_id = item.id
+                            item.advance_sale_items_id = item.id
                             item.id = item?.item?.id
                             item.image = item?.item?.image
                             item.name = item.item_name;
                             item.variant = item.item?.variant
+                            item.quantity = item.outstanding_quantity
                             renderDetailRow(item, setup)
                         });
 
@@ -139,9 +169,14 @@
                         const remainingAmount = document.getElementById(
                             'remaining_amount')
                         if (data.remaining_amount) {
-                            remainingAmount.value = data.remaining_amount;
+                            remainingAmount.value = data.remaining_amount - data.advance_amount;
                         }
 
+                        lockDetailTableColumns(
+                            ['sale_price', 'service'], {
+                                mode: 'readonly'
+                            }
+                        )
                     },
                     error: function(err) {
                         showAlert('Gagal', message, 'errors', true);

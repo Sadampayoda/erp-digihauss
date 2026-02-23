@@ -70,7 +70,7 @@
                     <span>Uang Muka Penjualan</span>
                 </a>
                 <a href="{{ route('sales-invoices.index') }}"
-                    class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg {{ Request::is('sales-invoices*') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }} hover:bg-stone-200">
                     <i data-lucide="file-text" class="w-4 h-4"></i>
                     <span>Sales Invoice</span>
                 </a>

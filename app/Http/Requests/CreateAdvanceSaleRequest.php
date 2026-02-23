@@ -36,7 +36,7 @@ class CreateAdvanceSaleRequest extends FormRequest
             'purchase_price'    => ['nullable', 'numeric', 'min:0'],
             'service'           => ['nullable', 'numeric', 'min:0'],
             'margin'            => ['nullable', 'numeric'],
-            'margin_percentage' => ['nullable', 'numeric'],
+        'margin_percentage' => ['nullable', 'numeric'],
 
             'items'                     => ['required', 'array', 'min:1'],
             'items.*.detail_id'           => ['nullable'],

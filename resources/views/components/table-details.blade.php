@@ -260,5 +260,57 @@
 
             return tbody.querySelectorAll('tr[data-id]').length
         }
+
+        window.lockDetailTableColumns = function(columns = [], options = {}) {
+            const {
+                mode = 'readonly',
+                    clearValue = false
+            } = options
+
+            const tbody = document.getElementById(`${initialTable}-body`)
+            if (!tbody) return
+
+            columns.forEach(column => {
+                const inputs = tbody.querySelectorAll(`input[name="${column}[]"]`)
+
+                inputs.forEach(input => {
+                    if (mode === 'disabled') {
+                        input.disabled = true
+                    } else {
+                        input.readOnly = true
+                    }
+
+                    if (clearValue) {
+                        input.value = ''
+                    }
+
+                    input.classList.add(
+                        'bg-slate-100',
+                        'cursor-not-allowed',
+                        'text-slate-500'
+                    )
+                })
+            })
+        }
+
+        window.unlockDetailTableColumns = function(columns = []) {
+            const tbody = document.getElementById(`${initialTable}-body`)
+            if (!tbody) return
+
+            columns.forEach(column => {
+                const inputs = tbody.querySelectorAll(`input[name="${column}[]"]`)
+
+                inputs.forEach(input => {
+                    input.readOnly = false
+                    input.disabled = false
+
+                    input.classList.remove(
+                        'bg-slate-100',
+                        'cursor-not-allowed',
+                        'text-slate-500'
+                    )
+                })
+            })
+        }
     }
 </script>

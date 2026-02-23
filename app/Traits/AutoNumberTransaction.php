@@ -25,6 +25,7 @@ trait AutoNumberTransaction
             $pattern = "DIG-{$prefix}-{$year}{$month}%";
 
             $lastTransaction = $model::query()
+                ->withTrashed()
                 ->where($column, 'like', $pattern)
                 ->lockForUpdate()
                 ->orderBy($column, 'desc')

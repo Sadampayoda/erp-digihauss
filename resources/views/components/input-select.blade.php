@@ -9,6 +9,7 @@
     'options' => [],
     'route' => null,
     'params' => null,
+    'paramsInput' => [],
     'required' => false,
     'columnShowView' => 'name',
 ])
@@ -52,6 +53,7 @@
     {
         const selectId = @json($name ?? $id);
         const options = @json($options ?? []);
+        const paramsInput = @json($paramsInput);
         const columnShowView = @json($columnShowView);
         document.querySelectorAll(`[class^="reload-select-${selectId}"]`).forEach(el => {
             el.addEventListener('click', () => {
@@ -92,6 +94,19 @@
                 select: true
             };
 
+            if (paramsInput.length > 0) {
+                paramsInput.forEach((input) => {
+                    const el = document.getElementById(input);
+
+                    if (!el) return;
+                    const value = el.value;
+
+                    if (value !== null && value !== '') {
+                        data[input] = value;
+                    }
+                });
+            }
+
             if (!route) {
                 if (typeof done === 'function') done();
                 return;
@@ -105,7 +120,7 @@
                     const result = response.data ?? null
                     const valueOld = $(`#select-value-${selectId}`).val()
 
-                    
+
                     result.forEach(item => {
                         tomSelectInstance.addOption({
                             value: item.id,

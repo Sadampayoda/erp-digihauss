@@ -19,9 +19,9 @@
                 class="rounded-sm p-1 md:p-2" :value="$data->paid_amount ?? 0" required />
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 ">
-                <x-input-text type="number" name="advance_amount" label="Biaya sesudah Uang Muka" description="Potongan dari uang muka sebelumnya"
+                <x-input-text type="number" name="advance_amount" label="Biaya sesudah Uang Muka" description="Potongan dari uang muka"
                 border_color="border-stone-300" class="rounded-sm p-1 md:p-2" :value="$data->advance_amount ?? 0" readonly />
-                <x-input-text type="number" name="remaining_amount" label="Sisa Pembayaran" description="Sisa yang harus di bayar Uang Muka"
+                <x-input-text type="number" name="remaining_amount" label="Sisa Pembayaran" description="Sisa yang harus di bayar"
                     border_color="border-stone-300" class="rounded-sm p-1 md:p-2" :value="$data->remaining_amount ?? 0" readonly />
             </div>
 
@@ -30,7 +30,7 @@
                 :selected="$data->payment_method ?? 1" required />
 
             <x-input-status name="status" border_color="border-stone-300" class="rounded-sm p-1 md:p-2"
-                :value="$data->status ?? 0" />
+                :selected="$data->status ?? 0" />
 
             <x-input-text name="description" label="Deskripsi" placeholder="Uraian pembayaran"
                 border_color="border-stone-300" class="rounded-sm p-1 md:p-2" :value="$data->description ?? ''" />

@@ -14,7 +14,9 @@
     'parentService' => 'service',
     'parentMargin' => 'margin',
     'parentMarginPercentage' => 'margin_percentage',
-    'parentPaidAmount' => null
+    'parentPaidAmount' => null,
+    'parentRemainingAmount' => 'remaining_amount',
+    'parentAdvanceAmount' => 'advance_amount',
 ])
 
 <x-modal id="{{ $summaryFormModal }}" title="Sub total" onSubmit="submit" width="w-[100%] sm:max-w-4xl">
@@ -76,6 +78,9 @@
         parentMargin: "{{ $parentMargin }}",
         parentMarginPercentage: "{{ $parentMarginPercentage }}",
         parentPaidAmount: "{{ $parentPaidAmount }}",
+        parentRemainingAmount: "{{ $parentRemainingAmount }}",
+        parentAdvanceAmount: "{{ $parentAdvanceAmount }}",
+
 
     }
 
@@ -145,6 +150,8 @@
         form.querySelector(`[name="${ids.parentMarginPercentage}"]`).value = marginPercentage;
         form.querySelector(`[name="${ids.parentPaidAmount}"]`).value = subTotal - service;
 
+        const advanceAmount = document.getElementById(`${ids.parentAdvanceAmount}`).value
+        document.getElementById(`${ids.parentRemainingAmount}`).value = (subTotal - service) - advanceAmount
     }
 
 

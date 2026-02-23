@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\DB;
 
 class SalesInvoiceController extends Controller
 {
-     use ApiResponse, Validate, HandleErroMessage, AutoNumberTransaction;
+    use ApiResponse, Validate, HandleErroMessage, AutoNumberTransaction;
     protected $salesInvoiceRepo, $model, $setupColumn;
 
     public function __construct(SalesInvoiceRepository $salesInvoiceRepository)
@@ -24,7 +24,8 @@ class SalesInvoiceController extends Controller
         $this->salesInvoiceRepo = $salesInvoiceRepository;
         $this->model = new SalesInvoice();
         $this->setupColumn = [
-            'detail_id' => ['label' => ' ','type' => 'hidden'],
+            'detail_id' => ['label' => ' ', 'type' => 'hidden'],
+            'advance_sale_items_id' => ['label' => ' ', 'type' => 'hidden'],
             'image' => ['label' => 'Gambar', 'type' => 'image'],
             'name' => ['label' => 'Nama Produk'],
             'variant' => ['label' => 'Varian'],
@@ -67,6 +68,9 @@ class SalesInvoiceController extends Controller
         try {
             DB::beginTransaction();
             $data = $request->validated();
+
+
+
             $salesInvoice = $this->model->create(array_merge($data, [
                 'transaction_number' => $this->generateTransactionNumber(
                     model: SalesInvoice::class,
@@ -74,7 +78,7 @@ class SalesInvoiceController extends Controller
                     column: 'transaction_number',
                     transactionDate: $data['transaction_date'],
                 ),
-                'remaining_amount' => $data['grand_total'] - $data['paid_amount'],
+                'remaining_amount' => $data['remaining_amount'],
                 'created_by' => 0,
                 'updated_by' => 0,
                 'deleted_by' => 0,
@@ -102,24 +106,78 @@ class SalesInvoiceController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(SalesInvoice $salesInvoice)
+    public function edit(int $id)
     {
-        //
+        $data = $this->existsWhereId($this->model, $id, ['items.item']);
+
+        return view('dashboard.sales.sales_invoices.create', [
+            'data' => $data,
+            'items' => Items::all(),
+            'setupColumn' => $this->setupColumn
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, SalesInvoice $salesInvoice)
+    public function update(CreateSalesInvoiceRequest $request, int $id)
     {
-        //
+        try {
+            DB::beginTransaction();
+            $data = $request->validated();
+            $salesInvoice = $this->existsWhereId($this->model, $id);
+
+            if (!$salesInvoice->transaction_number) {
+                $salesInvoice->transaction_number = $this->generateTransactionNumber(
+                    model: SalesInvoice::class,
+                    prefix: 'SI',
+                    column: 'transaction_number',
+                    transactionDate: $data['transaction_date']
+                );
+            }
+
+
+
+            $salesInvoice->update([
+                ...$data,
+                'remaining_amount' => $data['remaining_amount']
+            ]);
+
+            $this->salesInvoiceRepo->createOrUpdateItems($salesInvoice->fresh(), $data);
+            DB::commit();
+
+            return $this->sendSuccess(message: 'Berhasil Mengupdate Invoice Penjualan');
+        } catch (QueryException $e) {
+            DB::rollBack();
+
+            return $this->sendErrors(message: $this->handleDatabaseError($e));
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(SalesInvoice $salesInvoice)
+    public function destroy(int $id)
     {
-        //
+        try {
+            DB::beginTransaction();
+
+            $salesInvoice = $this->existsWhereId($this->model, $id);
+
+            $this->salesInvoiceRepo->deleteItems($salesInvoice);
+
+            $salesInvoice->delete();
+
+            DB::commit();
+
+            return $this->sendSuccess(message: 'Berhasil Menghapus Invoice Penjualan');
+        } catch (QueryException $e) {
+
+            DB::rollBack();
+
+            return $this->sendErrors(
+                message: $this->handleDatabaseError($e)
+            );
+        }
     }
 }

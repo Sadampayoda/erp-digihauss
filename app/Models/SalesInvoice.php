@@ -25,6 +25,7 @@ class SalesInvoice extends Model
         'service',
         'paid_amount',
         'remaining_amount',
+        'advance_amount',
         'coa_id',
         'created_by',
         'updated_by',
@@ -35,4 +36,33 @@ class SalesInvoice extends Model
     {
         return $this->hasMany(SalesInvoiceItems::class, 'sales_invoice_id','id');
     }
+
+    public function customerRelation()
+    {
+        return $this->hasOne(Contact::class,'id','customer');
+    }
+
+    public function AdvanceSale()
+    {
+        return $this->hasOne(AdvanceSale::class,'id','advance_sale_id');
+    }
+
+    public function getCustomerNameAttribute()
+    {
+        if ($this->customerRelation()) {
+            $customer = $this->customerRelation;
+            return  $this->customerRelation->name;
+        }
+
+        return null;
+    }
+
+    public function getSummaryPaidAttribute()
+    {
+        return $this->advance_amount + $this->paid_amount;
+    }
+
+
+
+    protected $appends = ['customer_name','summary_paid'];
 }

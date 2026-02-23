@@ -71,6 +71,8 @@
                 });
             });
 
+            console.log(items);
+
             if (editMode) {
                 data.append('_method', 'PUT');
             }

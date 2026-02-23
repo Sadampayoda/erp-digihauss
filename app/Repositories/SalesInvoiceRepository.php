@@ -23,7 +23,7 @@ class SalesInvoiceRepository
 
                 if ($detail) {
                     $detail->update(array_merge($item, [
-                        'item_name' => $item['name'],
+                        'item_name' => $relatedItem->name,
                         'item_code' => $relatedItem->code ?? $relatedItem->item_code,
                     ]));
                 }
@@ -34,7 +34,7 @@ class SalesInvoiceRepository
                 $detail = $salesInvoice->items()->create(array_merge($item, [
                     'coa_id' => 1,
                     'sales_invoice_id' => $salesInvoice->id,
-                    'item_name' => $item['name'],
+                    'item_name' => $relatedItem->name,
                     'item_code' => $relatedItem->code ?? $relatedItem->item_code,
                 ]));
 
@@ -45,16 +45,50 @@ class SalesInvoiceRepository
 
         $salesInvoice->items()->whereNotIn('id', $ids)->delete();
 
+
+        $salesInvoice = $salesInvoice->fresh();
+
         if ($salesInvoice->status >= 2) {
             // Handle Payment Amount
             $this->ensureInvoicePaidIn($salesInvoice);
+
+
+            if ($salesInvoice->advance_sale_id) {
+
+                // Handle quantity advance sale items
+                $salesInvoice = $this->applyAdvanceQuantity($salesInvoice);
+
+                // Handle Status Advance Sale
+                $this->refreshStatus($salesInvoice);
+            }
+        }
+    }
+
+    public function deleteItems($salesInvoice)
+    {
+
+        if ($salesInvoice->status >= 2) {
+
+
+            if ($salesInvoice->advance_sale_id) {
+                // Remove Quantity in Advance Sale
+                $this->applyAdvanceQuantity($salesInvoice, 'delete');
+
+                // Change status advance sale
+                $this->refreshStatus($salesInvoice);
+            }
+        }
+
+        if ($salesInvoice->items()) {
+            $salesInvoice->items()->delete();
         }
     }
 
     protected function ensureInvoicePaidIn($salesInvoice)
     {
+        $total = $salesInvoice->paid_amount + $salesInvoice->advance_amount;
 
-        if ($salesInvoice->grand_total !== $salesInvoice->paid_amount) {
+        if ((float) $salesInvoice->grand_total !== $total) {
             throw ValidationException::withMessages([
                 'advance_amount' => 'Jumlah pembayaran harus lunas'
             ]);
@@ -71,5 +105,73 @@ class SalesInvoiceRepository
                 'margin' => 'Harga jual barang ' . $item['name'] . ' tidak boleh lebih kecil dari harga beli.',
             ]);
         }
+    }
+
+    protected function refreshStatus($salesInvoice)
+    {
+        $advanceSale = $salesInvoice->AdvanceSale;
+
+        if (!$advanceSale) {
+            throw ValidationException::withMessages([
+                'advance_sale_id' => 'Transaksi Uang Muka tidak ditemukan.',
+            ]);
+        }
+
+        // Check Quantity and items
+        $items = $advanceSale->items;
+
+        if ($items->every(fn($i) => $i->sales_invoice_items_quantity == 0)) {
+            $status = 2;
+        } elseif ($items->every(fn($i) => $i->sales_invoice_items_quantity == $i->quantity)) {
+            $status = 4;
+        } else {
+            $status = 3;
+        }
+
+        $advanceSale->update([
+            'status' => $status,
+        ]);
+    }
+
+    protected function applyAdvanceQuantity($salesInvoice, $method = 'create')
+    {
+
+        $salesInvoice->items->each(function ($item) use ($method) {
+            $advanceSaleItems = AdvanceSaleItems::findOrFail($item->advance_sale_items_id);
+
+            if (!$advanceSaleItems) {
+                throw ValidationException::withMessages([
+                    'advance_sale_items_id' => 'barang ' . $item['name'] . ' tidak ditemukan.',
+                ]);
+            }
+
+            $siQuantity = 0;
+            switch ($method) {
+                case 'create':
+                    $siQuantity = $item->quantity;
+                    break;
+                case 'delete':
+                    $siQuantity = 0;
+                    break;
+                default:
+                    $siQuantity = $item->quantity;
+                    break;
+            }
+
+
+            $advanceSaleItems->update([
+                'sales_invoice_items_quantity' => $siQuantity
+            ]);
+
+            $advanceSaleItems = $advanceSaleItems->fresh();
+
+            if ($advanceSaleItems->sales_invoice_items_quantity > $advanceSaleItems->quantity) {
+                throw ValidationException::withMessages([
+                    'advance_sale_items_id' => 'barang ' . $item['name'] . ' sudah melebihi batas quantity di uang muka.',
+                ]);
+            }
+        });
+
+        return $salesInvoice->fresh();
     }
 }

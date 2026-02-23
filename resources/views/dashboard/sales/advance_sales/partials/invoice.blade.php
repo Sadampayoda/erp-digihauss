@@ -23,7 +23,7 @@
                 :selected="$data->payment_method ?? 1" required />
 
             <x-input-status name="status" border_color="border-stone-300" class="rounded-sm p-1 md:p-2"
-                :value="$data->status ?? 0" />
+                :selected="$data->status ?? 0" />
 
             <x-input-text name="description" label="Deskripsi" placeholder="Uraian pembayaran"
                 border_color="border-stone-300" class="rounded-sm p-1 md:p-2" :value="$data->description ?? ''" />

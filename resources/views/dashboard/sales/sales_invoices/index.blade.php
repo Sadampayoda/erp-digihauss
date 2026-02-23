@@ -42,10 +42,10 @@
         <x-table :data="$sales_invoices" :labels="[
             'transaction_number' => 'No. SI',
             'transaction_date' => 'Tgl SI',
-            'customerName' => 'Pelanggan',
+            'customer_name' => 'Pelanggan',
             'status' => 'Status',
             'grand_total' => 'Total Transaksi',
-            'paid_amount' => 'Pembayaran',
+            'summary_paid' => 'Pembayaran',
         ]" onEdit="onEdit" onDelete="onDelete" />
     </div>
 

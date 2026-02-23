@@ -42,7 +42,7 @@
         <x-table :data="$items" :labels="[
             'name' => 'Nama Barang',
             'model' => 'Model',
-            'Varian' => 'variant',
+            'variant' => 'Varian',
             'storage_gb' => 'Storage',
             'color' => 'Warna',
             'ram_gb' => 'RAM',

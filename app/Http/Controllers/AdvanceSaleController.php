@@ -43,11 +43,32 @@ class AdvanceSaleController extends Controller
      */
     public function index(Request $request)
     {
+
         if ((bool) $request->select) {
             try {
-                return $this->sendSuccess($this->model->all(), message: 'Berhasil Mendapatkan data Uang Muka');
+                if (! $request->filled('customer')) {
+                    return $this->sendSuccess(
+                        [],
+                        message: 'Customer belum dipilih'
+                    );
+                }
+
+
+                $data = $this->model
+                    ->where('customer', $request->customer)
+                    ->whereIn('status', $request->status)
+                    ->whereHas('items', function ($q) {
+                        $q->whereColumn(
+                            'sales_invoice_items_quantity',
+                            '<',
+                            'quantity'
+                        );
+                    })
+                    ->get();
+
+                return $this->sendSuccess($data, message: 'Berhasil Mendapatkan data Uang Muka');
             } catch (Exception $e) {
-                return $this->sendErrors(message: $e);
+                return $this->sendErrors(message: $e);p
             }
         }
         return view('dashboard.sales.advance_sales.index', [
@@ -106,7 +127,7 @@ class AdvanceSaleController extends Controller
     {
 
         try {
-            $data = $this->existsWhereId($this->model, $id,['items.item']);
+            $data = $this->existsWhereId($this->model, $id, ['items.item']);
             return $this->sendSuccess($data, message: 'Berhasil Mendapatkan data Uang Muka');
         } catch (Exception $e) {
             return $this->sendErrors(message: $e);

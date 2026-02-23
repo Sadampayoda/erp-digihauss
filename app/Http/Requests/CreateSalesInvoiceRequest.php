@@ -53,6 +53,12 @@ class CreateSalesInvoiceRequest extends FormRequest
                 'min:0',
             ],
 
+            'advance_amount' => [
+                'nullable',
+                'numeric',
+                'min:0',
+            ],
+
             'service' => [
                 'nullable',
                 'numeric',
@@ -80,7 +86,6 @@ class CreateSalesInvoiceRequest extends FormRequest
             'remaining_amount' => [
                 'required',
                 'numeric',
-                'min:0',
             ],
 
             'payment_method' => [
@@ -105,6 +110,19 @@ class CreateSalesInvoiceRequest extends FormRequest
                 'string',
                 'max:255',
             ],
+
+            'items'                     => ['required', 'array', 'min:1'],
+            'items.*.detail_id'           => ['nullable'],
+            'items.*.advance_sale_items_id'=> ['nullable'],
+            'items.*.item_id'                => ['required', 'integer', 'exists:items,id'],
+            'items.*.sale_price'        => ['nullable', 'numeric', 'min:0'],
+            'items.*.purchase_price'    => ['nullable', 'numeric', 'min:0'],
+            'items.*.quantity'          => ['nullable', 'integer', 'min:1'],
+            'items.*.service'           => ['nullable', 'numeric', 'min:0'],
+            'items.*.sub_total'         => ['nullable', 'numeric', 'min:0'],
+            'items.*.margin'            => ['nullable', 'numeric'],
+            'items.*.margin_percentage' => ['nullable', 'numeric'],
+
         ];
     }
 
