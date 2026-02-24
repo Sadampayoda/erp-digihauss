@@ -68,7 +68,7 @@ class AdvanceSaleController extends Controller
 
                 return $this->sendSuccess($data, message: 'Berhasil Mendapatkan data Uang Muka');
             } catch (Exception $e) {
-                return $this->sendErrors(message: $e);p
+                return $this->sendErrors(message: $e);
             }
         }
         return view('dashboard.sales.advance_sales.index', [
