@@ -14,6 +14,7 @@ use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class AdvanceSaleController extends Controller
 {
@@ -103,7 +104,7 @@ class AdvanceSaleController extends Controller
                     column: 'transaction_number',
                     transactionDate: $data['transaction_date'],
                 ),
-                'remaining_amount' => $data['sub_total'] - $data['service'],
+                'remaining_amount' => $data['sub_total'] + $data['service'],
                 'created_by' => 0,
                 'updated_by' => 0,
                 'deleted_by' => 0,
@@ -193,16 +194,24 @@ class AdvanceSaleController extends Controller
 
             $advanceSale = $this->existsWhereId($this->model, $id);
 
-            if ($advanceSale->items()) {
+            if ($advanceSale->status > 2) {
+                throw ValidationException::withMessages([
+                    'data' => 'Data sudah terpakai di transaksi lain'
+                ]);
+            }
+
+            $this->advanceSaleRepo->settingJournal($advanceSale, 'delete');
+
+            if ($advanceSale->items()->exists()) {
                 $advanceSale->items()->delete();
             }
+
             $advanceSale->delete();
 
             DB::commit();
 
             return $this->sendSuccess(message: 'Berhasil Menghapus Uang Muka');
         } catch (QueryException $e) {
-
             DB::rollBack();
 
             return $this->sendErrors(

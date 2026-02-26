@@ -53,6 +53,8 @@ class AdvanceSaleRepository
         }
 
         $advanceSale->items()->whereNotIn('id', $ids)->delete();
+
+        $this->settingJournal($advanceSale);
     }
 
     protected function ensureInvoicePaidIn($advanceSale)
@@ -74,12 +76,38 @@ class AdvanceSaleRepository
 
     protected function ensureSellingPriceNotBelowCost($item)
     {
-        $salePrice = ($item['sale_price'] * $item['quantity']) - $item['service'];
+        $salePrice = ($item['sale_price'] * $item['quantity']) + $item['service'];
         $purchasePrice = $item['purchase_price'] * $item['quantity'];
         if ($salePrice < $purchasePrice) {
             throw ValidationException::withMessages([
                 'margin' => 'Harga jual barang ' . $item['name'] . ' tidak boleh lebih kecil dari harga beli.',
             ]);
+        }
+    }
+
+    public function settingJournal($advanceSale, $method = 'create')
+    {
+        $journal = app(JournalRepository::class);
+
+        switch ($method) {
+            case 'create':
+                $journal->generateJournal(
+                    data: $advanceSale,
+                    details: $advanceSale->items,
+                    module: 'advance-sale',
+                    action: 'advance',
+                    columnPaymentMethod: 'payment_method',
+                    columnContact: 'customer',
+                    columnDescription: 'description',
+                    columnNominalDebit: 'advance_amount',
+                    columnNominalCredit: 'advance_amount'
+                );
+                break;
+            case 'delete':
+                $journal->destroyJournal($advanceSale);
+                break;
+            default:
+                break;
         }
     }
 }

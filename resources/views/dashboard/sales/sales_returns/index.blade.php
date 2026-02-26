@@ -20,7 +20,7 @@
                     Filter
                 </p>
             </button>
-            <a href="{{ route('advance-sales.create') }}"
+            <a href="{{ route('sales-returns.create') }}"
                 class="
                     group flex items-center gap-2
                     bg-emerald-400 text-white
@@ -34,23 +34,24 @@
                 <i data-lucide="plus" class="w-5 h-5 transition-transform duration-300 group-hover:rotate-90"></i>
 
                 <p class="hidden sm:block text-sm lg:text-base font-medium">
-                    Tambah Uang Muka
+                    Tambah Pengembalian
                 </p>
             </a>
         </div>
 
-        <x-table :data="$advance_sales" :labels="[
-            'transaction_number' => 'No. AS',
-            'transaction_date' => 'Tgl AS',
-            'customerName' => 'Pelanggan',
+        <x-table :data="$sales_returns" :labels="[
+            'transaction_number' => 'No. SR',
+            'transaction_date' => 'Tgl SR',
+            'customer_name' => 'Pelanggan',
             'status' => 'Status',
-            'advance_amount' => 'Bayar Uang Muka',
+            'grand_total' => 'Total Transaksi',
+            'paid_amount' => 'Total Pengembalian',
         ]" onEdit="onEdit" onDelete="onDelete" />
     </div>
 
     <script>
         const onEdit = (id, data) => {
-            let url = "{{ route('advance-sales.edit', ':id') }}";
+            let url = "{{ route('sales-returns.edit', ':id') }}";
             url = url.replace(':id', id);
             window.location.href = url;
         }
@@ -58,7 +59,7 @@
         const onDelete = (id) => {
             Swal.fire({
                 title: 'Yakin mau hapus?',
-                text: 'Data Uang Muka ini akan dihapus permanen!',
+                text: 'Data return Penjualan ini akan dihapus permanen!',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#ef4444',
@@ -68,7 +69,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: `/advance-sales/${id}`,
+                        url: `/sales-invoices/${id}`,
                         type: 'POST',
                         data: {
                             _token: '{{ csrf_token() }}',

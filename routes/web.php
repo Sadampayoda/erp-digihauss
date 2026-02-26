@@ -9,6 +9,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ItemsController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\SalesInvoiceController;
+use App\Http\Controllers\SalesReturnController;
 use App\Http\Controllers\SeriesController;
 use App\Http\Controllers\SettingCoaController;
 use Illuminate\Support\Facades\Route;
@@ -27,6 +28,7 @@ Route::controller(DashboardController::class)->group(function(){
 
 Route::resource('advance-sales', AdvanceSaleController::class)->names('advance-sales');
 Route::resource('sales-invoices',SalesInvoiceController::class)->names('sales-invoices');
+Route::resource('sales-returns',SalesReturnController::class)->names('sales-returns');
 
 
 Route::resource('contacts', ContactController::class)->names('contacts');

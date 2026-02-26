@@ -45,8 +45,8 @@
             <x-input-text :readonly="true" type="number" :name="$parentMarginPercentage" label="Margin (%)"
                 class="rounded-lg px-3 py-2" value="0" />
         </div>
-        <x-input-text :readonly="true" type="number" :name="$parentPaidAmount" label="Total Transaksi" class="rounded-lg px-3 py-2"
-            value="0" />
+        <x-input-text :readonly="true" type="number" :name="$parentPaidAmount" label="Total Transaksi"
+            class="rounded-lg px-3 py-2" value="0" />
 
     </form>
 
@@ -96,7 +96,7 @@
             const purchasePrice = getInputValue(ids.columnPurchasePriceTable, row);
             const service = getInputValue(ids.columnServiceTable, row);
 
-            const subTotal = (price * quantity) - service
+            const subTotal = (price * quantity) + service
             putInputValue(ids.columnSubTotalTable, row, subTotal);
 
             if (ids.columnMarginTable) {
@@ -135,9 +135,9 @@
             return total + service
         }, 0)
 
-        const margin = (subTotal - service) - purchasePrice
+        const margin = (subTotal + service) - purchasePrice
         const marginPercentage = subTotal ?
-            Math.round((margin / (subTotal - service)) * 100) :
+            Math.round((margin / (subTotal + service)) * 100) :
             0;
 
         const form = document.getElementById('subTotalForm');
@@ -148,10 +148,15 @@
         form.querySelector(`[name="${ids.parentService}"]`).value = service;
         form.querySelector(`[name="${ids.parentMargin}"]`).value = margin;
         form.querySelector(`[name="${ids.parentMarginPercentage}"]`).value = marginPercentage;
-        form.querySelector(`[name="${ids.parentPaidAmount}"]`).value = subTotal - service;
+        form.querySelector(`[name="${ids.parentPaidAmount}"]`).value = subTotal + service;
 
-        const advanceAmount = document.getElementById(`${ids.parentAdvanceAmount}`).value
-        document.getElementById(`${ids.parentRemainingAmount}`).value = (subTotal - service) - advanceAmount
+        const advanceEl = document.getElementById(ids.parentAdvanceAmount);
+        const remainingEl = document.getElementById(ids.parentRemainingAmount);
+
+        if (advanceEl && remainingEl) {
+            remainingEl.value = (subTotal + service) - Number(advanceEl.value);
+        };
+
     }
 
 

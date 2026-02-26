@@ -22,28 +22,68 @@ class SettingCoa extends Model
         'deleted_by'
     ];
 
-    protected static array $module = [
+    public static array $module = [
         'advance-sale' => 'Uang Muka Penjualan',
         'sales-invoice' => 'Invoice Penjualan',
+        'sales-return' => 'Pengembalian Barang Customer',
         'advance-payment' => 'Uang Muka Pembelian',
         'receipt-invoice' => 'Invoice Pembelian',
+        'purchase-return' => 'Pengembalian Barang Vendor',
         'trade-ins' => 'Tukar Tambah',
+        'service' => 'Service Iphone'
     ];
 
-    protected static array $action = [
-        'payment' => 'Pembayaran',
-        'receivable' => 'Piutang Usaha',
-        'advance' => 'Uang Muka Penjualan',
+    public static array $action = [
 
-        'revenue' => 'Penjualan',
-        'discount' => 'Diskon Penjualan',
-        'tax' => 'Pajak Keluaran',
+        // ======================
+        // SALES
+        // ======================
+        'payment'           => 'Pembayaran Customer',
+        'receivable'        => 'Piutang Usaha',
+        'advance'           => 'Uang Muka Penjualan',
 
-        'hpp' => 'Harga Pokok Penjualan',
-        'service' => 'Biaya Service',
+        'revenue'           => 'Penjualan',
+        'sales_discount'    => 'Diskon Penjualan',
+        'sales_tax'         => 'Pajak Keluaran',
 
-        'rounding' => 'Pembulatan',
-        'other' => 'Penyesuaian Lainnya',
+        'sales_return'      => 'Retur Penjualan',
+        'sales_refund'      => 'Pengembalian Dana Customer',
+
+        // ======================
+        // PURCHASING
+        // ======================
+        'purchase'          => 'Pembelian',
+        'payable'           => 'Hutang Usaha',
+        'purchase_advance'  => 'Uang Muka Pembelian',
+
+        'purchase_return'   => 'Retur Pembelian',
+
+        // ======================
+        // INVENTORY & COST
+        // ======================
+        'hpp'               => 'Harga Pokok Penjualan',
+        'service'      => 'Biaya Service',
+
+        // ======================
+        // TUKAR TAMBAH
+        // ======================
+        'trade_in'           => 'Tukar Tambah',
+        'trade_in_inventory' => 'Persediaan Tukar Tambah',
+
+        // ======================
+        // CASH & BANK
+        // ======================
+        'cash_in'           => 'Kas Masuk',
+        'cash_out'          => 'Kas Keluar',
+        'bank_in'           => 'Bank Masuk',
+        'bank_out'          => 'Bank Keluar',
+
+        // ======================
+        // ADJUSTMENT
+        // ======================
+        'rounding'          => 'Pembulatan',
+        'adjustment'        => 'Penyesuaian',
+        'other'             => 'Penyesuaian Lainnya',
     ];
 
     public function coa()
@@ -53,7 +93,7 @@ class SettingCoa extends Model
 
     public function paymentMethod()
     {
-        return $this->hasOne(PaymentMethod::class,'id','payment_method');
+        return $this->hasOne(PaymentMethod::class, 'id', 'payment_method');
     }
 
     public function getModuleNameAttribute()

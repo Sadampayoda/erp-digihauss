@@ -2,24 +2,27 @@
 
 namespace App\Repositories;
 
-use App\Models\AdvanceSaleItems;
+
 use Illuminate\Validation\ValidationException;
 use App\Traits\Validate;
 use App\Models\Items;
+use App\Models\SalesInvoiceItems;
 
-class SalesInvoiceRepository
+class SalesReturnRepository
 {
     use Validate;
-    public function createOrUpdateItems($salesInvoice, $data)
+    public function createOrUpdateItems($salesReturn, $data)
     {
         // Handle Create Items
         $ids = [];
         foreach ($data['items'] as $item) {
             $this->ensureSellingPriceNotBelowCost($item);
+
+            $this->validationQuantity($item['quantity'], $item['si_quantity']);
             $relatedItem = $this->existsWhereId(new Items(), $item['item_id']);
 
             if ($item['detail_id']) {
-                $detail = $salesInvoice->items()->where('id', $item['detail_id'])->firstOrFail();
+                $detail = $salesReturn->items()->where('id', $item['detail_id'])->firstOrFail();
 
                 if ($detail) {
                     $detail->update(array_merge($item, [
@@ -31,9 +34,9 @@ class SalesInvoiceRepository
                 $ids[] = $detail->id;
             } else {
 
-                $detail = $salesInvoice->items()->create(array_merge($item, [
+                $detail = $salesReturn->items()->create(array_merge($item, [
                     'coa_id' => 1,
-                    'sales_invoice_id' => $salesInvoice->id,
+                    'sales_return_id' => $salesReturn->id,
                     'item_name' => $relatedItem->name,
                     'item_code' => $relatedItem->code ?? $relatedItem->item_code,
                 ]));
@@ -43,38 +46,34 @@ class SalesInvoiceRepository
             }
         }
 
-        $salesInvoice->items()->whereNotIn('id', $ids)->delete();
+        $salesReturn->items()->whereNotIn('id', $ids)->delete();
 
 
-        $salesInvoice = $salesInvoice->fresh();
+        $salesReturn = $salesReturn->fresh();
 
-        if ($salesInvoice->status >= 2) {
+        if ($salesReturn->status >= 2) {
             // Handle Payment Amount
-            $this->ensureInvoicePaidIn($salesInvoice);
+            $this->ensureInvoicePaidIn($salesReturn);
 
+            // Handle quantity
+            $salesReturn = $this->applySalesInvoiceQuantity($salesReturn);
 
-            if ($salesInvoice->advance_sale_id) {
-
-                // Handle quantity advance sale items
-                $salesInvoice = $this->applyAdvanceQuantity($salesInvoice);
-
-                // Handle Status Advance Sale
-                $this->refreshStatus($salesInvoice);
-            }
+            // Handle Status
+            $this->refreshStatus($salesReturn);
         }
 
-        $this->settingJournal($salesInvoice);
+        $this->settingJournal($salesReturn);
     }
 
     public function deleteItems($salesInvoice)
     {
-        $this->settingJournal($salesInvoice,'delete');
+        $this->settingJournal($salesInvoice, 'delete');
         if ($salesInvoice->status >= 2) {
 
 
             if ($salesInvoice->advance_sale_id) {
-                // Remove Quantity in Advance Sale
-                $this->applyAdvanceQuantity($salesInvoice, 'delete');
+                // Remove Quantity
+                $this->applySalesInvoiceQuantity($salesInvoice, 'delete');
 
                 // Change status advance sale
                 $this->refreshStatus($salesInvoice);
@@ -86,13 +85,29 @@ class SalesInvoiceRepository
         }
     }
 
-    protected function ensureInvoicePaidIn($salesInvoice)
+    protected function validationQuantity($quantity, $maxQuantity)
     {
-        $total = $salesInvoice->paid_amount + $salesInvoice->advance_amount;
+        if ($quantity <= 0) {
+            throw new \InvalidArgumentException(
+                'Quantity tidak boleh 0 atau kurang'
+            );
+        }
 
-        if ((float) $salesInvoice->grand_total !== $total) {
+        if ($quantity > $maxQuantity) {
+            throw new \InvalidArgumentException(
+                'Quantity tidak boleh melebihi SI quantity '
+            );
+        }
+
+        return true;
+    }
+
+    protected function ensureInvoicePaidIn($salesReturn)
+    {
+
+        if ((float) $salesReturn->grand_total < $salesReturn->paid_amount) {
             throw ValidationException::withMessages([
-                'advance_amount' => 'Jumlah pembayaran harus lunas'
+                'paid_amount' => 'Jumlah uang pengembalian lebih dari total transaksi'
             ]);
         }
     }
@@ -135,46 +150,46 @@ class SalesInvoiceRepository
         ]);
     }
 
-    protected function applyAdvanceQuantity($salesInvoice, $method = 'create')
+    protected function applySalesInvoiceQuantity($salesReturn, $method = 'create')
     {
 
-        $salesInvoice->items->each(function ($item) use ($method) {
-            $advanceSaleItems = AdvanceSaleItems::findOrFail($item->advance_sale_items_id);
+        $salesReturn->items->each(function ($item) use ($method) {
+            $salesInvoices = SalesInvoiceItems::findOrFail($item->sales_invoice_items_id);
 
-            if (!$advanceSaleItems) {
+            if (!$salesInvoices) {
                 throw ValidationException::withMessages([
-                    'advance_sale_items_id' => 'barang ' . $item['name'] . ' tidak ditemukan.',
+                    'sales_invoice_items_id' => 'barang ' . $item['name'] . ' tidak ditemukan.',
                 ]);
             }
 
-            $siQuantity = 0;
+            $srQuantity = 0;
             switch ($method) {
                 case 'create':
-                    $siQuantity = $item->quantity;
+                    $srQuantity = $item->quantity;
                     break;
                 case 'delete':
-                    $siQuantity = 0;
+                    $srQuantity = 0;
                     break;
                 default:
-                    $siQuantity = $item->quantity;
+                    $srQuantity = $item->quantity;
                     break;
             }
 
 
-            $advanceSaleItems->update([
-                'sales_invoice_items_quantity' => $siQuantity
+            $salesInvoices->update([
+                'sales_return_items_quantity' => $srQuantity
             ]);
 
-            $advanceSaleItems = $advanceSaleItems->fresh();
+            $salesInvoices = $salesInvoices->fresh();
 
-            if ($advanceSaleItems->sales_invoice_items_quantity > $advanceSaleItems->quantity) {
+            if ($salesInvoices->sales_return_items_quantity > $salesInvoices->quantity) {
                 throw ValidationException::withMessages([
-                    'advance_sale_items_id' => 'barang ' . $item['name'] . ' sudah melebihi batas quantity di uang muka.',
+                    'sales_invoice_items_id' => 'barang ' . $item['name'] . ' sudah melebihi batas quantity di uang muka.',
                 ]);
             }
         });
 
-        return $salesInvoice->fresh();
+        return $salesReturn->fresh();
     }
 
 
@@ -200,7 +215,7 @@ class SalesInvoiceRepository
 
                 // Kas / Bank debit
                 // Piutang credit
-                if($salesInvoice->paid_amount > 0) {
+                if ($salesInvoice->paid_amount > 0) {
                     $journal->generateJournal(
                         data: $salesInvoice,
                         details: $salesInvoice->items,
@@ -215,7 +230,7 @@ class SalesInvoiceRepository
                 }
 
                 $salesInvoice->sub_total_purchase_price = $salesInvoice->items
-                    ->sum(fn ($item) => $item->purchase_price * $item->quantity);
+                    ->sum(fn($item) => $item->purchase_price * $item->quantity);
 
 
                 // Hpp debit
@@ -233,10 +248,10 @@ class SalesInvoiceRepository
                 );
 
                 $salesInvoice->sub_total_service = $salesInvoice->items
-                    ->sum(fn ($item) => $item->service);
+                    ->sum(fn($item) => $item->service);
                 // Biaya Service debit
                 // Kas credit
-                if($salesInvoice->sub_total_service > 0) {
+                if ($salesInvoice->sub_total_service > 0) {
                     $journal->generateJournal(
                         data: $salesInvoice,
                         details: $salesInvoice->items,

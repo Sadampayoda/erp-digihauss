@@ -28,15 +28,9 @@ class CoaController extends Controller
     {
         if ((bool) $request->select) {
             try {
-                $query = $this->model
-                    ->where('is_active', true)
-                    ->where('is_postable', false);
 
-                if ($request->filled('only_parent')) {
-                    $query->whereNull('parent_id');
-                }
 
-                $data = $query
+                $data = $this->model->where('level',3)
                     ->orderBy('code')
                     ->get()
                     ->map(function ($coa) {

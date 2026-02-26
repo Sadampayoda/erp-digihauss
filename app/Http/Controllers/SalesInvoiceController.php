@@ -10,6 +10,7 @@ use App\Traits\ApiResponse;
 use App\Traits\AutoNumberTransaction;
 use App\Traits\HandleErroMessage;
 use App\Traits\Validate;
+use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -42,8 +43,35 @@ class SalesInvoiceController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        if ((bool) $request->select) {
+            try {
+                if (! $request->filled('customer')) {
+                    return $this->sendSuccess(
+                        [],
+                        message: 'Customer belum dipilih'
+                    );
+                }
+
+
+                $data = $this->model
+                    ->where('customer', $request->customer)
+                    ->whereIn('status', $request->status)
+                    // ->whereHas('items', function ($q) {
+                    //     $q->whereColumn(
+                    //         'sales_invoice_items_quantity',
+                    //         '<',
+                    //         'quantity'
+                    //     );
+                    // })
+                    ->get();
+
+                return $this->sendSuccess($data, message: 'Berhasil Mendapatkan data Invoice Penjualan');
+            } catch (Exception $e) {
+                return $this->sendErrors(message: $e);
+            }
+        }
         return view('dashboard.sales.sales_invoices.index', [
             'sales_invoices' => $this->model->all(),
         ]);
@@ -98,9 +126,14 @@ class SalesInvoiceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(SalesInvoice $salesInvoice)
+    public function show(int $id)
     {
-        //
+        try {
+            $data = $this->existsWhereId($this->model, $id, ['items.item']);
+            return $this->sendSuccess($data, message: 'Berhasil Mendapatkan data Sales Invoice');
+        } catch (Exception $e) {
+            return $this->sendErrors(message: $e);
+        }
     }
 
     /**

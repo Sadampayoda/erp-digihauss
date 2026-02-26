@@ -42,10 +42,10 @@ class SalesInvoice extends Model
         return $this->hasOne(Contact::class,'id','customer');
     }
 
-    public function AdvanceSale()
-    {
-        return $this->hasOne(AdvanceSale::class,'id','advance_sale_id');
-    }
+public function AdvanceSale()
+{
+    return $this->hasOne(AdvanceSale::class,'id','advance_sale_id');
+}
 
     public function getCustomerNameAttribute()
     {

@@ -10,6 +10,7 @@ class SalesInvoiceItems extends Model
         'sales_invoice_id',
         'item_id',
         'advance_sale_items_id',
+        'sales_return_items_quantity',
         'coa_id',
         'item_code',
         'item_name',

@@ -22,19 +22,20 @@ class CreateSettingCoaRequest extends FormRequest
      */
     public function rules(): array
     {
+
         $id = $this->route('setting_coa');
         // route model binding atau parameter id
         return [
             'module' => [
                 'required',
                 'string',
-                Rule::in([
-                    'advance-sale',
-                    'sales-invoice',
-                    'advance-payment',
-                    'receipt-invoice',
-                    'trade-ins',
-                ]),
+                // Rule::in([
+                //     'advance-sale',
+                //     'sales-invoice',
+                //     'advance-payment',
+                //     'receipt-invoice',
+                //     'trade-ins',
+                // ]),
             ],
 
             'action' => [

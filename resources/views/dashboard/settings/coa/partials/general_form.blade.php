@@ -18,6 +18,7 @@
                     'advance-payment' => 'Uang Muka Pembelian',
                     'receipt-invoice' => 'Invoice Pembelian',
                     'trade-ins' => 'Tukar Tambah',
+                    'service' => 'Service Iphone'
                 ]" :selected="@$data->module"
                     class="rounded-sm" />
             </div>
@@ -49,14 +50,14 @@
             </div>
             <div>
                 <x-input-toggle name="position" label="Posisi Jurnal" onValue="debit" offValue="credit" onLabel="Debit"
-                    offLabel="Kredit" :value="@$data->position ?? 'debit'" required />
+                    offLabel="Kredit" :value="$data->position ?? 'debit'" required />
             </div>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2
                 px-2 py-1 mx-3 sm:mx-5 my-1 gap-4">
             <div class="sm:col-span-2">
                 <x-input-select name="coa_id" :route="route('coas.index')" :params="[
-                    'only_parent' => true,
+                    'level' => 3,
                 ]" label="Pilih Coa"
                     :required="true" :selected="@$data->coa_id" class="rounded-sm" />
             </div>
@@ -78,7 +79,7 @@
     </form>
     <div class="px-2 py-3 mx-3 sm:mx-5">
         <div class="flex flex-col sm:flex-row justify-end gap-3">
-            <a  href="{{ route('setting-coas.index') }}"id="btn-cancel-modal"
+            <a href="{{ route('setting-coas.index') }}"id="btn-cancel-modal"
                 class="
                 px-4 py-2 rounded-lg
                 bg-slate-200 text-slate-700

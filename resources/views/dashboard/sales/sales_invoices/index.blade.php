@@ -77,8 +77,9 @@
                         },
                         success: function(res) {
                             showAlert('Sukses', res.message);
-                        },
+                        },P
                         error: function(err) {
+                             const message = err.responseJSON.message;
                             showAlert('Gagal', message, 'errors', true);
                         }
                     });

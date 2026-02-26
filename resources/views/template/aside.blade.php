@@ -74,6 +74,11 @@
                     <i data-lucide="file-text" class="w-4 h-4"></i>
                     <span>Sales Invoice</span>
                 </a>
+                <a href="{{ route('sales-returns.index') }}"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg {{ Request::is('sales-returns*') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }} hover:bg-stone-200">
+                    <i data-lucide="undo-2" class="w-4 h-4"></i>
+                    <span>Sales Return</span>
+                </a>
                 <a href="{{ route('contacts.index') }}"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg {{ Request::is('contacts*') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }} hover:bg-stone-200">
                     <i data-lucide="users" class="w-4 h-4"></i>
@@ -81,7 +86,7 @@
                 </a>
                 <a href="{{ route('setting-coas.index') }}"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg {{ Request::is('setting-coas*') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }} hover:bg-stone-200">
-                    <i data-lucide="setting" class="w-4 h-4"></i>
+                    <i data-lucide="settings-2" class="w-4 h-4"></i>
                     <span>Pengaturan COA Sales</span>
                 </a>
             </div>
