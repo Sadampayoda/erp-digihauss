@@ -67,11 +67,6 @@ class JournalRepository
         $amountDebit  = $data->$columnNominalDebit;
         $amountCredit = $data->$columnNominalCredit;
 
-        if ($amountDebit != $amountCredit) {
-            throw ValidationException::withMessages([
-                'journal' => 'Journal tidak balance',
-            ]);
-        }
 
         $relateContact = Contact::find($data->$columnContact);
 
@@ -99,28 +94,79 @@ class JournalRepository
                 ]);
             }
 
-            // Debit
+            if ($module == 'sales-return') {
+                // Debit
+                [$debit, $credit] = $this->normalizeAmount($amountDebit, 0);
 
-            [$debit, $credit] = $this->normalizeAmount($amountDebit, 0);
+                $journal->details()->create([
+                    'coa'         => $relatedCoaDebit->code,
+                    'coa_name'    => $relatedCoaDebit->name,
+                    'debit'       => $debit,
+                    'credit'      => $credit,
+                    'description' => $data->$columnDescription,
+                ]);
 
-            $journal->details()->create([
-                'coa'         => $relatedCoaDebit->code,
-                'coa_name'    => $relatedCoaDebit->name,
-                'debit'       => $debit,
-                'credit'      => $credit,
-                'description' => $data->$columnDescription,
-            ]);
+                // Credit
+                [$debit, $credit] = $this->normalizeAmount(0, $amountCredit);
 
-            // Credit
-            [$debit, $credit] = $this->normalizeAmount(0, $amountCredit);
+                $journal->details()->create([
+                    'coa'         => $relatedCoaCredit->code,
+                    'coa_name'    => $relatedCoaCredit->name,
+                    'debit'       => $debit,
+                    'credit'      => $credit,
+                    'description' => $data->$columnDescription,
+                ]);
 
-            $journal->details()->create([
-                'coa'         => $relatedCoaCredit->code,
-                'coa_name'    => $relatedCoaCredit->name,
-                'debit'       => $debit,
-                'credit'      => $credit,
-                'description' => $data->$columnDescription,
-            ]);
+                if ($amountDebit != $amountCredit) {
+                    // Untuk menyeimbangkan debit dan credit
+                    // dikarenakan perusahaan tidak mengembalikan full uang customer
+                    $coaSalesReturn = SettingCoa::where('module', $module)
+                            ->where('action', $action)->where('payment_method',$columnPaymentMethod)->first();
+                    if (!$coaSalesReturn) {
+                        throw ValidationException::withMessages([
+                            'journal' => 'Fitur ' . SettingCoa::$module[$module] . ' belum melakukan setting COA aksi ' . SettingCoa::$action[$action] . ' untuk selisih, dikarenakan tidak membayar full ke customer',
+                        ]);
+                    }
+
+                    [$debit, $credit] = $this->normalizeAmount(0, $amountDebit - $amountCredit);
+
+                    $journal->details()->create([
+                        'coa'         => $relatedCoaCredit->code,
+                        'coa_name'    => $relatedCoaCredit->name,
+                        'debit'       => $debit,
+                        'credit'      => $credit,
+                        'description' => $data->$columnDescription,
+                    ]);
+                }
+            } else {
+
+                if ($amountDebit != $amountCredit) {
+                    throw ValidationException::withMessages([
+                        'journal' => 'Journal tidak balance',
+                    ]);
+                }
+                // Debit
+                [$debit, $credit] = $this->normalizeAmount($amountDebit, 0);
+
+                $journal->details()->create([
+                    'coa'         => $relatedCoaDebit->code,
+                    'coa_name'    => $relatedCoaDebit->name,
+                    'debit'       => $debit,
+                    'credit'      => $credit,
+                    'description' => $data->$columnDescription,
+                ]);
+
+                // Credit
+                [$debit, $credit] = $this->normalizeAmount(0, $amountCredit);
+
+                $journal->details()->create([
+                    'coa'         => $relatedCoaCredit->code,
+                    'coa_name'    => $relatedCoaCredit->name,
+                    'debit'       => $debit,
+                    'credit'      => $credit,
+                    'description' => $data->$columnDescription,
+                ]);
+            }
 
 
             $this->summaryTotalDebitCredit($journal);

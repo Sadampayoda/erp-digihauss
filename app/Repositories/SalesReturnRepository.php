@@ -65,23 +65,23 @@ class SalesReturnRepository
         $this->settingJournal($salesReturn);
     }
 
-    public function deleteItems($salesInvoice)
+    public function deleteItems($salesReturn)
     {
-        $this->settingJournal($salesInvoice, 'delete');
-        if ($salesInvoice->status >= 2) {
+        $this->settingJournal($salesReturn, 'delete');
+        if ($salesReturn->status >= 2) {
 
 
-            if ($salesInvoice->advance_sale_id) {
+            if ($salesReturn->advance_sale_id) {
                 // Remove Quantity
-                $this->applySalesInvoiceQuantity($salesInvoice, 'delete');
+                $this->applySalesInvoiceQuantity($salesReturn, 'delete');
 
-                // Change status advance sale
-                $this->refreshStatus($salesInvoice);
+                // Change status
+                $this->refreshStatus($salesReturn);
             }
         }
 
-        if ($salesInvoice->items()) {
-            $salesInvoice->items()->delete();
+        if ($salesReturn->items()) {
+            $salesReturn->items()->delete();
         }
     }
 
@@ -110,6 +110,12 @@ class SalesReturnRepository
                 'paid_amount' => 'Jumlah uang pengembalian lebih dari total transaksi'
             ]);
         }
+
+        if($salesReturn->paid_amount <= 0) {
+            throw ValidationException::withMessages([
+                'paid_amount' => 'Jumlah uang pengembalian setidaknya tidak 0'
+            ]);
+        }
     }
 
 
@@ -124,28 +130,28 @@ class SalesReturnRepository
         }
     }
 
-    protected function refreshStatus($salesInvoice)
+    protected function refreshStatus($salesReturn)
     {
-        $advanceSale = $salesInvoice->AdvanceSale;
+        $salesInvoice = $salesReturn->salesInvoice;
 
-        if (!$advanceSale) {
+        if (!$salesInvoice) {
             throw ValidationException::withMessages([
-                'advance_sale_id' => 'Transaksi Uang Muka tidak ditemukan.',
+                'sales_invoice_id' => 'Transaksi Invoice Penjualan tidak ditemukan.',
             ]);
         }
 
         // Check Quantity and items
-        $items = $advanceSale->items;
+        $items = $salesInvoice->items;
 
         if ($items->every(fn($i) => $i->sales_invoice_items_quantity == 0)) {
             $status = 2;
         } elseif ($items->every(fn($i) => $i->sales_invoice_items_quantity == $i->quantity)) {
-            $status = 4;
+            $status = 6;
         } else {
             $status = 3;
         }
 
-        $advanceSale->update([
+        $salesInvoice->update([
             'status' => $status,
         ]);
     }
@@ -193,52 +199,36 @@ class SalesReturnRepository
     }
 
 
-    public function settingJournal($salesInvoice, $method = 'create')
+    public function settingJournal($salesReturn, $method = 'create')
     {
         $journal = app(JournalRepository::class);
 
         switch ($method) {
             case 'create':
-                // Piutang Usaha debit
-                // Pendapatan credit
+                // return penjualan debit
+                // kas / bank credit
                 $journal->generateJournal(
-                    data: $salesInvoice,
-                    details: $salesInvoice->items,
-                    module: 'sales-invoice',
-                    action: 'revenue',
+                    data: $salesReturn,
+                    details: $salesReturn->items,
+                    module: 'sales-return',
+                    action: 'sales_return',
                     columnPaymentMethod: 'payment_method',
                     columnContact: 'customer',
                     columnDescription: 'description',
-                    columnNominalDebit: 'sub_total',
-                    columnNominalCredit: 'sub_total'
+                    columnNominalDebit: 'grand_total',
+                    columnNominalCredit: 'paid_amount'
                 );
 
-                // Kas / Bank debit
-                // Piutang credit
-                if ($salesInvoice->paid_amount > 0) {
-                    $journal->generateJournal(
-                        data: $salesInvoice,
-                        details: $salesInvoice->items,
-                        module: 'sales-invoice',
-                        action: 'payment',
-                        columnPaymentMethod: 'payment_method',
-                        columnContact: 'customer',
-                        columnDescription: 'description',
-                        columnNominalDebit: 'paid_amount',
-                        columnNominalCredit: 'paid_amount'
-                    );
-                }
-
-                $salesInvoice->sub_total_purchase_price = $salesInvoice->items
+                $salesReturn->sub_total_purchase_price = $salesReturn->items
                     ->sum(fn($item) => $item->purchase_price * $item->quantity);
 
 
-                // Hpp debit
-                // Persediaan credit
+                // Persediaan debit
+                // Hpp credit
                 $journal->generateJournal(
-                    data: $salesInvoice,
-                    details: $salesInvoice->items,
-                    module: 'sales-invoice',
+                    data: $salesReturn,
+                    details: $salesReturn->items,
+                    module: 'sales-return',
                     action: 'hpp',
                     columnPaymentMethod: 'payment_method',
                     columnContact: 'customer',
@@ -247,14 +237,14 @@ class SalesReturnRepository
                     columnNominalCredit: 'sub_total_purchase_price'
                 );
 
-                $salesInvoice->sub_total_service = $salesInvoice->items
+                $salesReturn->sub_total_service = $salesReturn->items
                     ->sum(fn($item) => $item->service);
                 // Biaya Service debit
                 // Kas credit
-                if ($salesInvoice->sub_total_service > 0) {
+                if ($salesReturn->sub_total_service > 0) {
                     $journal->generateJournal(
-                        data: $salesInvoice,
-                        details: $salesInvoice->items,
+                        data: $salesReturn,
+                        details: $salesReturn->items,
                         module: 'service',
                         action: 'service',
                         columnPaymentMethod: 'payment_method',
@@ -266,7 +256,7 @@ class SalesReturnRepository
                 }
                 break;
             case 'delete':
-                $journal->destroyJournal($salesInvoice);
+                $journal->destroyJournal($salesReturn);
                 break;
             default:
                 break;

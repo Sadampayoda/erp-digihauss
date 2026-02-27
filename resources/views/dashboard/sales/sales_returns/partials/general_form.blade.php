@@ -13,14 +13,12 @@
         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3
                 px-2 py-1 mx-3 sm:mx-5 my-1 gap-4">
         <div class="sm:col-span-2">
-            <x-input-select name="customer" label="Pelanggan" :required="true" :route="route('contacts.index')"
-            :params="['type' => 0]"
+            <x-input-select name="customer" label="Pelanggan" :required="true" :route="route('contacts.index')" :params="['type' => 0]"
                 :selected="@$data->customer" class="rounded-sm" />
         </div>
         <x-input-select name="sales_invoice_id" label="Pilih Transaksi SI" placeholder="Transaksi SI"
-                columnShowView="transaction_number" :required="true" :route="route('sales-invoices.index')" :selected="@$data->advance_sale_id"
-                :paramsInput="['customer']"
-                :params="['status' => [2,3,4]]" class="rounded-sm" />
+            columnShowView="transaction_number" :required="true" :route="route('sales-invoices.index')" :selected="@$data->sales_invoice_id" :paramsInput="['customer']"
+            :params="['status' => [2, 3, 4]]" class="rounded-sm" />
         <div>
             <x-input-text type="date" :required="true" border_color="border-stone-300" name="transaction_date"
                 label="Tanggal Return Penjualan" class="rounded-sm p-1 md:p-2" :value="isset($data->transaction_date)
@@ -108,79 +106,46 @@
     }
 
     searchCustomer(customerId)
+
+    const salesInvoiceSelect = document.getElementById('sales_invoice_id');
+
+    let previousSalesInvoice = salesInvoiceSelect.value || null;
+    let isRollback = false;
+
+    salesInvoiceSelect.addEventListener('change', function() {
+        if (isRollback) {
+            isRollback = false;
+            return;
+        }
+
+        const currentValue = this.value;
+
+        if (!previousSalesInvoice && currentValue) {
+            previousSalesInvoice = currentValue;
+            return;
+        }
+
+        if (!currentValue || currentValue === previousSalesInvoice) return;
+
+        // 🚨 BARU MASUK VALIDASI
+        Swal.fire({
+            title: 'Yakin menggunakan transaksi tersebut?',
+            text: 'Data barang akan diambil berdasarkan sumber transaksi',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Ya, Lakukan',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                clearDetailTable();
+                previousSalesInvoice = currentValue;
+            } else {
+                isRollback = true;
+                const sourceTs = accessSelect('sales_invoice_id');
+                sourceTs.setValue(previousSalesInvoice);
+            }
+        });
+    });
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

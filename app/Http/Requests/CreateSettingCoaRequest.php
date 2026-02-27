@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\SettingCoa;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -24,35 +25,19 @@ class CreateSettingCoaRequest extends FormRequest
     {
 
         $id = $this->route('setting_coa');
+        $settingCoa = SettingCoa::class;
         // route model binding atau parameter id
         return [
             'module' => [
                 'required',
                 'string',
-                // Rule::in([
-                //     'advance-sale',
-                //     'sales-invoice',
-                //     'advance-payment',
-                //     'receipt-invoice',
-                //     'trade-ins',
-                // ]),
+                Rule::in(array_keys($settingCoa::$module)),
             ],
 
             'action' => [
                 'required',
                 'string',
-                Rule::in([
-                    'payment',
-                    'receivable',
-                    'advance',
-                    'revenue',
-                    'discount',
-                    'tax',
-                    'hpp',
-                    'service',
-                    'rounding',
-                    'other',
-                ]),
+                Rule::in(array_keys($settingCoa::$action)),
             ],
 
             'payment_method' => [
@@ -88,10 +73,11 @@ class CreateSettingCoaRequest extends FormRequest
              * (module + action + payment_method harus unik)
              */
             Rule::unique('setting_coas')
-                ->where(fn ($q) => $q
-                    ->where('module', $this->module)
-                    ->where('action', $this->action)
-                    ->where('payment_method', $this->payment_method)
+                ->where(
+                    fn($q) => $q
+                        ->where('module', $this->module)
+                        ->where('action', $this->action)
+                        ->where('payment_method', $this->payment_method)
                 )
                 ->ignore($id),
         ];

@@ -1,3 +1,6 @@
+@php
+    $settingCoa = App\Models\SettingCoa::class;
+@endphp
 <div class="flex flex-col rounded-xl bg-white">
     <div
         class="flex flex-col sm:flex-row sm:items-center sm:justify-between
@@ -12,33 +15,12 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3
                 px-2 py-1 mx-3 sm:mx-5 my-1 gap-4">
             <div class="sm:col-span-2">
-                <x-input-select name="module" label="Fitur" :required="true" :options="[
-                    'advance-sale' => 'Uang Muka Penjualan',
-                    'sales-invoice' => 'Invoice Penjualan',
-                    'advance-payment' => 'Uang Muka Pembelian',
-                    'receipt-invoice' => 'Invoice Pembelian',
-                    'trade-ins' => 'Tukar Tambah',
-                    'service' => 'Service Iphone'
-                ]" :selected="@$data->module"
+                <x-input-select name="module" label="Fitur" :required="true" :options="$settingCoa::$module" :selected="@$data->module"
                     class="rounded-sm" />
             </div>
 
             <div>
-                <x-input-select name="action" label="Aksi" :required="true" :options="[
-                    'payment' => 'Pembayaran',
-                    'receivable' => 'Piutang Usaha',
-                    'advance' => 'Uang Muka Penjualan',
-
-                    'revenue' => 'Penjualan',
-                    'discount' => 'Diskon Penjualan',
-                    'tax' => 'Pajak Keluaran',
-
-                    'hpp' => 'Harga Pokok Penjualan',
-                    'service' => 'Biaya Service',
-
-                    'rounding' => 'Pembulatan',
-                    'other' => 'Penyesuaian Lainnya',
-                ]" :selected="@$data->action"
+                <x-input-select name="action" label="Aksi" :required="true" :options="$settingCoa::$action" :selected="@$data->action"
                     class="rounded-sm" />
             </div>
         </div>

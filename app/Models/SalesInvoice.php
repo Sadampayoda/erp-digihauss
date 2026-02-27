@@ -34,18 +34,18 @@ class SalesInvoice extends Model
 
     public function items()
     {
-        return $this->hasMany(SalesInvoiceItems::class, 'sales_invoice_id','id');
+        return $this->hasMany(SalesInvoiceItems::class, 'sales_invoice_id', 'id');
     }
 
     public function customerRelation()
     {
-        return $this->hasOne(Contact::class,'id','customer');
+        return $this->hasOne(Contact::class, 'id', 'customer');
     }
 
-public function AdvanceSale()
-{
-    return $this->hasOne(AdvanceSale::class,'id','advance_sale_id');
-}
+    public function AdvanceSale()
+    {
+        return $this->hasOne(AdvanceSale::class, 'id', 'advance_sale_id');
+    }
 
     public function getCustomerNameAttribute()
     {
@@ -64,5 +64,5 @@ public function AdvanceSale()
 
 
 
-    protected $appends = ['customer_name','summary_paid'];
+    protected $appends = ['customer_name', 'summary_paid'];
 }

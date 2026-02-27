@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('sales_returns', function (Blueprint $table) {
+            $table->id();
             $table->string('transaction_number')->unique();
             $table->date('transaction_date');
             $table->unsignedBigInteger('sales_invoice_id');

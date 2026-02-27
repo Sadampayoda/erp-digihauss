@@ -44,7 +44,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            refreshSource()
+            // refreshSource()
         });
 
         const editMode = @json(@$editMode);

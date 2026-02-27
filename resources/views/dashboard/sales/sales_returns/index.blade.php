@@ -69,7 +69,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: `/sales-invoices/${id}`,
+                        url: `/sales-returns/${id}`,
                         type: 'POST',
                         data: {
                             _token: '{{ csrf_token() }}',

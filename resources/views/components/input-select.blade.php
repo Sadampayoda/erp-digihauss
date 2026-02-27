@@ -107,6 +107,7 @@
                 });
             }
 
+
             if (!route) {
                 if (typeof done === 'function') done();
                 return;
@@ -119,7 +120,6 @@
                     tomSelectInstance.clearOptions();
                     const result = response.data ?? null
                     const valueOld = $(`#select-value-${selectId}`).val()
-
 
                     result.forEach(item => {
                         tomSelectInstance.addOption({

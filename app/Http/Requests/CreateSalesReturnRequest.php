@@ -11,7 +11,7 @@ class CreateSalesReturnRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -28,9 +28,9 @@ class CreateSalesReturnRequest extends FormRequest
             ],
 
             'sales_invoice_id' => [
-                'nullable',
+                'required',
                 'integer',
-                'exists:advance_sales,id',
+                'exists:sales_invoices,id',
             ],
 
             'customer' => [
@@ -101,7 +101,7 @@ class CreateSalesReturnRequest extends FormRequest
 
             'items'                     => ['required', 'array', 'min:1'],
             'items.*.detail_id'           => ['nullable'],
-            'items.*.advance_sale_items_id'=> ['nullable'],
+            'items.*.sales_invoice_items_id'=> ['nullable'],
             'items.*.item_id'                => ['required', 'integer', 'exists:items,id'],
             'items.*.sale_price'        => ['nullable', 'numeric', 'min:0'],
             'items.*.purchase_price'    => ['nullable', 'numeric', 'min:0'],

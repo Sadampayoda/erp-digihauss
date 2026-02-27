@@ -53,7 +53,7 @@
         item.image = item?.item?.image
         item.name = item.item_name;
         item.variant = item.item?.variant
-        console.log(item.item);
+        console.log(item);
         renderDetailRow(item, setup)
     })
 
