@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\Validate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SalesReturn extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, Validate;
     protected $fillable = [
         'transaction_number',
         'transaction_date',
@@ -60,6 +61,13 @@ class SalesReturn extends Model
         }
 
         return null;
+    }
+
+    protected static function booted()
+    {
+        static::deleting(function ($item) {
+            $item->canDelete();
+        });
     }
 
     protected $appends = ['customer_name'];

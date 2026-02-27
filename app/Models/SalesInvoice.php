@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\Validate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SalesInvoice extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, Validate;
 
     protected $fillable = [
         'transaction_number',
@@ -52,7 +53,7 @@ class SalesInvoice extends Model
         if ($this->customerRelation()) {
             $customer = $this->customerRelation;
             return  $this->customerRelation->name;
-        }
+    }
 
         return null;
     }
@@ -60,6 +61,13 @@ class SalesInvoice extends Model
     public function getSummaryPaidAttribute()
     {
         return $this->advance_amount + $this->paid_amount;
+    }
+
+    protected static function booted()
+    {
+        static::deleting(function ($item) {
+            $item->canDelete();
+        });
     }
 
 

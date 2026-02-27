@@ -70,14 +70,11 @@ class SalesReturnRepository
         $this->settingJournal($salesReturn, 'delete');
         if ($salesReturn->status >= 2) {
 
+            // Remove Quantity
+            $this->applySalesInvoiceQuantity($salesReturn, 'delete');
 
-            if ($salesReturn->advance_sale_id) {
-                // Remove Quantity
-                $this->applySalesInvoiceQuantity($salesReturn, 'delete');
-
-                // Change status
-                $this->refreshStatus($salesReturn);
-            }
+            // Change status
+            $this->refreshStatus($salesReturn);
         }
 
         if ($salesReturn->items()) {
@@ -111,7 +108,7 @@ class SalesReturnRepository
             ]);
         }
 
-        if($salesReturn->paid_amount <= 0) {
+        if ($salesReturn->paid_amount <= 0) {
             throw ValidationException::withMessages([
                 'paid_amount' => 'Jumlah uang pengembalian setidaknya tidak 0'
             ]);
@@ -143,9 +140,9 @@ class SalesReturnRepository
         // Check Quantity and items
         $items = $salesInvoice->items;
 
-        if ($items->every(fn($i) => $i->sales_invoice_items_quantity == 0)) {
+        if ($items->every(fn($i) => $i->sales_return_items_quantity == 0)) {
             $status = 2;
-        } elseif ($items->every(fn($i) => $i->sales_invoice_items_quantity == $i->quantity)) {
+        } elseif ($items->every(fn($i) => $i->sales_return_items_quantity == $i->quantity)) {
             $status = 6;
         } else {
             $status = 3;

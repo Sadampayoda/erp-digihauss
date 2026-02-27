@@ -72,10 +72,6 @@ class SalesReturnController extends Controller
             DB::beginTransaction();
             $data = $request->validated();
 
-            $salesInvoice = $this->existsWhereId(new SalesInvoice(), $data['sales_invoice_id']);
-
-
-
             $salesReturn = $this->model->create(array_merge($data, [
                 'transaction_number' => $this->generateTransactionNumber(
                     model: SalesReturn::class,
@@ -83,7 +79,7 @@ class SalesReturnController extends Controller
                     column: 'transaction_number',
                     transactionDate: $data['transaction_date'],
                 ),
-                'remaining_amount' => $salesInvoice->grand_total - $data['paid_amount'],
+                'remaining_amount' => $data['grand_total'] - $data['paid_amount'],
                 'created_by' => 0,
                 'updated_by' => 0,
                 'deleted_by' => 0,
@@ -142,7 +138,7 @@ class SalesReturnController extends Controller
 
             $salesReturn->update([
                 ...$data,
-                'remaining_amount' => $salesInvoice->grand_total - $data['paid_amount'],
+                'remaining_amount' => $data['grand_total'] - $data['paid_amount'],
             ]);
 
             $this->salesReturnRepo->createOrUpdateItems($salesReturn->fresh(), $data);

@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Validation\ValidationException;
 use InvalidArgumentException;
 
 trait Validate
@@ -27,5 +28,22 @@ trait Validate
         }
 
         return $exists;
+    }
+
+    public function canDelete($can = [])
+    {
+        if (!$this->status) {
+            throw new InvalidArgumentException(
+                'Status tidak tersedia'
+            );
+        }
+        $canDelete = collect($can ?? [0, 1, 2])->contains($this->status);
+        $transactionStatus = transactionStatus('transaction');
+        if(!$canDelete) {
+            throw ValidationException::withMessages([
+                'advance_amount' => 'Data tidak bisa di hapus karena status '.$transactionStatus[$this->status],
+            ]);
+        }
+
     }
 }

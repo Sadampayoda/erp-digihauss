@@ -1,4 +1,4 @@
-@props(['labels', 'data' => [], 'onEdit' => null, 'onDelete' => null, 'checkbox' => false])
+@props(['labels', 'data' => [], 'onEdit' => null, 'onDelete' => null, 'checkbox' => false, 'titleEdit' => 'Edit'])
 <div class="overflow-x-auto w-screen lg:w-full h-120">
     <table class="w-full text-sm text-left ">
         <thead class="bg-slate-100 text-slate-600 uppercase text-xs">
@@ -52,25 +52,27 @@
                             <div
                                 class="action-menu hidden absolute right-0 mt-2 w-44
                                 bg-white rounded-xl shadow-lg border z-50 border-slate-200">
-                                <button onclick="{{ $onEdit }}({{ $item->id }}, {{ json_encode($item) }})"
-                                    class="w-full flex items-center gap-2 px-4 py-2 text-sm hover:bg-slate-100 cursor-pointer">
-                                    <i data-lucide="pencil" class="w-4 h-4"></i>
-                                    Edit
-                                </button>
+                                @if ($onEdit)
+                                    <button onclick="{{ $onEdit }}({{ $item->id }}, {{ json_encode($item) }})"
+                                        class="w-full flex items-center gap-2 px-4 py-2 text-sm hover:bg-slate-100 cursor-pointer">
+                                        <i data-lucide="pencil" class="w-4 h-4"></i>
+                                        {{ $titleEdit }}
+                                    </button>
+                                @endif
 
-                                <a href="#"
+                                {{-- <a href="#"
                                     class="flex items-center text-slate-700 gap-2 px-4 py-2 text-sm hover:bg-slate-100">
                                     <i data-lucide="file-text" class="w-4 h-4"></i>
                                     Bukti
-                                </a>
-
-                                <button onclick="{{ $onDelete }}({{ $item->id }})"
-                                    class="w-full flex items-center gap-2 px-4 py-2 text-sm
+                                </a> --}}
+                                @if ($onDelete)
+                                    <button onclick="{{ $onDelete }}({{ $item->id }})"
+                                        class="w-full flex items-center gap-2 px-4 py-2 text-sm
                                         text-red-600 hover:bg-red-50">
-                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                    Delete
-                                </button>
-
+                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                        Delete
+                                    </button>
+                                @endif
                             </div>
                         </td>
                     @endif

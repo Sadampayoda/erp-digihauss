@@ -7,6 +7,7 @@ use App\Http\Controllers\CoaController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ItemsController;
+use App\Http\Controllers\ItemStockController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\SalesInvoiceController;
 use App\Http\Controllers\SalesReturnController;
@@ -31,8 +32,9 @@ Route::resource('sales-invoices',SalesInvoiceController::class)->names('sales-in
 Route::resource('sales-returns',SalesReturnController::class)->names('sales-returns');
 
 
-Route::resource('contacts', ContactController::class)->names('contacts');
+Route::get('items/stock',ItemStockController::class)->name('items.stock');
 Route::resource('items',ItemsController::class)->names('items');
+Route::resource('contacts', ContactController::class)->names('contacts');
 
 
 Route::resource('brands',BrandController::class)->names('brands');

@@ -35,18 +35,18 @@
 
             <div id="menu-produk" class="ml-10 mt-1 space-y-1 overflow-hidden max-h-0 transition-all duration-300">
                 <a href="{{ route('items.index') }}"
-                    class="flex items-center gap-2 p-2 text-sm rounded-lg {{ Request::is('items*') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }} hover:bg-stone-200">
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg {{ Request::is('items*') && !Request::is('items/stock') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }} hover:bg-stone-200">
                     <i data-lucide="package" class="w-4 h-4"></i>
                     <span>Barang</span>
                 </a>
-                <a href="/produk/stok"
-                    class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
-                    <i data-lucide="layers" class="w-4 h-4"></i>
+                <a href="{{ route('items.stock') }}"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg {{ Request::is('items/stock') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }} hover:bg-stone-200">
+                    <i data-lucide="boxes" class="w-4 h-4"></i>
                     <span>Stok Barang</span>
                 </a>
                 <a href="/produk/stok"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
-                    <i data-lucide="layers" class="w-4 h-4"></i>
+                    <i data-lucide="check-circle" class="w-4 h-4"></i>
                     <span>Kondisi Barang</span>
                 </a>
             </div>
@@ -83,6 +83,11 @@
                     class="flex items-center gap-2 p-2 text-sm rounded-lg {{ Request::is('contacts*') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }} hover:bg-stone-200">
                     <i data-lucide="users" class="w-4 h-4"></i>
                     <span>Manage Customer</span>
+                </a>
+                <a href="{{ route('contacts.index') }}"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg {{ Request::is('contacts*') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }} hover:bg-stone-200">
+                    <i data-lucide="trending-up" class="w-4 h-4"></i>
+                    <span>Journal Sales</span>
                 </a>
                 <a href="{{ route('setting-coas.index') }}"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg {{ Request::is('setting-coas*') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }} hover:bg-stone-200">
@@ -180,27 +185,31 @@
             <div id="menu-master" class="ml-10 mt-1 space-y-1 overflow-hidden max-h-0 transition-all duration-300">
                 <a href="{{ route('brands.index') }}"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
-                    <i data-lucide="book" class="w-4 h-4"></i>
+                    <i data-lucide="badge" class="w-4 h-4"></i>
                     <span>Brand</span>
                 </a>
+
                 <a href="{{ route('series.index') }}"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
-                    <i data-lucide="book" class="w-4 h-4"></i>
+                    <i data-lucide="layers" class="w-4 h-4"></i>
                     <span>Series</span>
                 </a>
+
                 <a href="{{ route('payment-methods.index') }}"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
-                    <i data-lucide="book" class="w-4 h-4"></i>
+                    <i data-lucide="credit-card" class="w-4 h-4"></i>
                     <span>Metode Bayar</span>
                 </a>
+
                 <a href="{{ route('coas.index') }}"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
-                    <i data-lucide="book" class="w-4 h-4"></i>
+                    <i data-lucide="book-open" class="w-4 h-4"></i>
                     <span>COA</span>
                 </a>
+
                 <a href="/master/type"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
-                    <i data-lucide="tag" class="w-4 h-4"></i>
+                    <i data-lucide="users" class="w-4 h-4"></i>
                     <span>User</span>
                 </a>
             </div>
@@ -219,42 +228,49 @@
             <div id="menu-report" class="ml-10 mt-1 space-y-1 overflow-hidden max-h-0 transition-all duration-300">
                 <a href="/report/journal"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
-                    <i data-lucide="clipboard-list" class="w-4 h-4"></i>
+                    <i data-lucide="file-text" class="w-4 h-4"></i>
                     <span>Journal</span>
                 </a>
-                <a href="/report/journal"
+
+                <a href="/report/cash-flow"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
-                    <i data-lucide="clipboard-list" class="w-4 h-4"></i>
+                    <i data-lucide="arrow-left-right" class="w-4 h-4"></i>
                     <span>Arus Kas</span>
                 </a>
-                <a href="/report/journal"
+
+                <a href="/report/balance-sheet"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
-                    <i data-lucide="clipboard-list" class="w-4 h-4"></i>
+                    <i data-lucide="scale" class="w-4 h-4"></i>
                     <span>Neraca</span>
                 </a>
-                <a href="/report/journal"
+
+                <a href="/report/stock-card"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
-                    <i data-lucide="clipboard-list" class="w-4 h-4"></i>
+                    <i data-lucide="layers" class="w-4 h-4"></i>
                     <span>Kartu Stok</span>
                 </a>
-                <a href="/report/journal"
+
+                <a href="/report/gross-profit"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
-                    <i data-lucide="clipboard-list" class="w-4 h-4"></i>
+                    <i data-lucide="percent" class="w-4 h-4"></i>
                     <span>Laba Kotor</span>
                 </a>
+
                 <a href="/report/profit-loss"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
                     <i data-lucide="trending-up" class="w-4 h-4"></i>
                     <span>Laba Rugi</span>
                 </a>
-                <a href="/report/profit-loss"
+
+                <a href="/report/payable"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
-                    <i data-lucide="trending-up" class="w-4 h-4"></i>
+                    <i data-lucide="file-minus" class="w-4 h-4"></i>
                     <span>Laporan Hutang</span>
                 </a>
-                <a href="/report/profit-loss"
+
+                <a href="/report/receivable"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
-                    <i data-lucide="trending-up" class="w-4 h-4"></i>
+                    <i data-lucide="file-plus" class="w-4 h-4"></i>
                     <span>Laporan Piutang</span>
                 </a>
             </div>

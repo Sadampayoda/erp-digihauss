@@ -35,7 +35,7 @@ if (! function_exists('transactionStatusBadge')) {
             3 => ['label' => 'In Progress','class' => 'bg-blue-100 text-blue-700'],
             4 => ['label' => 'Completed',  'class' => 'bg-green-100 text-green-700'],
             5 => ['label' => 'Pending',    'class' => 'bg-yellow-100 text-yellow-700'],
-            6 => ['label' => 'Close',      'class' => 'bg-stone-200 text-stone-700'],
+            6 => ['label' => 'Close',      'class' => 'bg-red-200 text-red-700'],
             default => ['label' => '-',    'class' => 'bg-slate-100 text-slate-500'],
         };
     }
