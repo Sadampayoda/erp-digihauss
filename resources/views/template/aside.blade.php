@@ -84,8 +84,8 @@
                     <i data-lucide="users" class="w-4 h-4"></i>
                     <span>Manage Customer</span>
                 </a>
-                <a href="{{ route('contacts.index') }}"
-                    class="flex items-center gap-2 p-2 text-sm rounded-lg {{ Request::is('contacts*') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }} hover:bg-stone-200">
+                <a href="{{ route('journals.index',['menu' => 'sales']) }}"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg {{ Request::is('journals*') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }} hover:bg-stone-200">
                     <i data-lucide="trending-up" class="w-4 h-4"></i>
                     <span>Journal Sales</span>
                 </a>

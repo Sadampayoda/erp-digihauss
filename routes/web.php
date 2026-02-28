@@ -8,6 +8,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ItemsController;
 use App\Http\Controllers\ItemStockController;
+use App\Http\Controllers\JournalController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\SalesInvoiceController;
 use App\Http\Controllers\SalesReturnController;
@@ -42,3 +43,5 @@ Route::resource('series',SeriesController::class)->names('series');
 Route::resource('coas', CoaController::class)->names('coas');
 Route::resource('payment-methods',PaymentMethodController::class)->names('payment-methods');
 Route::resource('setting-coas',SettingCoaController::class)->names('setting-coas');
+
+Route::resource('journals',JournalController::class)->names('journals');

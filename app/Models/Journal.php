@@ -28,4 +28,6 @@ class Journal extends Model
     {
         return $this->hasMany(JournalDetail::class, 'journal_id');
     }
+
+
 }

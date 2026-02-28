@@ -84,8 +84,9 @@
     {
         const onClickDelete = @json($setupColumn['action']['onClickDelete'] ?? null);
         const initialTable = @json($initialTable);
-        window.renderDetailRow = function(item, setupColumn) {
-            const tableBody = document.getElementById(`${initialTable}-body`);
+        window.renderDetailRow = function(item, setupColumn, nameTable = 'itemsTable') {
+            const table = nameTable ?? initialTable;
+            const tableBody = document.getElementById(`${table}-body`);
             if (!tableBody) return;
 
             const emptyRow = tableBody.querySelector('.empty-row');
