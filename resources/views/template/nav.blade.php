@@ -10,7 +10,7 @@
                 Dashboard
             </p>
             <p class="text-xs lg:text-base text-slate-400 leading-relaxed truncate">
-                Hi, Administrasi Welcome Back
+                Hi, {{ auth()->user()->name }} Welcome Back
             </p>
         </div>
     </div>

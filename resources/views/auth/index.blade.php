@@ -50,7 +50,7 @@
                 <x-alert action="success" key="success" />
 
 
-                <form class="mt-4 w-full" action="{{ route('auth.login') }}" method="POST"
+                <form class="mt-4 w-full" action="{{ route('login.auth') }}" method="POST"
                     onsubmit="handleLoading(
                         document.getElementById('submit')
                     )">

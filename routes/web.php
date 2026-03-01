@@ -10,38 +10,47 @@ use App\Http\Controllers\ItemsController;
 use App\Http\Controllers\ItemStockController;
 use App\Http\Controllers\JournalController;
 use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\SalesInvoiceController;
 use App\Http\Controllers\SalesReturnController;
 use App\Http\Controllers\SeriesController;
 use App\Http\Controllers\SettingCoaController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::controller(AuthController::class)->group(function(){
-    Route::get('/','index')->name('auth.view');
-    Route::post('/','auth')->name('auth.login');
+Route::controller(AuthController::class)->group(function () {
+    Route::get('/', 'index')->name('login');
+    Route::post('/', 'auth')->name('login.auth');
 });
 
 
-Route::controller(DashboardController::class)->group(function(){
-    Route::get('/dashboard','index')->name('dashboard');
+Route::middleware('auth')->group(function () {
+
+    Route::prefix('dashboard')->group(function () {
+        Route::controller(DashboardController::class)->group(function () {
+            Route::get('/', 'index')->name('dashboard');
+        });
+    });
+
+    Route::resource('advance-sales', AdvanceSaleController::class)->names('advance-sales');
+    Route::resource('sales-invoices', SalesInvoiceController::class)->names('sales-invoices');
+    Route::resource('sales-returns', SalesReturnController::class)->names('sales-returns');
+
+
+    Route::get('items/stock', ItemStockController::class)->name('items.stock');
+    Route::resource('items', ItemsController::class)->names('items');
+    Route::resource('contacts', ContactController::class)->names('contacts');
+
+
+    Route::resource('brands', BrandController::class)->names('brands');
+    Route::resource('series', SeriesController::class)->names('series');
+    Route::resource('coas', CoaController::class)->names('coas');
+    Route::resource('payment-methods', PaymentMethodController::class)->names('payment-methods');
+    Route::resource('setting-coas', SettingCoaController::class)->names('setting-coas');
+    Route::resource('users', UserController::class)->names('users');
+    Route::resource('permissions',PermissionController::class)->names('permissions');
+
+    
+    Route::resource('journals', JournalController::class)->names('journals');
 });
-
-
-Route::resource('advance-sales', AdvanceSaleController::class)->names('advance-sales');
-Route::resource('sales-invoices',SalesInvoiceController::class)->names('sales-invoices');
-Route::resource('sales-returns',SalesReturnController::class)->names('sales-returns');
-
-
-Route::get('items/stock',ItemStockController::class)->name('items.stock');
-Route::resource('items',ItemsController::class)->names('items');
-Route::resource('contacts', ContactController::class)->names('contacts');
-
-
-Route::resource('brands',BrandController::class)->names('brands');
-Route::resource('series',SeriesController::class)->names('series');
-Route::resource('coas', CoaController::class)->names('coas');
-Route::resource('payment-methods',PaymentMethodController::class)->names('payment-methods');
-Route::resource('setting-coas',SettingCoaController::class)->names('setting-coas');
-
-Route::resource('journals',JournalController::class)->names('journals');

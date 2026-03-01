@@ -207,10 +207,16 @@
                     <span>COA</span>
                 </a>
 
-                <a href="/master/type"
+                <a href="{{ route('users.index') }}"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
                     <i data-lucide="users" class="w-4 h-4"></i>
                     <span>User</span>
+                </a>
+
+                <a href="{{ route('permissions.index') }}"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
+                    <i data-lucide="users" class="w-4 h-4"></i>
+                    <span>Hak Akses</span>
                 </a>
             </div>
         </div>

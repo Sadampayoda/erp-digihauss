@@ -13,7 +13,7 @@
                 p-4 border-b border-slate-100 mx-3 sm:mx-5 gap-3">
                     <div>
                         <p class="text-xl font-medium">Detail Journal</p>
-                        <p class="text-sm font-medium text-slate-400">Terbit Journal dari transaksi
+                        <p class="text-sm font-medium text-slate-400">Terbit Journal dari transaksi {{ $data[0]->journal_number }}
                         </p>
                     </div>
                 </div>
