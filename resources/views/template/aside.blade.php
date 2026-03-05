@@ -108,17 +108,17 @@
             </button>
 
             <div id="menu-purchasing" class="ml-10 mt-1 space-y-1 overflow-hidden max-h-0 transition-all duration-300">
-                <a href="/purchasing/down-payment"
+                <a href="{{ route('advance-payments.index') }}"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
                     <i data-lucide="wallet" class="w-4 h-4"></i>
                     <span>Uang Muka Pembelian</span>
                 </a>
-                <a href="/purchasing/invoice"
+                <a href="{{ route('receipt-invoices.index') }}"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
                     <i data-lucide="receipt" class="w-4 h-4"></i>
                     <span>Receipt Invoice</span>
                 </a>
-                <a href="/purchasing/vendor"
+                <a href="{{ route('contacts.index') }}"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
                     <i data-lucide="briefcase" class="w-4 h-4"></i>
                     <span>Manage Vendor</span>

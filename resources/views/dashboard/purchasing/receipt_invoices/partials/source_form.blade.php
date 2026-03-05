@@ -4,7 +4,7 @@
                 p-4 border-b border-slate-100 mx-3 sm:mx-5 gap-3">
         <div>
             <p class="text-xl font-medium">Informasi Sumber</p>
-            <p class="text-sm font-medium text-slate-400">Informasi sumber data vendor</p>
+            <p class="text-sm font-medium text-slate-400">Informasi sumber data pelanggan</p>
         </div>
     </div>
 
@@ -14,9 +14,9 @@
         <div class="sm:col-span-2">
             <x-input-select name="source" label="Source (Sumber data)" placeholder="Sumber data" :required="true"
                 :options="[
-                    'receipt-invoice' => 'Receipt Invoice (Invoice Pembelian)',
-                    'advance-payment' => 'Advance Payment (Uang Muka Pembelian)',
-                ]" :selected="@$data->source ?? 'receipt-invoice'" class="rounded-sm" />
+                    'sales-invoice' => 'Sales Invoice (Invoice Penjualan)',
+                    'advance-sales' => 'Advance Sales (Uang Muka Penjualan)',
+                ]" :selected="@$data->source ?? 'sales-invoice'" class="rounded-sm" />
         </div>
 
         <div>

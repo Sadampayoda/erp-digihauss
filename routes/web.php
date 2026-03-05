@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdvancePaymentController;
 use App\Http\Controllers\AdvanceSaleController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BrandController;
@@ -11,11 +12,13 @@ use App\Http\Controllers\ItemStockController;
 use App\Http\Controllers\JournalController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\ReceiptInvoiceController;
 use App\Http\Controllers\SalesInvoiceController;
 use App\Http\Controllers\SalesReturnController;
 use App\Http\Controllers\SeriesController;
 use App\Http\Controllers\SettingCoaController;
 use App\Http\Controllers\UserController;
+use App\Models\AdvancePayment;
 use Illuminate\Support\Facades\Route;
 
 
@@ -37,6 +40,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('sales-invoices', SalesInvoiceController::class)->names('sales-invoices');
     Route::resource('sales-returns', SalesReturnController::class)->names('sales-returns');
 
+    Route::resource('advance-payments',AdvancePaymentController::class)->names('advance-payments');
+    Route::resource('receipt-invoices',ReceiptInvoiceController::class)->names('receipt-invoices');
+
 
     Route::get('items/stock', ItemStockController::class)->name('items.stock');
     Route::resource('items', ItemsController::class)->names('items');
@@ -51,6 +57,6 @@ Route::middleware('auth')->group(function () {
     Route::resource('users', UserController::class)->names('users');
     Route::resource('permissions',PermissionController::class)->names('permissions');
 
-    
+
     Route::resource('journals', JournalController::class)->names('journals');
 });

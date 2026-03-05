@@ -8,15 +8,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class SalesInvoice extends Model
+class ReceiptInvoice extends Model
 {
     use HasFactory, SoftDeletes, Validate, CreatedUpdatedDeletedBy;
 
     protected $fillable = [
         'transaction_number',
         'transaction_date',
-        'advance_sale_id',
-        'customer',
+        'advance_payment_id',
+        'vendor',
         'sales',
         'payment_method',
         'status',
@@ -39,21 +39,21 @@ class SalesInvoice extends Model
         return $this->hasMany(SalesInvoiceItems::class, 'sales_invoice_id', 'id');
     }
 
-    public function customerRelation()
+    public function vendorRelation()
     {
-        return $this->hasOne(Contact::class, 'id', 'customer');
+        return $this->hasOne(Contact::class, 'id', 'vendor');
     }
 
     public function AdvanceSale()
     {
-        return $this->hasOne(AdvanceSale::class, 'id', 'advance_sale_id');
+        return $this->hasOne(AdvanceSale::class, 'id', 'advance_payment_id');
     }
 
-    public function getCustomerNameAttribute()
+    public function getVendorNameAttribute()
     {
-        if ($this->customerRelation()) {
-            $customer = $this->customerRelation;
-            return  $this->customerRelation->name;
+        if ($this->vendorRelation()) {
+            $vendor = $this->vendorRelation;
+            return  $this->vendorRelation->name;
     }
 
         return null;
@@ -73,5 +73,5 @@ class SalesInvoice extends Model
 
 
 
-    protected $appends = ['customer_name', 'summary_paid'];
+    protected $appends = ['vendor_name', 'summary_paid'];
 }
