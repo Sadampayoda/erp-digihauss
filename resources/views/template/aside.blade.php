@@ -109,19 +109,34 @@
 
             <div id="menu-purchasing" class="ml-10 mt-1 space-y-1 overflow-hidden max-h-0 transition-all duration-300">
                 <a href="{{ route('advance-payments.index') }}"
-                    class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg {{ Request::is('advance-payments*') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }} hover:bg-stone-200">
                     <i data-lucide="wallet" class="w-4 h-4"></i>
                     <span>Uang Muka Pembelian</span>
                 </a>
                 <a href="{{ route('receipt-invoices.index') }}"
-                    class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg  {{ Request::is('receipt-invoices*') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }}  hover:bg-stone-200">
                     <i data-lucide="receipt" class="w-4 h-4"></i>
                     <span>Receipt Invoice</span>
                 </a>
+                <a href="{{ route('receipt-invoices.index') }}"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg  {{ Request::is('receipt-invoices*') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }}  hover:bg-stone-200">
+                    <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                    <span>Purchase Return</span>
+                </a>
                 <a href="{{ route('contacts.index') }}"
-                    class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg {{ Request::is('contacts*') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }} hover:bg-stone-200">
                     <i data-lucide="briefcase" class="w-4 h-4"></i>
                     <span>Manage Vendor</span>
+                </a>
+                <a href="{{ route('journals.index',['menu' => 'purchasing']) }}"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg {{ Request::is('journals*') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }} hover:bg-stone-200">
+                    <i data-lucide="trending-up" class="w-4 h-4"></i>
+                    <span>Journal Purchasing</span>
+                </a>
+                <a href="{{ route('setting-coas.index') }}"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg {{ Request::is('setting-coas*') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }} hover:bg-stone-200">
+                    <i data-lucide="settings-2" class="w-4 h-4"></i>
+                    <span>Pengaturan COA Purchasing</span>
                 </a>
             </div>
         </div>

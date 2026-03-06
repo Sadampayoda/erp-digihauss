@@ -4,7 +4,7 @@
     <div class="py-8 border-b border-b-slate-300">
         <p class="text-xl font-medium">Ringkasan Informasi</p>
         <p class="text-sm font-medium text-slate-400">
-            Informasi pembayaran invoice penjualan
+            Informasi pembayaran invoice pembelian
         </p>
     </div>
 
@@ -12,7 +12,7 @@
     <div class="flex flex-col gap-4 py-6">
         <form id="informationForm" class="flex flex-col gap-4">
             {{-- SALES (SELECT) --}}
-            <x-input-select name="sales" label="Sales" :route="route('contacts.index')" placeholder="Pilih Sales"
+            <x-input-select name="sales" label="Sales" :route="route('users.index')" placeholder="Pilih Sales"
                 border_color="border-stone-300" class="rounded-sm p-1 md:p-2" :selected="$data->sales ?? null" required />
 
             <x-input-text type="number" name="paid_amount" label="Pembayaran Invoice" border_color="border-stone-300"
@@ -41,7 +41,7 @@
 
     {{-- SUBMIT --}}
     <div class="flex pt-4 border-t border-slate-200 gap-3">
-        <button onclick="submit()" id="sales-invoices-modal-button"
+        <button onclick="submit()" id="receipt-invoices-modal-button"
             class="
                 group flex items-center justify-center gap-2
                 bg-emerald-400 text-white
@@ -51,12 +51,12 @@
                 active:scale-95 w-full
                 cursor-pointer
             ">
-            <span  class="flex flex-row gap-2 text-sm lg:text-base font-medium btn-text-sales-invoice">
+            <span  class="flex flex-row gap-2 text-sm lg:text-base font-medium btn-text-receipt-invoice">
                 <i data-lucide="save" class="w-5 h-5 transition-transform duration-300 group-hover:rotate-90"></i>
                 Simpan
             </span>
         </button>
-        <button type="button" id="total-sales-invoices-modal-button"
+        <button type="button" id="total-receipt-invoices-modal-button"
             class="
                 group flex items-center justify-center gap-2
                 bg-blue-400 text-white
@@ -77,9 +77,10 @@
 
 
 
-<x-summary-form summaryFormModalButton="total-sales-invoices-modal-button" summaryFormModal="total-sales-invoices-modal"
+<x-summary-form summaryFormModalButton="total-receipt-invoices-modal-button" summaryFormModal="total-receipt-invoices-modal"
     columnPriceTable="sale_price" columnQuantityTable="quantity" columnSubTotalTable="sub_total"
     columnServiceTable="service" columnPurchasePriceTable="purchase_price" columnMarginTable="margin"
-    columnMarginPercentageTable="margin_percentage" parentPaidAmount="grand_total" />
+    columnMarginPercentageTable="margin_percentage" parentPaidAmount="grand_total" module="purchase"
+    parentPurchasePrice="sale_price" />
 
 <script></script>

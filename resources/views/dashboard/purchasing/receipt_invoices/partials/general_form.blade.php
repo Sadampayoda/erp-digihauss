@@ -3,8 +3,8 @@
         class="flex flex-col sm:flex-row sm:items-center sm:justify-between
                 p-4 border-b border-slate-100 mx-3 sm:mx-5 gap-3">
         <div>
-            <p class="text-xl font-medium">Informasi Pelanggan</p>
-            <p class="text-sm font-medium text-slate-400">Pelanggan untuk melakukan invoice penjualan</p>
+            <p class="text-xl font-medium">Informasi Vendor</p>
+            <p class="text-sm font-medium text-slate-400">Vendor untuk melakukan invoice pembelian</p>
         </div>
 
         <a href="{{ route('contacts.create') }}"
@@ -21,7 +21,7 @@
                         ">
             <i data-lucide="plus" class="w-5 h-5 transition-transform duration-300 group-hover:rotate-90"></i>
             <p class="hidden sm:block text-sm lg:text-base font-medium">
-                Tambah Pelanggan
+                Tambah Vendor
             </p>
 
         </a>
@@ -31,14 +31,14 @@
         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3
                 px-2 py-1 mx-3 sm:mx-5 my-1 gap-4">
         <div class="sm:col-span-2">
-            <x-input-select name="customer" label="Pelanggan" :required="true" :route="route('contacts.index')"
+            <x-input-select name="vendor" label="Vendor" :required="true" :route="route('contacts.index')"
             :params="['type' => 0]"
-                :selected="@$data->customer" class="rounded-sm" />
+                :selected="@$data->vendor" class="rounded-sm" />
         </div>
 
         <div>
             <x-input-text type="date" :required="true" border_color="border-stone-300" name="transaction_date"
-                label="Tanggal Invoice Penjualan" class="rounded-sm p-1 md:p-2" :value="isset($data->transaction_date)
+                label="Tanggal Invoice Pembelian" class="rounded-sm p-1 md:p-2" :value="isset($data->transaction_date)
                     ? \Carbon\Carbon::parse($data->transaction_date)->format('Y-m-d')
                     : \Carbon\Carbon::now()->format('Y-m-d')" />
         </div>
@@ -56,10 +56,10 @@
                     src="{{ asset('image/default-profile.jpg') }}" alt="default">
 
                 <div class="flex flex-col gap-1 sm:border-e sm:pe-4 border-slate-300">
-                    <p id="customer-name" class="text-slate-700 font-bold text-lg sm:text-xl">
+                    <p id="vendor-name" class="text-slate-700 font-bold text-lg sm:text-xl">
                         -
                     </p>
-                    <p id="customer-email" class="text-slate-400 text-sm sm:text-md break-all">
+                    <p id="vendor-email" class="text-slate-400 text-sm sm:text-md break-all">
                         Email : - @gmail.com
                     </p>
                 </div>
@@ -67,7 +67,7 @@
                     <p class="text-slate-500 font-medium text-sm sm:text-lg">
                         ASAL KOTA
                     </p>
-                    <p id="customer-city" class="text-slate-400 text-sm sm:text-md">
+                    <p id="vendor-city" class="text-slate-400 text-sm sm:text-md">
                         -
                     </p>
                 </div>
@@ -76,7 +76,7 @@
                     <p class="text-slate-500 font-medium text-sm sm:text-lg">
                         ALAMAT
                     </p>
-                    <p id="customer-address" class="text-slate-400 text-sm sm:text-md">
+                    <p id="vendor-address" class="text-slate-400 text-sm sm:text-md">
                         -
                     </p>
                 </div>
@@ -88,19 +88,19 @@
 
 
 <script>
-    const customerId = @json(@$data->customer);
-    document.getElementById('customer').addEventListener('change', function() {
-        searchCustomer(this.value)
+    const vendorId = @json(@$data->vendor);
+    document.getElementById('vendor').addEventListener('change', function() {
+        searchVendor(this.value)
     })
 
 
-    const searchCustomer = (customerId) => {
+    const searchVendor = (vendorId) => {
         2
-        if (!customerId) return;
+        if (!vendorId) return;
 
 
         $.ajax({
-            url: "{{ url('contacts') }}/" + customerId,
+            url: "{{ url('contacts') }}/" + vendorId,
             method: 'GET',
             processData: false,
             contentType: false,
@@ -110,10 +110,10 @@
             success: function(res) {
                 const data = res.data;
 
-                $('#customer-name').text(data.name ?? '-');
-                $('#customer-email').text('Email : ' + (data.email ?? '-'));
-                $('#customer-city').text(data.city ?? '-');
-                $('#customer-address').text(data.address ?? '-');
+                $('#vendor-name').text(data.name ?? '-');
+                $('#vendor-email').text('Email : ' + (data.email ?? '-'));
+                $('#vendor-city').text(data.city ?? '-');
+                $('#vendor-address').text(data.address ?? '-');
             },
             error: function(err) {
                 console.log(err.responseJSON.errors);
@@ -122,7 +122,7 @@
         });
     }
 
-    searchCustomer(customerId)
+    searchVendor(vendorId)
 </script>
 
 

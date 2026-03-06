@@ -33,7 +33,7 @@
                 summaryForm();
                 showAlert('Sukses Tambah', res.message, 'success', false);
                 setButtonLoading(false);
-                $('#sales-invoices-modal').addClass('hidden').removeClass('flex');
+                $('#receipt-invoices-modal').addClass('hidden').removeClass('flex');
             },
             error: function(err) {
 
@@ -53,7 +53,6 @@
         item.image = item?.item?.image
         item.name = item.item_name;
         item.variant = item.item?.variant
-        console.log(item.item);
         renderDetailRow(item, setup)
     })
 

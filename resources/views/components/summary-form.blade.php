@@ -17,6 +17,7 @@
     'parentPaidAmount' => null,
     'parentRemainingAmount' => 'remaining_amount',
     'parentAdvanceAmount' => 'advance_amount',
+    'module' => 'sales',
 ])
 
 <x-modal id="{{ $summaryFormModal }}" title="Sub total" onSubmit="submit" width="w-[100%] sm:max-w-4xl">
@@ -27,10 +28,10 @@
             <x-input-text :readonly="true" type="number" name="item_quantity" label="Jumlah Barang"
                 class="rounded-lg px-3 py-2" value="0" />
 
-            <x-input-text :readonly="true" type="number" :name="$parentSubTotal" label="Total" class="rounded-lg px-3 py-2"
+            <x-input-text :readonly="true" type="number" :name="$parentSubTotal" label="{{ $module == 'sales' ? 'Total Harga Jual' : 'Total Harga Beli'}}" class="rounded-lg px-3 py-2"
                 value="0" />
 
-            <x-input-text :readonly="true" type="number" :name="$parentPurchasePrice" label="Hpp" class="rounded-lg px-3 py-2"
+            <x-input-text :readonly="true" type="number" :name="$parentPurchasePrice" label="{{ $module == 'purchase' ? 'Total Harga Jual' : 'Total Harga Beli'}}" class="rounded-lg px-3 py-2"
                 value="0" />
         </div>
 
@@ -80,8 +81,7 @@
         parentPaidAmount: "{{ $parentPaidAmount }}",
         parentRemainingAmount: "{{ $parentRemainingAmount }}",
         parentAdvanceAmount: "{{ $parentAdvanceAmount }}",
-
-
+        module: "{{ $module }}",
     }
 
     const tbody = document.getElementById(`${ids.tableId}`);
@@ -96,11 +96,13 @@
             const purchasePrice = getInputValue(ids.columnPurchasePriceTable, row);
             const service = getInputValue(ids.columnServiceTable, row);
 
-            const subTotal = (price * quantity) + service
+            const basePrice = parsePrice(price,purchasePrice)
+
+            const subTotal = (basePrice.default_price * quantity) + service
             putInputValue(ids.columnSubTotalTable, row, subTotal);
 
             if (ids.columnMarginTable) {
-                const margin = subTotal - (purchasePrice * quantity);
+                const margin = subTotal - (basePrice.country_price * quantity);
                 const marginPercentage = subTotal ?
                     Math.round((margin / subTotal) * 100) :
                     0;
@@ -116,8 +118,10 @@
         const subTotal = Array.from(rows).reduce((total, item) => {
             const quantity = getInputValue(ids.columnQuantityTable, item);
             const price = getInputValue(ids.columnPriceTable, item);
+            const basePrice = parsePrice(price,getInputValue(ids.columnPurchasePriceTable, item))
 
-            const subTotal = price * quantity;
+
+            const subTotal = basePrice.default_price * quantity;
 
             return total + subTotal
         }, 0)
@@ -125,8 +129,8 @@
         const purchasePrice = Array.from(rows).reduce((total, item) => {
             const quantity = getInputValue(ids.columnQuantityTable, item);
             const purchasePrice = getInputValue(ids.columnPurchasePriceTable, item);
-
-            const totalPurchasePrice = purchasePrice * quantity
+            const basePrice = parsePrice(getInputValue(ids.columnPriceTable, item),purchasePrice)
+            const totalPurchasePrice = basePrice.country_price * quantity
             return total + totalPurchasePrice
         }, 0)
 
@@ -139,6 +143,8 @@
         const marginPercentage = subTotal ?
             Math.round((margin / (subTotal + service)) * 100) :
             0;
+
+        console.log(subTotal,purchasePrice)
 
         const form = document.getElementById('subTotalForm');
 
@@ -188,4 +194,28 @@
             summaryForm();
         }
     });
+
+    const parsePrice = (price, purchasePrice) => {
+        let defaultPrice = price;
+        let countryPrice = purchasePrice
+        switch (ids.module) {
+            case 'sales':
+                defaultPrice = price;
+                countryPrice = purchasePrice
+                break;
+            case 'purchase':
+                defaultPrice = purchasePrice;
+                countryPrice = price
+                break;
+            default:
+                defaultPrice = price;
+                countryPrice = purchasePrice
+                break;
+        }
+
+        return {
+            'default_price' : defaultPrice,
+            'country_price': countryPrice
+        }
+    }
 </script>

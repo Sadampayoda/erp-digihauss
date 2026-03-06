@@ -4,7 +4,7 @@
                 p-4 border-b border-slate-100 mx-3 sm:mx-5 gap-3">
         <div>
             <p class="text-xl font-medium">Informasi Sumber</p>
-            <p class="text-sm font-medium text-slate-400">Informasi sumber data pelanggan</p>
+            <p class="text-sm font-medium text-slate-400">Informasi sumber data Vendor</p>
         </div>
     </div>
 
@@ -14,14 +14,14 @@
         <div class="sm:col-span-2">
             <x-input-select name="source" label="Source (Sumber data)" placeholder="Sumber data" :required="true"
                 :options="[
-                    'sales-invoice' => 'Sales Invoice (Invoice Penjualan)',
-                    'advance-sales' => 'Advance Sales (Uang Muka Penjualan)',
-                ]" :selected="@$data->source ?? 'sales-invoice'" class="rounded-sm" />
+                    'receipt-invoice' => 'Receipt Invoice (Invoice Pembelian)',
+                    'advance-payments' => 'Advance Payment (Uang Muka Pembelian)',
+                ]" :selected="@$data->source ?? 'receipt-invoice'" class="rounded-sm" />
         </div>
 
         <div>
-            <x-input-select name="advance_sale_id" label="Pilih Transaksi AS" placeholder="Transaksi AS"
-                columnShowView="transaction_number" :required="true" :route="route('advance-sales.index')" :selected="@$data->advance_sale_id"
+            <x-input-select name="advance_payment_id" label="Pilih Transaksi AS" placeholder="Transaksi AS"
+                columnShowView="transaction_number" :required="true" :route="route('advance-payments.index')" :selected="@$data->advance_payment_id"
                 :paramsInput="['customer']"
                 :params="['status' => [2,3]]" class="rounded-sm" />
 
@@ -41,15 +41,14 @@
 
     const refreshSource = () => {
         const source = document.getElementById('source').value;
-        console.log(sourceSelect.value, previousSource)
-        const ts = accessSelect('advance_sale_id')
-        const createItems = document.getElementById('btn-sales-invoices-modal');
+        const ts = accessSelect('advance_payment_id')
+        const createItems = document.getElementById('btn-receipt-invoices-modal');
 
         if (!ts) return
 
-        if (source === 'sales-invoice') {
+        if (source === 'receipt-invoice') {
             const getCountData = getDetailTableLength();
-            if (getCountData > 0 && previousSource == 'advance-sales') {
+            if (getCountData > 0 && previousSource == 'advance-payments') {
                 Swal.fire({
                     title: 'Yakin mengubah sumber ?',
                     text: 'Data barang akan terhapus semua !',
@@ -85,9 +84,9 @@
 
             createItems.disabled = false;
             previousSource = source
-        } else if (source === 'advance-sales') {
+        } else if (source === 'advance-payments') {
             const getCountData = getDetailTableLength();
-            if (getCountData > 0 && previousSource == 'sales-invoice') {
+            if (getCountData > 0 && previousSource == 'receipt-invoice') {
                 Swal.fire({
                     title: 'Yakin mengubah sumber ?',
                     text: 'Data barang akan terhapus semua !',
@@ -119,10 +118,10 @@
         }
     }
 
-    document.getElementById('advance_sale_id').addEventListener('change', function() {
-        const advanceSaleId = this.value
+    document.getElementById('advance_payment_id').addEventListener('change', function() {
+        const advancePaymentId = this.value
 
-        if (!advanceSaleId) return;
+        if (!advancePaymentId) return;
         Swal.fire({
             title: 'Yakin menggunakan transaksi tersebut?',
             text: 'Data barang akan di ambil berdasarkan sumber transaksi ',
@@ -136,7 +135,7 @@
             if (result.isConfirmed) {
 
                 $.ajax({
-                    url: `/advance-sales/${advanceSaleId}`,
+                    url: `/advance-payments/${advancePaymentId}`,
                     type: 'GET',
                     data: {
                         _token: '{{ csrf_token() }}',
@@ -183,7 +182,7 @@
                     }
                 });
             } else {
-                const ts = accessSelect('advance_sale_id')
+                const ts = accessSelect('advance_payment_id')
                 ts.clear()
             }
         });

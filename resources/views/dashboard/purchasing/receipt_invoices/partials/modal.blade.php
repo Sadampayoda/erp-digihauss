@@ -1,6 +1,6 @@
 <!-- Form -->
 
-<x-modal id="sales-invoices-modal" title="Tambah Barang" onSubmit="createItems" width="w-200vh sm:max-w-4xl">
+<x-modal id="receipt-invoices-modal" title="Tambah Barang" onSubmit="createItems" width="w-200vh sm:max-w-4xl">
     <x-table :labels="[
         'name' => 'Nama Barang',
         'model' => 'Model',
@@ -12,8 +12,8 @@
 
 
 <script>
-    const openBtn = document.getElementById('btn-sales-invoices-modal')
-    const modal = document.getElementById('sales-invoices-modal')
+    const openBtn = document.getElementById('btn-receipt-invoices-modal')
+    const modal = document.getElementById('receipt-invoices-modal')
     const setupColumn = @json($setupColumn);
     openBtn.addEventListener('click', () => {
 

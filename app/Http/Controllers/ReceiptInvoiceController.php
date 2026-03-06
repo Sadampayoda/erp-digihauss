@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateReceiptInvoiceRequest;
 use App\Models\Items;
 use App\Models\ReceiptInvoice;
 use App\Repositories\ReceiptInvoiceRepository;
@@ -10,7 +11,9 @@ use App\Traits\AutoNumberTransaction;
 use App\Traits\HandleErroMessage;
 use App\Traits\Validate;
 use Exception;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ReceiptInvoiceController extends Controller
 {
@@ -88,40 +91,126 @@ class ReceiptInvoiceController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CreateReceiptInvoiceRequest $request)
     {
-        //
+        try {
+            DB::beginTransaction();
+            $data = $request->validated();
+
+
+
+            $receiptInvoice = $this->model->create(array_merge($data, [
+                'transaction_number' => $this->generateTransactionNumber(
+                    model: ReceiptInvoice::class,
+                    prefix: 'SI',
+                    column: 'transaction_number',
+                    transactionDate: $data['transaction_date'],
+                ),
+                'remaining_amount' => $data['remaining_amount'],
+                'created_by' => 0,
+                'updated_by' => 0,
+                'deleted_by' => 0,
+            ]));
+
+            $this->receiptInvoiceRepo->createOrUpdateItems($receiptInvoice->fresh(), $data);
+            DB::commit();
+
+            return $this->sendSuccess(message: 'Berhasil Menambahkan Invoice Pembelian');
+        } catch (QueryException $e) {
+            DB::rollBack();
+
+            return $this->sendErrors(message: $this->handleDatabaseError($e));
+        }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(ReceiptInvoice $receiptInvoice)
+    public function show(int $id)
     {
-        //
+        try {
+            $data = $this->existsWhereId($this->model, $id, ['items.item']);
+            return $this->sendSuccess($data, message: 'Berhasil Mendapatkan data Receipt Invoice');
+        } catch (Exception $e) {
+            return $this->sendErrors(message: $e);
+        }
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(ReceiptInvoice $receiptInvoice)
+    public function edit(int $id)
     {
-        //
+        $data = $this->existsWhereId($this->model, $id, ['items.item']);
+
+        return view('dashboard.purchasing.receipt_invoices.create', [
+            'data' => $data,
+            'items' => Items::all(),
+            'setupColumn' => $this->setupColumn
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ReceiptInvoice $receiptInvoice)
+    public function update(CreateReceiptInvoiceRequest $request, int $id)
     {
-        //
+        try {
+            DB::beginTransaction();
+            $data = $request->validated();
+            $receiptInvoice = $this->existsWhereId($this->model, $id);
+
+            if (!$receiptInvoice->transaction_number) {
+                $receiptInvoice->transaction_number = $this->generateTransactionNumber(
+                    model: ReceiptInvoice::class,
+                    prefix: 'SI',
+                    column: 'transaction_number',
+                    transactionDate: $data['transaction_date']
+                );
+            }
+
+
+
+            $receiptInvoice->update([
+                ...$data,
+                'remaining_amount' => $data['remaining_amount']
+            ]);
+
+            $this->receiptInvoiceRepo->createOrUpdateItems($receiptInvoice->fresh(), $data);
+            DB::commit();
+
+            return $this->sendSuccess(message: 'Berhasil Mengupdate Invoice Pembelian');
+        } catch (QueryException $e) {
+            DB::rollBack();
+
+            return $this->sendErrors(message: $this->handleDatabaseError($e));
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ReceiptInvoice $receiptInvoice)
+    public function destroy(int $id)
     {
-        //
+        try {
+            DB::beginTransaction();
+
+            $receiptInvoice = $this->existsWhereId($this->model, $id);
+
+            $this->receiptInvoiceRepo->deleteItems($receiptInvoice);
+
+            $receiptInvoice->delete();
+
+            DB::commit();
+
+            return $this->sendSuccess(message: 'Berhasil Menghapus Invoice Pembelian');
+        } catch (QueryException $e) {
+
+            DB::rollBack();
+
+            return $this->sendErrors(
+                message: $this->handleDatabaseError($e)
+            );
+        }
     }
 }

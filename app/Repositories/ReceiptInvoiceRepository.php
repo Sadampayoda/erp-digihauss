@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\AdvancePaymentItems;
 use App\Models\AdvanceSaleItems;
 use Illuminate\Validation\ValidationException;
 use App\Traits\Validate;
@@ -10,7 +11,7 @@ use App\Models\Items;
 class ReceiptInvoiceRepository
 {
     use Validate;
-    public function createOrUpdateItems($salesInvoice, $data)
+    public function createOrUpdateItems($receiptInvoice, $data)
     {
         // Handle Create Items
         $ids = [];
@@ -19,7 +20,7 @@ class ReceiptInvoiceRepository
             $relatedItem = $this->existsWhereId(new Items(), $item['item_id']);
 
             if ($item['detail_id']) {
-                $detail = $salesInvoice->items()->where('id', $item['detail_id'])->firstOrFail();
+                $detail = $receiptInvoice->items()->where('id', $item['detail_id'])->firstOrFail();
 
                 if ($detail) {
                     $detail->update(array_merge($item, [
@@ -31,9 +32,9 @@ class ReceiptInvoiceRepository
                 $ids[] = $detail->id;
             } else {
 
-                $detail = $salesInvoice->items()->create(array_merge($item, [
+                $detail = $receiptInvoice->items()->create(array_merge($item, [
                     'coa_id' => 1,
-                    'sales_invoice_id' => $salesInvoice->id,
+                    'receipt_invoice_id' => $receiptInvoice->id,
                     'item_name' => $relatedItem->name,
                     'item_code' => $relatedItem->code ?? $relatedItem->item_code,
                 ]));
@@ -43,54 +44,53 @@ class ReceiptInvoiceRepository
             }
         }
 
-        $salesInvoice->items()->whereNotIn('id', $ids)->delete();
+        $receiptInvoice->items()->whereNotIn('id', $ids)->delete();
 
 
-        $salesInvoice = $salesInvoice->fresh();
+        $receiptInvoice = $receiptInvoice->fresh();
 
-        if ($salesInvoice->status >= 2) {
+        if ($receiptInvoice->status >= 2) {
             // Handle Payment Amount
-            $this->ensureInvoicePaidIn($salesInvoice);
+            $this->ensureInvoicePaidIn($receiptInvoice);
 
 
-            if ($salesInvoice->advance_sale_id) {
+            if ($receiptInvoice->advance_payment_id) {
 
                 // Handle quantity advance sale items
-                $salesInvoice = $this->applyAdvanceQuantity($salesInvoice);
+                $receiptInvoice = $this->applyAdvanceQuantity($receiptInvoice);
 
                 // Handle Status Advance Sale
-                $this->refreshStatus($salesInvoice);
+                $this->refreshStatus($receiptInvoice);
             }
         }
 
-        $this->settingJournal($salesInvoice);
+        $this->settingJournal($receiptInvoice);
     }
 
-    public function deleteItems($salesInvoice)
+    public function deleteItems($receiptInvoice)
     {
-        $this->settingJournal($salesInvoice,'delete');
-        if ($salesInvoice->status >= 2) {
+        $this->settingJournal($receiptInvoice, 'delete');
+        if ($receiptInvoice->status >= 2) {
 
+            if ($receiptInvoice->advance_payment_id) {
+                // Remove Quantity in Advance payment
+                $this->applyAdvanceQuantity($receiptInvoice, 'delete');
 
-            if ($salesInvoice->advance_sale_id) {
-                // Remove Quantity in Advance Sale
-                $this->applyAdvanceQuantity($salesInvoice, 'delete');
-
-                // Change status advance sale
-                $this->refreshStatus($salesInvoice);
+                // Change status advance payment
+                $this->refreshStatus($receiptInvoice);
             }
         }
 
-        if ($salesInvoice->items()) {
-            $salesInvoice->items()->delete();
+        if ($receiptInvoice->items()) {
+            $receiptInvoice->items()->delete();
         }
     }
 
-    protected function ensureInvoicePaidIn($salesInvoice)
+    protected function ensureInvoicePaidIn($receiptInvoice)
     {
-        $total = $salesInvoice->paid_amount + $salesInvoice->advance_amount;
+        $total = $receiptInvoice->paid_amount + $receiptInvoice->advance_amount;
 
-        if ((float) $salesInvoice->grand_total !== $total) {
+        if ((float) $receiptInvoice->grand_total !== $total) {
             throw ValidationException::withMessages([
                 'advance_amount' => 'Jumlah pembayaran harus lunas'
             ]);
@@ -109,141 +109,129 @@ class ReceiptInvoiceRepository
         }
     }
 
-    protected function refreshStatus($salesInvoice)
+    protected function refreshStatus($receiptInvoice)
     {
-        $advanceSale = $salesInvoice->AdvanceSale;
+        $advancePayment = $receiptInvoice->advancePayment;
 
-        if (!$advanceSale) {
+        if (!$advancePayment) {
             throw ValidationException::withMessages([
-                'advance_sale_id' => 'Transaksi Uang Muka tidak ditemukan.',
+                'advance_payment_id' => 'Transaksi Uang Muka tidak ditemukan.',
             ]);
         }
 
         // Check Quantity and items
-        $items = $advanceSale->items;
+        $items = $advancePayment->items;
 
-        if ($items->every(fn($i) => $i->sales_invoice_items_quantity == 0)) {
+        if ($items->every(fn($i) => $i->receipt_invoice_items_quantity == 0)) {
             $status = 2;
-        } elseif ($items->every(fn($i) => $i->sales_invoice_items_quantity == $i->quantity)) {
+        } elseif ($items->every(fn($i) => $i->receipt_invoice_items_quantity == $i->quantity)) {
             $status = 4;
         } else {
             $status = 3;
         }
 
-        $advanceSale->update([
+        $advancePayment->update([
             'status' => $status,
         ]);
     }
 
-    protected function applyAdvanceQuantity($salesInvoice, $method = 'create')
+    protected function applyAdvanceQuantity($receiptInvoice, $method = 'create')
     {
 
-        $salesInvoice->items->each(function ($item) use ($method) {
-            $advanceSaleItems = AdvanceSaleItems::findOrFail($item->advance_sale_items_id);
+        $receiptInvoice->items->each(function ($item) use ($method) {
+            $advancePaymentItems = AdvancePaymentItems::findOrFail($item->advance_payment_items_id);
 
-            if (!$advanceSaleItems) {
+            if (!$advancePaymentItems) {
                 throw ValidationException::withMessages([
-                    'advance_sale_items_id' => 'barang ' . $item['name'] . ' tidak ditemukan.',
+                    'advance_payment_items_id' => 'barang ' . $item['name'] . ' tidak ditemukan.',
                 ]);
             }
 
-            $siQuantity = 0;
+            $riQuantity = 0;
             switch ($method) {
                 case 'create':
-                    $siQuantity = $item->quantity;
+                    $riQuantity = $item->quantity;
                     break;
                 case 'delete':
-                    $siQuantity = 0;
+                    $riQuantity = 0;
                     break;
                 default:
-                    $siQuantity = $item->quantity;
+                    $riQuantity = $item->quantity;
                     break;
             }
 
 
-            $advanceSaleItems->update([
-                'sales_invoice_items_quantity' => $siQuantity
+            $advancePaymentItems->update([
+                'receipt_invoice_items_quantity' => $riQuantity
             ]);
 
-            $advanceSaleItems = $advanceSaleItems->fresh();
+            $advancePaymentItems = $advancePaymentItems->fresh();
 
-            if ($advanceSaleItems->sales_invoice_items_quantity > $advanceSaleItems->quantity) {
+            if ($advancePaymentItems->receipt_invoice_items_quantity > $advancePaymentItems->quantity) {
                 throw ValidationException::withMessages([
-                    'advance_sale_items_id' => 'barang ' . $item['name'] . ' sudah melebihi batas quantity di uang muka.',
+                    'advance_payment_items_id' => 'barang ' . $item['name'] . ' sudah melebihi batas quantity di uang muka.',
                 ]);
             }
         });
 
-        return $salesInvoice->fresh();
+        return $receiptInvoice->fresh();
     }
 
 
-    public function settingJournal($salesInvoice, $method = 'create')
+    public function settingJournal($receiptInvoice, $method = 'create')
     {
         $journal = app(JournalRepository::class);
 
         switch ($method) {
             case 'create':
-                // Piutang Usaha debit
-                // Pendapatan credit
+                // Persediaan debit
+                // Hutang Usaha credit
                 $journal->generateJournal(
-                    data: $salesInvoice,
-                    details: $salesInvoice->items,
-                    module: 'sales-invoice',
-                    action: 'revenue',
+                    data: $receiptInvoice,
+                    details: $receiptInvoice->items,
+                    module: 'receipt-invoice',
+                    action: 'purchase',
                     columnPaymentMethod: 'payment_method',
-                    columnContact: 'customer',
+                    columnContact: 'vendor',
                     columnDescription: 'description',
                     columnNominalDebit: 'sub_total',
                     columnNominalCredit: 'sub_total'
                 );
 
-                // Kas / Bank debit
-                // Piutang credit
-                if($salesInvoice->paid_amount > 0) {
+                // Hutang Usaha debit
+                // Kas / Bank credit
+                if ($receiptInvoice->paid_amount > 0) {
                     $journal->generateJournal(
-                        data: $salesInvoice,
-                        details: $salesInvoice->items,
-                        module: 'sales-invoice',
+                        data: $receiptInvoice,
+                        details: $receiptInvoice->items,
+                        module: 'receipt-invoice',
                         action: 'payment',
                         columnPaymentMethod: 'payment_method',
-                        columnContact: 'customer',
+                        columnContact: 'vendor',
                         columnDescription: 'description',
                         columnNominalDebit: 'paid_amount',
                         columnNominalCredit: 'paid_amount'
                     );
                 }
 
-                $salesInvoice->sub_total_purchase_price = $salesInvoice->items
-                    ->sum(fn ($item) => $item->purchase_price * $item->quantity);
+                $receiptInvoice->sub_total_purchase_price = $receiptInvoice->items
+                    ->sum(fn($item) => $item->purchase_price * $item->quantity);
 
 
-                // Hpp debit
-                // Persediaan credit
-                $journal->generateJournal(
-                    data: $salesInvoice,
-                    details: $salesInvoice->items,
-                    module: 'sales-invoice',
-                    action: 'hpp',
-                    columnPaymentMethod: 'payment_method',
-                    columnContact: 'customer',
-                    columnDescription: 'description',
-                    columnNominalDebit: 'sub_total_purchase_price',
-                    columnNominalCredit: 'sub_total_purchase_price'
-                );
-
-                $salesInvoice->sub_total_service = $salesInvoice->items
-                    ->sum(fn ($item) => $item->service);
                 // Biaya Service debit
                 // Kas credit
-                if($salesInvoice->sub_total_service > 0) {
+                $receiptInvoice->sub_total_service = $receiptInvoice->items
+                    ->sum(fn($item) => $item->service);
+
+                if ($receiptInvoice->sub_total_service > 0) {
+
                     $journal->generateJournal(
-                        data: $salesInvoice,
-                        details: $salesInvoice->items,
-                        module: 'service',
+                        data: $receiptInvoice,
+                        details: $receiptInvoice->items,
+                        module: 'receipt-invoice',
                         action: 'service',
                         columnPaymentMethod: 'payment_method',
-                        columnContact: 'customer',
+                        columnContact: 'vendor',
                         columnDescription: 'description',
                         columnNominalDebit: 'sub_total_service',
                         columnNominalCredit: 'sub_total_service'
@@ -251,7 +239,7 @@ class ReceiptInvoiceRepository
                 }
                 break;
             case 'delete':
-                $journal->destroyJournal($salesInvoice);
+                $journal->destroyJournal($receiptInvoice);
                 break;
             default:
                 break;

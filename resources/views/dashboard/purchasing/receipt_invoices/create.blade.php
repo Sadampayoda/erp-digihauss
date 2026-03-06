@@ -6,18 +6,18 @@
     @endphp
     <div class="flex flex-col lg:flex-row w-full gap-5 overflow-hidden">
         <div class="flex flex-col w-full lg:w-2/3 min-w-0 overflow-hidden gap-3 ">
-            @include('dashboard.sales.sales_invoices.partials.source_form')
-            @include('dashboard.sales.sales_invoices.partials.general_form')
+            @include('dashboard.purchasing.receipt_invoices.partials.source_form')
+            @include('dashboard.purchasing.receipt_invoices.partials.general_form')
             <div class="bg-white rounded-xl shadow min-w-0 ">
                 <div
                     class="flex flex-col sm:flex-row sm:items-center sm:justify-between
                 p-4 border-b border-slate-100 mx-3 sm:mx-5 gap-3">
                     <div>
                         <p class="text-xl font-medium">Detail Pesanan</p>
-                        <p class="text-sm font-medium text-slate-400">Pesanan yang akan dibayar oleh pelanggan
+                        <p class="text-sm font-medium text-slate-400">Pesanan yang akan dibayar oleh vendor
                         </p>
                     </div>
-                    <button type="button" id="btn-sales-invoices-modal"
+                    <button type="button" id="btn-receipt-invoices-modal"
                         class="
                             group flex items-center justify-center gap-2
                             bg-emerald-400 text-white
@@ -35,13 +35,13 @@
 
                     </button>
                 </div>
-                @include('dashboard.sales.sales_invoices.partials.items_form')
+                @include('dashboard.purchasing.receipt_invoices.partials.items_form')
             </div>
         </div>
-        @include('dashboard.sales.sales_invoices.partials.invoice')
+        @include('dashboard.purchasing.receipt_invoices.partials.invoice')
     </div>
 
-    @include('dashboard.sales.sales_invoices.partials.modal')
+    @include('dashboard.purchasing.receipt_invoices.partials.modal')
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -52,7 +52,7 @@
         const id = @json(@$data->id)
 
         const submit = () => {
-            setButtonLoading(true, 'sales-invoices-modal-button', 'btn-text-sales-invoice');
+            setButtonLoading(true, 'receipt-invoices-modal-button', 'btn-text-receipt-invoice');
             const data = new FormData();
 
             ['generalForm','sourceForm', 'informationForm', 'subTotalForm'].forEach(id => {
@@ -71,15 +71,13 @@
                 });
             });
 
-            console.log(items);
-
             if (editMode) {
                 data.append('_method', 'PUT');
             }
 
             const url = editMode ?
-                `{{ url('sales-invoices') }}/${id}` :
-                `{{ route('sales-invoices.store') }}`;
+                `{{ url('receipt-invoices') }}/${id}` :
+                `{{ route('receipt-invoices.store') }}`;
 
             $.ajax({
                 url,
@@ -91,13 +89,13 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(res) {
-                    setButtonLoading(false, 'sales-invoices-modal-button', 'btn-text-sales-invoice');
+                    setButtonLoading(false, 'receipt-invoices-modal-button', 'btn-text-receipt-invoice');
                     showAlert('Sukses', res.message, 'success', false,
-                        "{{ route('sales-invoices.index') }}");
+                        "{{ route('receipt-invoices.index') }}");
                 },
                 error: function(err) {
                     const message = err.responseJSON.message;
-                    setButtonLoading(false, 'sales-invoices-modal-button', 'btn-text-sales-invoice');
+                    setButtonLoading(false, 'receipt-invoices-modal-button', 'btn-text-receipt-invoice');
                     showAlert('Gagal Menambahkan Uang Muka', message, 'errors', false);
                     resetErrors();
 
