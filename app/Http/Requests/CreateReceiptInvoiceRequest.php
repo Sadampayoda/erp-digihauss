@@ -43,7 +43,7 @@ class CreateReceiptInvoiceRequest extends FormRequest
             'sales' => [
                 'nullable',
                 'integer',
-                'exists:contacts,id',
+                'exists:users,id',
             ],
 
             'sub_total' => [
