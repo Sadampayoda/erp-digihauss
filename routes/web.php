@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdvancePaymentController;
 use App\Http\Controllers\AdvanceSaleController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BankController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CashController;
 use App\Http\Controllers\CoaController;
@@ -48,6 +49,7 @@ Route::middleware('auth')->group(function () {
 
     // Finance
     Route::resource('cashs',CashController::class)->names('cashs');
+    Route::resource('banks',BankController::class)->names('banks');
 
 
     Route::get('items/stock', ItemStockController::class)->name('items.stock');

@@ -89,7 +89,7 @@
                     <i data-lucide="users" class="w-4 h-4"></i>
                     <span>Manage Customer</span>
                 </a>
-                <a href="{{ route('journals.index',['menu' => 'sales']) }}"
+                <a href="{{ route('journals.index', ['menu' => 'sales']) }}"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg {{ Request::is('journals*') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }} hover:bg-stone-200">
                     <i data-lucide="trending-up" class="w-4 h-4"></i>
                     <span>Journal Sales</span>
@@ -133,7 +133,7 @@
                     <i data-lucide="briefcase" class="w-4 h-4"></i>
                     <span>Manage Vendor</span>
                 </a>
-                <a href="{{ route('journals.index',['menu' => 'purchasing']) }}"
+                <a href="{{ route('journals.index', ['menu' => 'purchasing']) }}"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg {{ Request::is('journals*') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }} hover:bg-stone-200">
                     <i data-lucide="trending-up" class="w-4 h-4"></i>
                     <span>Journal Purchasing</span>
@@ -157,31 +157,47 @@
             </button>
 
             <div id="menu-finance" class="ml-10 mt-1 space-y-1 overflow-hidden max-h-0 transition-all duration-300">
-                <a href="{{ route('cashs.index',['type' => 'in']) }}"
-                    class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
+
+                <a href="{{ route('cashs.index', ['type' => 'in']) }}"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg
+        {{ Request::is('cashs*') && request('type') == 'in' ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }}
+        hover:bg-stone-200">
                     <i data-lucide="arrow-down-circle" class="w-4 h-4"></i>
                     <span>Kas Masuk</span>
                 </a>
-                <a href="{{ route('cashs.index',['type' => 'out']) }}"
-                    class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
+
+                <a href="{{ route('cashs.index', ['type' => 'out']) }}"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg
+        {{ Request::is('cashs*') && request('type') == 'out' ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }}
+        hover:bg-stone-200">
                     <i data-lucide="arrow-up-circle" class="w-4 h-4"></i>
                     <span>Kas Keluar</span>
                 </a>
-                <a href="/finance/bank-in"
-                    class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
+
+                <a href="{{ route('banks.index', ['type' => 'in']) }}"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg
+        {{ Request::is('banks*') && request('type') == 'in' ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }}
+        hover:bg-stone-200">
                     <i data-lucide="arrow-down-left" class="w-4 h-4"></i>
                     <span>Bank Masuk</span>
                 </a>
-                <a href="/finance/bank-out"
-                    class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
+
+                <a href="{{ route('banks.index', ['type' => 'out']) }}"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg
+        {{ Request::is('banks*') && request('type') == 'out' ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }}
+        hover:bg-stone-200">
                     <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
                     <span>Bank Keluar</span>
                 </a>
-                <a href="{{ route('journals.index',['menu' => 'finance']) }}"
-                    class="flex items-center gap-2 p-2 text-sm rounded-lg {{ Request::is('journals*') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }} hover:bg-stone-200">
+
+                <a href="{{ route('journals.index', ['menu' => 'finance']) }}"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg
+        {{ Request::is('journals*') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }}
+        hover:bg-stone-200">
                     <i data-lucide="trending-up" class="w-4 h-4"></i>
                     <span>Journal Finance</span>
                 </a>
+
             </div>
         </div>
 
