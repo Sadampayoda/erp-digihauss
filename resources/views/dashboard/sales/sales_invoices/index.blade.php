@@ -46,7 +46,7 @@
             'status' => 'Status',
             'grand_total' => 'Total Transaksi',
             'summary_paid' => 'Pembayaran',
-        ]" onEdit="onEdit" onDelete="onDelete" />
+        ]" onEdit="onEdit" onDelete="onDelete"  onPaymentProof="onPaymentProof" />
     </div>
 
     <script>

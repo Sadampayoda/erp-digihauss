@@ -34,7 +34,7 @@
                 <i data-lucide="plus" class="w-5 h-5 transition-transform duration-300 group-hover:rotate-90"></i>
 
                 <p class="hidden sm:block text-sm lg:text-base font-medium">
-                    Tambah Invoice Penjualan
+                    Tambah Invoice Pembelian
                 </p>
             </a>
         </div>
@@ -46,7 +46,7 @@
             'status' => 'Status',
             'grand_total' => 'Total Transaksi',
             'summary_paid' => 'Pembayaran',
-        ]" onEdit="onEdit" onDelete="onDelete" />
+        ]" onEdit="onEdit" onDelete="onDelete"  onPaymentProof="onPaymentProof" />
     </div>
 
     <script>

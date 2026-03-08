@@ -1,4 +1,12 @@
-@props(['labels', 'data' => [], 'onEdit' => null, 'onDelete' => null, 'checkbox' => false, 'titleEdit' => 'Edit'])
+@props([
+    'labels',
+    'data' => [],
+    'onEdit' => null,
+    'onDelete' => null,
+    'checkbox' => false,
+    'titleEdit' => 'Edit',
+    'onPaymentProof' => null,
+])
 <div class="overflow-x-auto w-screen lg:w-full h-120">
     <table class="w-full text-sm text-left ">
         <thead class="bg-slate-100 text-slate-600 uppercase text-xs">
@@ -53,18 +61,15 @@
                                 class="action-menu hidden absolute right-0 mt-2 w-44
                                 bg-white rounded-xl shadow-lg border z-50 border-slate-200">
                                 @if ($onEdit)
-                                    <button onclick="{{ $onEdit }}({{ $item->id ?? 0 }}, {{ json_encode($item) }})"
+                                    <button
+                                        onclick="{{ $onEdit }}({{ $item->id ?? 0 }}, {{ json_encode($item) }})"
                                         class="w-full flex items-center gap-2 px-4 py-2 text-sm hover:bg-slate-100 cursor-pointer">
                                         <i data-lucide="pencil" class="w-4 h-4"></i>
                                         {{ $titleEdit }}
                                     </button>
                                 @endif
 
-                                {{-- <a href="#"
-                                    class="flex items-center text-slate-700 gap-2 px-4 py-2 text-sm hover:bg-slate-100">
-                                    <i data-lucide="file-text" class="w-4 h-4"></i>
-                                    Bukti
-                                </a> --}}
+
                                 @if ($onDelete)
                                     <button onclick="{{ $onDelete }}({{ $item->id }})"
                                         class="w-full flex items-center gap-2 px-4 py-2 text-sm
@@ -73,9 +78,17 @@
                                         Delete
                                     </button>
                                 @endif
+                                @if ($onPaymentProof)
+                                    <a href="#"
+                                        class="flex items-center text-slate-700 gap-2 px-4 py-2 text-sm hover:bg-slate-100">
+                                        <i data-lucide="file-text" class="w-4 h-4"></i>
+                                        Bukti Pembayaran
+                                    </a>
+                                @endif
                             </div>
                         </td>
                     @endif
+
                 </tr>
             @endforeach
         </tbody>

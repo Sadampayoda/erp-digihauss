@@ -53,7 +53,7 @@
                 'description' => 'Uraian',
                 'created_by_name' => 'Pembuat Kas',
                 'updated_by_name' => 'Modifikasi Kas',
-            ]" onEdit="onEdit" onDelete="onDelete" />
+            ]" onEdit="onEdit" onDelete="onDelete"  onPaymentProof="onPaymentProof" />
 
         </div>
 

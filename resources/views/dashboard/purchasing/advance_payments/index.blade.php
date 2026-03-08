@@ -45,7 +45,7 @@
             'vendorName' => 'Vendor',
             'status' => 'Status',
             'advance_amount' => 'Bayar Uang Muka',
-        ]" onEdit="onEdit" onDelete="onDelete" />
+        ]" onEdit="onEdit" onDelete="onDelete"  onPaymentProof="onPaymentProof" />
     </div>
 
     <script>

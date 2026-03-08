@@ -50,7 +50,7 @@
                 'description' => 'Uraian',
                 'created_by_name' => 'Pembuat Bank',
                 'updated_by_name' => 'Modifikasi Bank',
-            ]" onEdit="onEdit" onDelete="onDelete" />
+            ]" onEdit="onEdit" onDelete="onDelete"  onPaymentProof="onPaymentProof" />
 
         </div>
 
