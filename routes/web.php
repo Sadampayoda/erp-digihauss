@@ -4,6 +4,7 @@ use App\Http\Controllers\AdvancePaymentController;
 use App\Http\Controllers\AdvanceSaleController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BrandController;
+use App\Http\Controllers\CashController;
 use App\Http\Controllers\CoaController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
@@ -36,12 +37,17 @@ Route::middleware('auth')->group(function () {
         });
     });
 
+    // Sales
     Route::resource('advance-sales', AdvanceSaleController::class)->names('advance-sales');
     Route::resource('sales-invoices', SalesInvoiceController::class)->names('sales-invoices');
     Route::resource('sales-returns', SalesReturnController::class)->names('sales-returns');
 
+    // Purchasing
     Route::resource('advance-payments',AdvancePaymentController::class)->names('advance-payments');
     Route::resource('receipt-invoices',ReceiptInvoiceController::class)->names('receipt-invoices');
+
+    // Finance
+    Route::resource('cashs',CashController::class)->names('cashs');
 
 
     Route::get('items/stock', ItemStockController::class)->name('items.stock');

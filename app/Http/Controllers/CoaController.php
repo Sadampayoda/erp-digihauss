@@ -32,6 +32,9 @@ class CoaController extends Controller
 
                 $data = $this->model->where('level',3)
                     ->orderBy('code')
+                    ->when($request->type, function($query) use ($request) {
+                        $query->where('type',$request->type);
+                    })
                     ->get()
                     ->map(function ($coa) {
                         return [
@@ -39,6 +42,7 @@ class CoaController extends Controller
                             'name' => "{$coa->code} - {$coa->name}",
                         ];
                     });
+
 
                 return $this->sendSuccess(
                     data: $data,

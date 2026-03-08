@@ -12,14 +12,14 @@
     <div class="flex flex-col gap-4 py-6">
         <form id="informationForm" class="flex flex-col gap-4">
             {{-- SALES (SELECT) --}}
-            <x-input-select name="sales" label="Sales" :route="route('contacts.index')" placeholder="Pilih Sales"
+            <x-input-select name="sales" label="Sales" :route="route('users.index')" placeholder="Pilih Sales"
                 border_color="border-stone-300" class="rounded-sm p-1 md:p-2" :selected="$data->sales ?? null" required />
 
             <x-input-text type="number" name="paid_amount" label="Pembayaran Invoice" border_color="border-stone-300"
                 class="rounded-sm p-1 md:p-2" :value="$data->paid_amount ?? 0" required />
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 ">
-                <x-input-text type="number" name="advance_amount" label="Biaya sesudah Uang Muka" description="Potongan dari uang muka"
+                <x-input-text type="number" name="advance_amount" label="Biaya Uang Muka" description="Potongan uang muka"
                 border_color="border-stone-300" class="rounded-sm p-1 md:p-2" :value="$data->advance_amount ?? 0" readonly />
                 <x-input-text type="number" name="remaining_amount" label="Sisa Pembayaran" description="Sisa yang harus di bayar"
                     border_color="border-stone-300" class="rounded-sm p-1 md:p-2" :value="$data->remaining_amount ?? 0" readonly />

@@ -23,14 +23,20 @@ class SettingCoa extends Model
     ];
 
     public static array $module = [
-        'advance-sale' => 'Uang Muka Penjualan',
-        'sales-invoice' => 'Invoice Penjualan',
-        'sales-return' => 'Pengembalian Barang Customer',
-        'advance-payment' => 'Uang Muka Pembelian',
-        'receipt-invoice' => 'Invoice Pembelian',
-        'purchase-return' => 'Pengembalian Barang Vendor',
-        'trade-ins' => 'Tukar Tambah',
-        'service' => 'Service Iphone'
+        'advance-sale'     => 'Uang Muka Penjualan',
+        'sales-invoice'    => 'Invoice Penjualan',
+        'sales-return'     => 'Pengembalian Barang Customer',
+        'advance-payment'  => 'Uang Muka Pembelian',
+        'receipt-invoice'  => 'Invoice Pembelian',
+        'purchase-return'  => 'Pengembalian Barang Vendor',
+        'trade-ins'        => 'Tukar Tambah',
+        'service'          => 'Service Iphone',
+
+        'cash-in'          => 'Kas Masuk',
+        'cash-out'         => 'Kas Keluar',
+
+        'bank-in'          => 'Bank Masuk',
+        'bank-out'         => 'Bank Keluar',
     ];
 
     public static array $action = [

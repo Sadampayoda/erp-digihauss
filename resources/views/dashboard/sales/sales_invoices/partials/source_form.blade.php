@@ -14,9 +14,9 @@
         <div class="sm:col-span-2">
             <x-input-select name="source" label="Source (Sumber data)" placeholder="Sumber data" :required="true"
                 :options="[
-                    'receipt-invoice' => 'Receipt Invoice (Invoice Pembelian)',
-                    'advance-payment' => 'Advance Payment (Uang Muka Pembelian)',
-                ]" :selected="@$data->source ?? 'receipt-invoice'" class="rounded-sm" />
+                    'sales-invoice' => 'Sales Invoice (Invoice Penjualan)',
+                    'advance-sales' => 'Advance Sales (Uang Muka Penjualan)',
+                ]" :selected="@$data->source ?? 'sales-invoice'" class="rounded-sm" />
         </div>
 
         <div>

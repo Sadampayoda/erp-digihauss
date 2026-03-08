@@ -26,16 +26,22 @@ class JournalRepository
         $details,
         $module,
         $action,
-        $columnPaymentMethod,
-        $columnContact,
-        $columnDescription,
+        $columnPaymentMethod = null,
+        $columnContact = null,
+        $columnDescription = '',
         $columnNominalDebit,
         $columnNominalCredit,
+        $columnCoaDebit = null,
+        $columnCoaCredit = null,
     ) {
-
         if ($data->status < 2) return;
 
-        $relatedPaymentMethod = PaymentMethod::findOrFail($data->$columnPaymentMethod);
+
+        $instanJournal = ($columnCoaCredit && $columnCoaDebit);
+
+        $relatedPaymentMethod = PaymentMethod::find($data->$columnPaymentMethod);
+
+
 
         $settingCoa = SettingCoa::where('module', $module)
             ->where('is_active', true)
@@ -43,7 +49,7 @@ class JournalRepository
             ->where('payment_method', $data->$columnPaymentMethod)
             ->get();
 
-        if ($settingCoa->isEmpty()) {
+        if ($settingCoa->isEmpty() && !$instanJournal) {
             throw ValidationException::withMessages([
                 'journal' => 'Fitur ' . SettingCoa::$module[$module] . ' belum melakukan setting COA untuk aksi ' . SettingCoa::$action[$action] . ' dan pembayaran ' . $relatedPaymentMethod->name ?? null,
             ]);
@@ -51,14 +57,14 @@ class JournalRepository
 
 
         $debitCoa = $settingCoa->where('position', 'debit')->first();
-        if (!$debitCoa) {
+        if (!$debitCoa && !$instanJournal) {
             throw ValidationException::withMessages([
                 'journal' => 'Fitur ' . SettingCoa::$module[$module] . ' belum melakukan setting COA aksi ' . SettingCoa::$action[$action] . ' untuk debit',
             ]);
         }
 
         $creditCoa = $settingCoa->where('position', 'credit')->first();
-        if (!$creditCoa) {
+        if (!$creditCoa && !$instanJournal) {
             throw ValidationException::withMessages([
                 'journal' => 'Fitur ' . SettingCoa::$module[$module] . ' belum melakukan setting COA aksi ' . SettingCoa::$action[$action] . ' untuk credit',
             ]);
@@ -79,15 +85,15 @@ class JournalRepository
             [
                 'journal_date'     => $data->transaction_date,
                 'reference_number' => $data->transaction_number,
-                'contact'          => $relateContact->code ?? null,
+                'contact'          => $relateContact?->code ?? null,
                 'description'      => $data->$columnDescription,
             ]
         );
 
         if ($journal) {
             $journal->details()->delete();
-            $relatedCoaDebit = Coa::find($debitCoa->coa_id);
-            $relatedCoaCredit = Coa::find($creditCoa->coa_id);
+            $relatedCoaDebit = Coa::find($debitCoa->coa_id ?? $columnCoaDebit);
+            $relatedCoaCredit = Coa::find($creditCoa->coa_id ?? $columnCoaCredit);
             if (!$relatedCoaDebit || !$relatedCoaCredit) {
                 throw ValidationException::withMessages([
                     'journal' => 'Coa tidak ditemukan, silahkan atur Coa dan setting',
@@ -121,7 +127,7 @@ class JournalRepository
                     // Untuk menyeimbangkan debit dan credit
                     // dikarenakan perusahaan tidak mengembalikan full uang customer
                     $coaSalesReturn = SettingCoa::where('module', $module)
-                            ->where('action', $action)->where('payment_method',$columnPaymentMethod)->first();
+                        ->where('action', $action)->where('payment_method', $columnPaymentMethod)->first();
                     if (!$coaSalesReturn) {
                         throw ValidationException::withMessages([
                             'journal' => 'Fitur ' . SettingCoa::$module[$module] . ' belum melakukan setting COA aksi ' . SettingCoa::$action[$action] . ' untuk selisih, dikarenakan tidak membayar full ke customer',
@@ -172,6 +178,7 @@ class JournalRepository
             $this->summaryTotalDebitCredit($journal);
         }
     }
+
 
     public function destroyJournal(
         $data

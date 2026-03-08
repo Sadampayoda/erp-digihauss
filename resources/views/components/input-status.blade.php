@@ -1,12 +1,13 @@
 @props([
     'name',
     'label' => null,
-    'id' => false,
+    'id' => null,
     'placeholder' => null,
     'class' => '',
     'error' => null,
     'selected' => null,
     'border_color' => null,
+    'required' => false,
 ])
 
 @php
@@ -20,6 +21,9 @@
             class="text-sm md:text-base lg:text-base font-medium text-slate-700
                    dark:text-slate-600">
             {{ $label }}
+            @if ($required)
+                <span class="text-red-500">*</span>
+            @endif
         </label>
     @endif
 

@@ -107,9 +107,6 @@ class ReceiptInvoiceController extends Controller
                     transactionDate: $data['transaction_date'],
                 ),
                 'remaining_amount' => $data['remaining_amount'],
-                'created_by' => 0,
-                'updated_by' => 0,
-                'deleted_by' => 0,
             ]));
 
             $this->receiptInvoiceRepo->createOrUpdateItems($receiptInvoice->fresh(), $data);

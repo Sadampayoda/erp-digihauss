@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 trait CreatedUpdatedDeletedBy
@@ -30,5 +31,37 @@ trait CreatedUpdatedDeletedBy
                 $model->save();
             }
         });
+    }
+
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updater()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function deleter()
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
+    }
+
+
+    public function getCreatedByNameAttribute()
+    {
+        return $this->creator?->name;
+    }
+
+    public function getUpdatedByNameAttribute()
+    {
+        return $this->updater?->name;
+    }
+
+    public function getDeletedByNameAttribute()
+    {
+        return $this->deleter?->name;
     }
 }

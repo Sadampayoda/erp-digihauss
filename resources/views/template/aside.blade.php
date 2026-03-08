@@ -49,6 +49,11 @@
                     <i data-lucide="check-circle" class="w-4 h-4"></i>
                     <span>Kondisi Barang</span>
                 </a>
+                <a href="/produk/stok"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
+                    <i data-lucide="wrench" class="w-4 h-4"></i>
+                    <span>Service Barang</span>
+                </a>
             </div>
         </div>
 
@@ -152,12 +157,12 @@
             </button>
 
             <div id="menu-finance" class="ml-10 mt-1 space-y-1 overflow-hidden max-h-0 transition-all duration-300">
-                <a href="/finance/cash-in"
+                <a href="{{ route('cashs.index',['type' => 'in']) }}"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
                     <i data-lucide="arrow-down-circle" class="w-4 h-4"></i>
                     <span>Kas Masuk</span>
                 </a>
-                <a href="/finance/cash-out"
+                <a href="{{ route('cashs.index',['type' => 'out']) }}"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
                     <i data-lucide="arrow-up-circle" class="w-4 h-4"></i>
                     <span>Kas Keluar</span>
@@ -171,6 +176,11 @@
                     class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
                     <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
                     <span>Bank Keluar</span>
+                </a>
+                <a href="{{ route('journals.index',['menu' => 'finance']) }}"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg {{ Request::is('journals*') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }} hover:bg-stone-200">
+                    <i data-lucide="trending-up" class="w-4 h-4"></i>
+                    <span>Journal Finance</span>
                 </a>
             </div>
         </div>
