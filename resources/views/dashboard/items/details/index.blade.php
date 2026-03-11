@@ -20,7 +20,7 @@
                     Filter
                 </p>
             </button>
-            <a href="{{ route('items.create') }}"
+            <a href="{{ route('item.details.create') }}"
                 class="
                     group flex items-center gap-2
                     bg-emerald-400 text-white
@@ -34,23 +34,28 @@
                 <i data-lucide="plus" class="w-5 h-5 transition-transform duration-300 group-hover:rotate-90"></i>
 
                 <p class="hidden sm:block text-sm lg:text-base font-medium">
-                    Tambah Barang
+                    Tambah Detail
                 </p>
             </a>
         </div>
 
-        <x-table :data="$items" :labels="[
-            'code' => 'Kode Barang',
-            'name' => 'Nama Barang',
-            'model' => 'Model',
-            'brand_name' => 'Brand'
+        <x-table :data="$details" :labels="[
+            'item_code' => 'Kode Barang',
+            'item_name' => 'Nama Barang',
+            'serial_number' => 'No Seri',
+            'color' => 'Warna',
+            'internal_storage' => 'Storage',
+            'purchase_price' => 'Harga beli',
+            'service' => 'Harga Service',
+            'sale_price' => 'Harga Jual'
+
         ]" onEdit="openEditItemModal"  />
 
     </div>
 
     <script>
         function openEditItemModal(id, data) {
-            let url = "{{ route('items.edit', ':id') }}";
+            let url = "{{ route('item.details.edit', ':id') }}";
             url = url.replace(':id', id);
             window.location.href = url;
         }

@@ -9,6 +9,9 @@ use App\Http\Controllers\CashController;
 use App\Http\Controllers\CoaController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ItemConditionController;
+use App\Http\Controllers\ItemController;
+use App\Http\Controllers\ItemDetailController;
 use App\Http\Controllers\ItemsController;
 use App\Http\Controllers\ItemStockController;
 use App\Http\Controllers\JournalController;
@@ -53,8 +56,10 @@ Route::middleware('auth')->group(function () {
 
 
     Route::get('items/stock', ItemStockController::class)->name('items.stock');
-    Route::resource('items', ItemsController::class)->names('items');
+    Route::resource('item/details',ItemDetailController::class)->names('item.details');
+    Route::resource('item/conditions',ItemConditionController::class)->names('item.conditions');
     Route::resource('contacts', ContactController::class)->names('contacts');
+    Route::resource('items', ItemController::class)->names('items');
 
 
     Route::resource('brands', BrandController::class)->names('brands');

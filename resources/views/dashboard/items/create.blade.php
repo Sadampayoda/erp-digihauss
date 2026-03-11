@@ -20,76 +20,6 @@
                     @include('dashboard.items.partials.info_form')
                 </div>
 
-                <div class="bg-white rounded-xl p-5">
-                    <form id="otherForm">
-                        <h2 class="text-lg font-semibold text-slate-700 mb-1">
-                            Condition & Grading
-                        </h2>
-
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
-
-                            <!-- CONDITION -->
-                            <div class="flex flex-wrap gap-3">
-
-                                <label class="cursor-pointer">
-                                    <input type="radio" name="condition" value="1" class="hidden peer"
-                                        {{ old('condition', @$data->condition) == 1 ? 'checked' : '' }}>
-                                    <div
-                                        class="px-4 py-2 rounded-lg border
-                                            peer-checked:border-blue-600
-                                            peer-checked:bg-blue-50
-                                            peer-checked:text-blue-600">
-                                        New / Sealed
-                                    </div>
-                                </label>
-
-                                <label class="cursor-pointer">
-                                    <input type="radio" name="condition" value="2" class="hidden peer"
-                                        {{ old('condition', @$data->condition) == 2 ? 'checked' : '' }}>
-                                    <div
-                                        class="px-4 py-2 rounded-lg border
-                                            peer-checked:border-blue-600
-                                            peer-checked:bg-blue-50
-                                            peer-checked:text-blue-600">
-                                        Grade A
-                                    </div>
-                                </label>
-
-                                <label class="cursor-pointer">
-                                    <input type="radio" name="condition" value="3" class="hidden peer"
-                                        {{ old('condition', @$data->condition) == 3 ? 'checked' : '' }}>
-                                    <div
-                                        class="px-4 py-2 rounded-lg border
-                                            peer-checked:border-blue-600
-                                            peer-checked:bg-blue-50
-                                            peer-checked:text-blue-600">
-                                        Grade B
-                                    </div>
-                                </label>
-
-                            </div>
-
-
-                            <!-- HARGA BELI -->
-                            <div>
-                                <x-input-text type="number" name="purchase_price" label="Harga Beli" placeholder="6000000"
-                                    :value="old('purchase_price', @$data->purchase_price)" class="rounded-sm p-2" :required="true"
-                                    border_color="border-stone-300" />
-                            </div>
-
-                            <!-- HARGA JUAL -->
-                            <div>
-                                <x-input-text type="number" name="sale_price" label="Harga Jual" placeholder="8000000"
-                                    :value="old('sale_price', @$data->sale_price)" class="rounded-sm p-2" :required="true"
-                                    border_color="border-stone-300" />
-                            </div>
-
-                        </div>
-                    </form>
-
-                </div>
-
-
             </div>
 
             <div class="flex flex-col gap-6">
@@ -157,7 +87,7 @@
             setButtonLoading(true, 'submit-item', 'btn-text-item');
             const data = new FormData();
 
-            ['generalForm', 'infoForm', 'otherForm', 'photoForm'].forEach(id => {
+            ['generalForm', 'infoForm','photoForm'].forEach(id => {
                 const form = document.getElementById(id);
                 if (!form) return;
 
@@ -166,7 +96,6 @@
                 });
             });
 
-            data.set('status', $('#status').is(':checked') ? 1 : 0);
 
             if (editMode) {
                 data.append('_method', 'PUT');

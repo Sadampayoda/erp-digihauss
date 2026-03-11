@@ -25,7 +25,7 @@
                 advance_sale: true
             },
             success: function(res) {
-
+                console.log(res)
                 res.data.forEach(item => {
                     item.quantity = 1
                     renderDetailRow(item, setupColumn)

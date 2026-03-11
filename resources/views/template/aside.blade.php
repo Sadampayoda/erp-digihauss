@@ -39,12 +39,17 @@
                     <i data-lucide="package" class="w-4 h-4"></i>
                     <span>Barang</span>
                 </a>
+                <a href="{{ route('item.details.index') }}"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg {{ Request::is('item/details*') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }} hover:bg-stone-200">
+                    <i data-lucide="smartphone" class="w-4 h-4"></i>
+                    <span>Detail Barang</span>
+                </a>
                 <a href="{{ route('items.stock') }}"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg {{ Request::is('items/stock') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }} hover:bg-stone-200">
                     <i data-lucide="boxes" class="w-4 h-4"></i>
                     <span>Stok Barang</span>
                 </a>
-                <a href="/produk/stok"
+                <a href="{{ route('item.conditions.index') }}"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
                     <i data-lucide="check-circle" class="w-4 h-4"></i>
                     <span>Kondisi Barang</span>

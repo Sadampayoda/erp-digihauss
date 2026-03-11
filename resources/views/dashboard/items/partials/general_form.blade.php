@@ -1,7 +1,6 @@
 <div class="flex items-center justify-between mb-5">
     <h2 class="text-lg font-semibold text-slate-700">Product Identity</h2>
     <div class="flex items-center gap-2">
-        <x-input-checkbox name="status" label="Aktif" :checked="@$data->status" :value="1" />
         <button onclick="submit()" id="submit-item"
             class="
                 w-full sm:w-auto

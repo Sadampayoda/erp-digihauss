@@ -48,6 +48,19 @@
                                     {{ $status['label'] }}
                                 </span>
                             </td>
+                        @elseif ($key === 'ready')
+                            <td class="px-4 py-3">
+                                @if ($item->$key)
+                                    <span
+                                        class="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                                        Ready
+                                    </span>
+                                @else
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
+                                        Tidak Ready
+                                    </span>
+                                @endif
+                            </td>
                         @else
                             <td class="px-4 py-3">{{ $item->$key }}</td>
                         @endif
@@ -79,11 +92,11 @@
                                     </button>
                                 @endif
                                 @if ($onPaymentProof)
-                                    <a href="#"
-                                        class="flex items-center text-slate-700 gap-2 px-4 py-2 text-sm hover:bg-slate-100">
+                                    <button class="btn-open-payment-proof-modal" data-id="{{ $item->id }}"
+                                        class="flex flex-col items-center text-slate-700 gap-2 px-4 py-2 text-sm hover:bg-slate-100">
                                         <i data-lucide="file-text" class="w-4 h-4"></i>
                                         Bukti Pembayaran
-                                    </a>
+                                    </button>
                                 @endif
                             </div>
                         </td>
@@ -113,6 +126,53 @@
     </a>
 </div>
 
+<x-modal onSubmit="submitPaymentProod" id="payment-proof-modal" title="Upload Bukti Pembayaran">
+
+    <form id="payment-proof-form" method="POST" enctype="multipart/form-data" class="flex flex-col gap-5">
+        @csrf
+
+        <input type="hidden" name="module" id="payment-module">
+        <input type="hidden" name="transaction_id" id="payment-transaction-id">
+
+        {{-- Upload Area --}}
+        <div id="upload-area"
+            class="border-2 border-dashed border-orange-300 rounded-xl
+        p-10 flex flex-col items-center justify-center text-center
+        bg-orange-50 hover:bg-orange-100 cursor-pointer transition">
+
+            <i data-lucide="upload-cloud" class="w-10 h-10 text-orange-500 mb-3"></i>
+
+            <p class="font-medium text-slate-700">
+                Klik atau seret file ke sini
+            </p>
+
+            <p class="text-sm text-slate-500 mt-1">
+                Mendukung format JPG, PNG atau PDF (Maks 5MB)
+            </p>
+
+            <button type="button"
+                class="mt-4 bg-orange-500 hover:bg-orange-600
+            text-white px-5 py-2 rounded-lg">
+                Pilih File
+            </button>
+
+            <input type="file" id="payment-files" name="image[]" multiple class="hidden"
+                accept=".jpg,.jpeg,.png,.pdf">
+        </div>
+
+        <div>
+            <p class="font-semibold text-slate-700 mb-2">
+                Daftar Lampiran
+            </p>
+
+            <div id="file-list" class="flex flex-col gap-3">
+            </div>
+        </div>
+
+    </form>
+
+</x-modal>
+
 <script>
     function toggleMenuAction(event, button) {
         event.stopPropagation();
@@ -132,4 +192,12 @@
             menu.classList.add('hidden');
         });
     });
+
+    const modalTable = document.getElementById('payment-proof-modal')
+    document.querySelectorAll('.btn-open-payment-proof-modal').forEach(btn => {
+        btn.addEventListener('click', () => {
+            modalTable.classList.remove('hidden')
+            modalTable.classList.add('flex')
+        })
+    })
 </script>
