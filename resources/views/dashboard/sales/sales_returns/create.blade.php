@@ -147,9 +147,8 @@
                                 item.id = item?.item?.id
                                 item.image = item?.item?.image
                                 item.name = item.item_name;
-                                item.variant = item.item?.variant
                                 item.si_quantity = item.quantity
-                                item.quantity = 0
+                                item.quantity = 1
                                 renderDetailRow(item, setup)
                             });
 

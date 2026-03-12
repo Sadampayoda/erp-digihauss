@@ -94,7 +94,7 @@
 
 
     const searchCustomer = (customerId) => {
-        2
+        
         if (!customerId) return;
 
 

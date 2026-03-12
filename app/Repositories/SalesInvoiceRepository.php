@@ -100,7 +100,7 @@ class SalesInvoiceRepository
 
     protected function ensureSellingPriceNotBelowCost($item)
     {
-        $salePrice = ($item['sale_price'] * $item['quantity']) + $item['service'];
+        $salePrice = ($item['sale_price'] * $item['quantity']);
         $purchasePrice = $item['purchase_price'] * $item['quantity'];
         if ($salePrice < $purchasePrice) {
             throw ValidationException::withMessages([
@@ -232,23 +232,23 @@ class SalesInvoiceRepository
                     columnNominalCredit: 'sub_total_purchase_price'
                 );
 
-                $salesInvoice->sub_total_service = $salesInvoice->items
-                    ->sum(fn ($item) => $item->service);
-                // Biaya Service debit
-                // Kas credit
-                if($salesInvoice->sub_total_service > 0) {
-                    $journal->generateJournal(
-                        data: $salesInvoice,
-                        details: $salesInvoice->items,
-                        module: 'service',
-                        action: 'service',
-                        columnPaymentMethod: 'payment_method',
-                        columnContact: 'customer',
-                        columnDescription: 'description',
-                        columnNominalDebit: 'sub_total_service',
-                        columnNominalCredit: 'sub_total_service'
-                    );
-                }
+                // $salesInvoice->sub_total_service = $salesInvoice->items
+                //     ->sum(fn ($item) => $item->service);
+                // // Biaya Service debit
+                // // Kas credit
+                // if($salesInvoice->sub_total_service > 0) {
+                //     $journal->generateJournal(
+                //         data: $salesInvoice,
+                //         details: $salesInvoice->items,
+                //         module: 'service',
+                //         action: 'service',
+                //         columnPaymentMethod: 'payment_method',
+                //         columnContact: 'customer',
+                //         columnDescription: 'description',
+                //         columnNominalDebit: 'sub_total_service',
+                //         columnNominalCredit: 'sub_total_service'
+                //     );
+                // }
                 break;
             case 'delete':
                 $journal->destroyJournal($salesInvoice);

@@ -17,17 +17,19 @@
         }
 
         $.ajax({
-            url: "{{ route('items.index') }}",
+            url: "{{ route('item.details.index') }}",
             type: 'GET',
             data: {
                 items: selected,
                 _token: '{{ csrf_token() }}',
-                advance_sale: true
+                transaction: true
             },
             success: function(res) {
-                console.log(res)
                 res.data.forEach(item => {
+                    item.image = item.item?.image
+                    item.name = item.item?.name
                     item.quantity = 1
+                    item.item_detail_id = item.id
                     renderDetailRow(item, setupColumn)
                 })
                 summaryForm();
@@ -52,8 +54,6 @@
         item.id = item?.item?.id
         item.image = item?.item?.image
         item.name = item.item_name;
-        item.variant = item.item?.variant
-        console.log(item.item);
         renderDetailRow(item, setup)
     })
 

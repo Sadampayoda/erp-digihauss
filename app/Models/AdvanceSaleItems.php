@@ -22,7 +22,9 @@ class AdvanceSaleItems extends Model
         'purchase_price',
         'service',
         'notes',
-        'sales_invoice_items_quantity'
+        'sales_invoice_items_quantity',
+        'item_detail_id',
+        'serial_number'
     ];
 
     public function advanceSale()
@@ -32,7 +34,7 @@ class AdvanceSaleItems extends Model
 
     public function item()
     {
-        return $this->hasOne(Items::class,'id','item_id');
+        return $this->hasOne(Item::class,'id','item_id');
     }
 
     public function getOutstandingQuantityAttribute()

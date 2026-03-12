@@ -13,6 +13,7 @@ use App\Traits\Validate;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use App\Models\ItemDetail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -28,15 +29,15 @@ class AdvanceSaleController extends Controller
             'detail_id' => ['label' => ' ', 'type' => 'hidden'],
             'image' => ['label' => 'Gambar', 'type' => 'image'],
             'name' => ['label' => 'Nama Produk'],
-            'variant' => ['label' => 'Varian'],
+            'serial_number' => ['label' => 'Seri'],
             'sale_price' => ['label' => 'Harga Jual', 'edit' => true, 'type' => 'number'],
             'purchase_price' => ['label' => 'Harga Beli', 'type' => 'number'],
-            'quantity' => ['label' => 'Qty', 'edit' => true, 'type' => 'number'],
-            'service' => ['label' => 'Servis', 'edit' => true, 'type' => 'number'],
+            'quantity' => ['label' => 'Qty', 'type' => 'number'],
             'sub_total' => ['label' => 'Sub Total', 'type' => 'number'],
             'margin' => ['label' => 'Margin', 'type' => 'number'],
             'margin_percentage' => ['label' => 'Margin (%)', 'type' => 'number'],
-            'action' => ['label' => 'Action', 'delete' => true]
+            'action' => ['label' => 'Action', 'delete' => true],
+            'item_detail_id' => ['label' => ' ', 'type' => 'hidden'],
         ];
     }
     /**
@@ -84,7 +85,7 @@ class AdvanceSaleController extends Controller
     {
 
         return view('dashboard.sales.advance_sales.create', [
-            'items' => Items::all(),
+            'items' => ItemDetail::all(),
             'setupColumn' => $this->setupColumn
         ]);
     }
@@ -143,8 +144,8 @@ class AdvanceSaleController extends Controller
         $data = $this->existsWhereId($this->model, $id);
         // dd($this->model->with('items.item')->find($id));
         return view('dashboard.sales.advance_sales.create', [
-            'data' => $this->model->with('items.item')->find($id),
-            'items' => Items::all(),
+            'data' => $this->model->with('items.item.details')->find($id),
+            'items' => ItemDetail::all(),
             'setupColumn' => $this->setupColumn
         ]);
     }

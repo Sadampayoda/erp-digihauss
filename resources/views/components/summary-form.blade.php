@@ -28,11 +28,13 @@
             <x-input-text :readonly="true" type="number" name="item_quantity" label="Jumlah Barang"
                 class="rounded-lg px-3 py-2" value="0" />
 
-            <x-input-text :readonly="true" type="number" :name="$parentSubTotal" label="{{ $module == 'sales' ? 'Total Harga Jual' : 'Total Harga Beli'}}" class="rounded-lg px-3 py-2"
+            <x-input-text :readonly="true" type="number" :name="$parentSubTotal"
+                label="{{ $module == 'sales' ? 'Total Harga Jual' : 'Total Harga Beli' }}" class="rounded-lg px-3 py-2"
                 value="0" />
 
-            <x-input-text :readonly="true" type="number" :name="$parentPurchasePrice" label="{{ $module == 'purchase' ? 'Total Harga Jual' : 'Total Harga Beli'}}" class="rounded-lg px-3 py-2"
-                value="0" />
+            <x-input-text :readonly="true" type="number" :name="$parentPurchasePrice"
+                label="{{ $module == 'purchase' ? 'Total Harga Jual' : 'Total Harga Beli' }}"
+                class="rounded-lg px-3 py-2" value="0" />
         </div>
 
         {{-- ROW 2 --}}
@@ -91,77 +93,103 @@
         const rows = tbody.querySelectorAll('tr[data-id]');
 
         Array.from(rows).forEach((row) => {
+
             const quantity = getInputValue(ids.columnQuantityTable, row);
             const price = getInputValue(ids.columnPriceTable, row);
             const purchasePrice = getInputValue(ids.columnPurchasePriceTable, row);
             const service = getInputValue(ids.columnServiceTable, row);
 
-            const basePrice = parsePrice(price,purchasePrice)
+            const basePrice = parsePrice(price, purchasePrice);
 
-            const subTotal = (basePrice.default_price * quantity) + service
+            const revenue = basePrice.base_price * quantity;
+            const cost = basePrice.compare_price * quantity;
+
+            const subTotal = revenue + service;
+
             putInputValue(ids.columnSubTotalTable, row, subTotal);
 
             if (ids.columnMarginTable) {
-                const margin = subTotal - (basePrice.country_price * quantity);
-                const marginPercentage = subTotal ?
-                    Math.round((margin / subTotal) * 100) :
-                    0;
 
+                const margin = revenue - cost;
+
+                const marginPercentage = revenue ?
+                    Math.round((margin / revenue) * 100) :
+                    0;
 
                 putInputValue(ids.columnMarginTable, row, margin);
                 putInputValue(ids.columnMarginPercentageTable, row, marginPercentage);
-
             }
 
-        })
+        });
 
         const subTotal = Array.from(rows).reduce((total, item) => {
+
             const quantity = getInputValue(ids.columnQuantityTable, item);
-            const price = getInputValue(ids.columnPriceTable, item);
-            const basePrice = parsePrice(price,getInputValue(ids.columnPurchasePriceTable, item))
+            const salePrice = getInputValue(ids.columnPriceTable, item);
+            const purchasePrice = getInputValue(ids.columnPurchasePriceTable, item);
 
+            const basePrice = parsePrice(salePrice, purchasePrice);
 
-            const subTotal = basePrice.default_price * quantity;
+            return total + (basePrice.base_price * quantity);
 
-            return total + subTotal
-        }, 0)
+        }, 0);
+
 
         const purchasePrice = Array.from(rows).reduce((total, item) => {
+
             const quantity = getInputValue(ids.columnQuantityTable, item);
-            const purchasePrice = getInputValue(ids.columnPurchasePriceTable, item);
-            const basePrice = parsePrice(getInputValue(ids.columnPriceTable, item),purchasePrice)
-            const totalPurchasePrice = basePrice.country_price * quantity
-            return total + totalPurchasePrice
-        }, 0)
+            const salePrice = getInputValue(ids.columnPriceTable, item);
+            const purchase = getInputValue(ids.columnPurchasePriceTable, item);
+
+            const basePrice = parsePrice(salePrice, purchase);
+
+            return total + (basePrice.compare_price * quantity);
+
+        }, 0);
+
 
         const service = Array.from(rows).reduce((total, item) => {
-            const service = getInputValue(ids.columnServiceTable, item);
-            return total + service
-        }, 0)
 
-        const margin = (subTotal + service) - purchasePrice
-        const marginPercentage = subTotal ?
-            Math.round((margin / (subTotal + service)) * 100) :
+            const service = getInputValue(ids.columnServiceTable, item) || 0;
+
+            return total + service;
+
+        }, 0);
+
+        const totalTransaction = subTotal + service;
+
+        const margin = totalTransaction - purchasePrice;
+
+        const marginPercentage = totalTransaction ?
+            Math.round((margin / totalTransaction) * 100) :
             0;
 
-        console.log(subTotal,purchasePrice)
 
         const form = document.getElementById('subTotalForm');
 
         form.querySelector('[name="item_quantity"]').value = rows.length;
+
         form.querySelector(`[name="${ids.parentSubTotal}"]`).value = subTotal;
         form.querySelector(`[name="${ids.parentPurchasePrice}"]`).value = purchasePrice;
         form.querySelector(`[name="${ids.parentService}"]`).value = service;
+
         form.querySelector(`[name="${ids.parentMargin}"]`).value = margin;
         form.querySelector(`[name="${ids.parentMarginPercentage}"]`).value = marginPercentage;
-        form.querySelector(`[name="${ids.parentPaidAmount}"]`).value = subTotal + service;
+
+        if (ids.parentPaidAmount) {
+            form.querySelector(`[name="${ids.parentPaidAmount}"]`).value = totalTransaction;
+        }
 
         const advanceEl = document.getElementById(ids.parentAdvanceAmount);
         const remainingEl = document.getElementById(ids.parentRemainingAmount);
 
         if (advanceEl && remainingEl) {
-            remainingEl.value = (subTotal + service) - Number(advanceEl.value);
-        };
+
+            const advance = Number(advanceEl.value) || 0;
+
+            remainingEl.value = totalTransaction - advance;
+
+        }
 
     }
 
@@ -195,27 +223,25 @@
         }
     });
 
-    const parsePrice = (price, purchasePrice) => {
-        let defaultPrice = price;
-        let countryPrice = purchasePrice
-        switch (ids.module) {
-            case 'sales':
-                defaultPrice = price;
-                countryPrice = purchasePrice
-                break;
-            case 'purchase':
-                defaultPrice = purchasePrice;
-                countryPrice = price
-                break;
-            default:
-                defaultPrice = price;
-                countryPrice = purchasePrice
-                break;
+    const parsePrice = (salePrice, purchasePrice) => {
+
+        if (ids.module === 'sales') {
+            return {
+                base_price: salePrice,
+                compare_price: purchasePrice
+            }
+        }
+
+        if (ids.module === 'purchase') {
+            return {
+                base_price: purchasePrice,
+                compare_price: salePrice
+            }
         }
 
         return {
-            'default_price' : defaultPrice,
-            'country_price': countryPrice
+            base_price: salePrice,
+            compare_price: purchasePrice
         }
     }
 </script>

@@ -158,7 +158,6 @@
                             item.id = item?.item?.id
                             item.image = item?.item?.image
                             item.name = item.item_name;
-                            item.variant = item.item?.variant
                             item.quantity = item.outstanding_quantity
                             renderDetailRow(item, setup)
                         });
@@ -168,8 +167,9 @@
 
                         const remainingAmount = document.getElementById(
                             'remaining_amount')
-                        if (data.remaining_amount) {
-                            remainingAmount.value = data.remaining_amount - data.advance_amount;
+                        const paidTotal = document.getElementById('grand_total').value
+                        if (paidTotal) {
+                            remainingAmount.value = paidTotal - data.advance_amount;
                         }
 
                         lockDetailTableColumns(

@@ -34,18 +34,13 @@ class AdvanceSaleRepository
                 $ids[] = $detail->id;
             } else {
 
-                $dataCreate = [
+
+                $detail = AdvanceSaleItems::create(array_merge($item,[
+                    'coa' => 1,
                     'advance_sale_id' => $advanceSale->id,
-                    'item_id'         => (int) $item['item_id'],
                     'item_name'       => $item['name'],
                     'item_code'       => $relatedItem->code ?? $relatedItem->item_code,
-                    'quantity'        => (int) $item['quantity'],
-                    'sale_price'      => (float) $item['sale_price'],
-                    'purchase_price'  => (float) $item['purchase_price'],
-                    'service'         => (float) ($item['service'] ?? 0),
-                    'coa'             => 1,
-                ];
-                $detail = AdvanceSaleItems::create($dataCreate);
+                ]));
 
 
                 $ids[] = $detail->id;
@@ -76,7 +71,7 @@ class AdvanceSaleRepository
 
     protected function ensureSellingPriceNotBelowCost($item)
     {
-        $salePrice = ($item['sale_price'] * $item['quantity']) + $item['service'];
+        $salePrice = ($item['sale_price'] * $item['quantity']);
         $purchasePrice = $item['purchase_price'] * $item['quantity'];
         if ($salePrice < $purchasePrice) {
             throw ValidationException::withMessages([

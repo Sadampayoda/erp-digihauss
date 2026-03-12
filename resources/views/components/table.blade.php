@@ -6,9 +6,14 @@
     'checkbox' => false,
     'titleEdit' => 'Edit',
     'onPaymentProof' => null,
+    'onSearch' => null,
+    'onPrefix' => null,
 ])
 <div class="overflow-x-auto w-screen lg:w-full h-120">
-    <table class="w-full text-sm text-left ">
+    @if ($onSearch)
+        <x-input-select name="search" label="Cari..." :required="true" :route="$onSearch" class="rounded-sm" />
+    @endif
+    <table class="w-full text-sm text-left" id="table-data">
         <thead class="bg-slate-100 text-slate-600 uppercase text-xs">
             <tr>
                 @if ($checkbox)
@@ -199,5 +204,41 @@
             modalTable.classList.remove('hidden')
             modalTable.classList.add('flex')
         })
+    })
+
+    const onSearch = @json($onSearch);
+    const onPrefix = @json($onPrefix);
+    const labels = @json($labels);
+    const checkbox = @json($checkbox);
+    const onSearchEdit = @json($onEdit);
+    const onSearchDelete = @json($onDelete);
+    document.getElementById('search').addEventListener('change', function() {
+        if (!onSearch) {
+            return;
+        }
+
+        const search = this.value ?? ''
+        $.ajax({
+            url: "{{ route('table.index') }}",
+            data: {
+                search: search,
+                prefix: onPrefix,
+                labels: labels,
+                checkbox: checkbox,
+                edit: onSearchEdit,
+                delete: onSearchDelete,
+            },
+            method: 'GET',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(res) {
+                $('#table-data').html(res);
+            },
+            error: function(err) {
+                console.log(err);
+            }
+        });
+
     })
 </script>

@@ -73,6 +73,6 @@
 <x-summary-form summaryFormModalButton="total-advance-sale-modal-button" summaryFormModal="total-advance-sale-modal"
     columnPriceTable="sale_price" columnQuantityTable="quantity" columnSubTotalTable="sub_total"
     columnServiceTable="service" columnPurchasePriceTable="purchase_price" columnMarginTable="margin"
-    columnMarginPercentageTable="margin_percentage" />
+    columnMarginPercentageTable="margin_percentage" parentPaidAmount="paid_amount" />
 
 <script></script>

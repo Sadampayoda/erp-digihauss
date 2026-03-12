@@ -2,12 +2,13 @@
 
 <x-modal id="sales-invoices-modal" title="Tambah Barang" onSubmit="createItems" width="w-200vh sm:max-w-4xl">
     <x-table :labels="[
-        'name' => 'Nama Barang',
-        'model' => 'Model',
-        'Varian' => 'variant',
+        'serial_number' => 'No. Seri',
+        'color' => 'Warna',
+        'imei' => 'Imei',
         'sale_price' => 'Harga Jual',
         'purchase_price' => 'Harga Beli',
-    ]" :data="$items" :checkbox="true" />
+    ]" :data="$items" onSearch="{{ route('items.index') }}" onPrefix="detail"
+        :checkbox="true" />
 </x-modal>
 
 
@@ -24,11 +25,11 @@
 
 
 
-    document.getElementById('btn-cancel-modal').addEventListener('click',function(){
+    document.getElementById('btn-cancel-modal').addEventListener('click', function() {
         setButtonLoading(false);
     })
 
-    document.getElementById('btn-close-modal').addEventListener('click',function(){
+    document.getElementById('btn-close-modal').addEventListener('click', function() {
         setButtonLoading(false);
     })
 </script>

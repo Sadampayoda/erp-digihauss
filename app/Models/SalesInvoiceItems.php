@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SalesInvoiceItems extends Model
 {
+    use HasFactory, SoftDeletes;
     protected $fillable = [
         'sales_invoice_id',
         'item_id',
@@ -22,6 +25,8 @@ class SalesInvoiceItems extends Model
         'service',
         'margin',
         'notes',
+        'item_detail_id',
+        'serial_number',
     ];
     public function salesInvoice()
     {
@@ -30,6 +35,6 @@ class SalesInvoiceItems extends Model
 
     public function item()
     {
-        return $this->hasOne(Items::class, 'id', 'item_id');
+        return $this->hasOne(Item::class, 'id', 'item_id');
     }
 }

@@ -36,14 +36,12 @@ class CreateAdvanceSaleRequest extends FormRequest
             'purchase_price'    => ['nullable', 'numeric', 'min:0'],
             'service'           => ['nullable', 'numeric', 'min:0'],
             'margin'            => ['nullable', 'numeric'],
-        'margin_percentage' => ['nullable', 'numeric'],
+            'margin_percentage' => ['nullable', 'numeric'],
 
             'items'                     => ['required', 'array', 'min:1'],
             'items.*.detail_id'           => ['nullable'],
             'items.*.item_id'                => ['required', 'integer', 'exists:items,id'],
             'items.*.name'              => ['required', 'string', 'max:255'],
-            'items.*.variant'           => ['nullable', 'string', 'max:255'],
-
             'items.*.sale_price'        => ['nullable', 'numeric', 'min:0'],
             'items.*.purchase_price'    => ['nullable', 'numeric', 'min:0'],
             'items.*.quantity'          => ['nullable', 'integer', 'min:1'],
@@ -51,6 +49,9 @@ class CreateAdvanceSaleRequest extends FormRequest
             'items.*.sub_total'         => ['nullable', 'numeric', 'min:0'],
             'items.*.margin'            => ['nullable', 'numeric'],
             'items.*.margin_percentage' => ['nullable', 'numeric'],
+            'items.*.serial_number' => ['required'],
+            'items.*.item_detail_id' => ['required'],
+
         ];
     }
 }

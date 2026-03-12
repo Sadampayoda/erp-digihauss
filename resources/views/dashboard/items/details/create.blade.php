@@ -19,9 +19,9 @@
 
                 <!-- FORM -->
                 <form id="generalForm">
-                    
-                    <x-input-select name="item_detail_id" label="Model Name (Parent Item)" route="{{ route('items.index') }}"
-                        :selected="@$data->item_detail_id" :required="true" />
+
+                    <x-input-select name="item_id" label="Model Name (Parent Item)" route="{{ route('items.index') }}"
+                        :selected="@$data->item_id" :required="true" />
                 </form>
 
                 <!-- BUTTON -->

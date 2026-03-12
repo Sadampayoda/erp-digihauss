@@ -118,7 +118,7 @@ class SalesReturnRepository
 
     protected function ensureSellingPriceNotBelowCost($item)
     {
-        $salePrice = ($item['sale_price'] * $item['quantity']) + $item['service'];
+        $salePrice = ($item['sale_price'] * $item['quantity']);
         $purchasePrice = $item['purchase_price'] * $item['quantity'];
         if ($salePrice < $purchasePrice) {
             throw ValidationException::withMessages([
@@ -234,23 +234,6 @@ class SalesReturnRepository
                     columnNominalCredit: 'sub_total_purchase_price'
                 );
 
-                $salesReturn->sub_total_service = $salesReturn->items
-                    ->sum(fn($item) => $item->service);
-                // Biaya Service debit
-                // Kas credit
-                if ($salesReturn->sub_total_service > 0) {
-                    $journal->generateJournal(
-                        data: $salesReturn,
-                        details: $salesReturn->items,
-                        module: 'service',
-                        action: 'service',
-                        columnPaymentMethod: 'payment_method',
-                        columnContact: 'customer',
-                        columnDescription: 'description',
-                        columnNominalDebit: 'sub_total_service',
-                        columnNominalCredit: 'sub_total_service'
-                    );
-                }
                 break;
             case 'delete':
                 $journal->destroyJournal($salesReturn);

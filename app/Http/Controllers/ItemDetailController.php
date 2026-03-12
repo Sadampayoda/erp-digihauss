@@ -39,18 +39,29 @@ class ItemDetailController extends Controller
 
 
                 $data = $data->map(function ($item) {
-                        $id = $item->id;
-                        $name = $item->item?->name ?? null;
-                        return [
-                            'id'   => $id,
-                            'name' => "{$name} - {$item->serial_number}",
-                        ];
-                    });
-                return $this->sendSuccess($data,message: 'Berhasil Mendapatkan Barang Detail');
+                    $id = $item->id;
+                    $name = $item->item?->name ?? null;
+                    return [
+                        'id'   => $id,
+                        'name' => "{$name} - {$item->serial_number}",
+                    ];
+                });
+                return $this->sendSuccess($data, message: 'Berhasil Mendapatkan Barang Detail');
             } catch (Exception $e) {
                 return $this->sendErrors(message: $e);
             }
+        }
 
+        if ((bool) $request->transaction) {
+            try {
+                $data = $this->model
+                    ->with(['item','condition'])
+                    ->find($request->items);
+
+                return $this->sendSuccess($data, message: 'Berhasil Mendapatkan Barang Detail');
+            } catch (Exception $e) {
+                return $this->sendErrors(message: $e);
+            }
         }
         return view('dashboard.items.details.index', [
             'details' => $this->model->all()
@@ -107,7 +118,7 @@ class ItemDetailController extends Controller
     {
         try {
             DB::beginTransaction();
-            $itemDetail = $this->existsWhereId($this->model,$id);
+            $itemDetail = $this->existsWhereId($this->model, $id);
             $itemDetail->update($request->validated());
             DB::commit();
 

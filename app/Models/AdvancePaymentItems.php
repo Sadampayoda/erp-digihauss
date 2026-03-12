@@ -22,7 +22,9 @@ class AdvancePaymentItems extends Model
         'purchase_price',
         'service',
         'notes',
-        'receipt_invoice_items_quantity'
+        'receipt_invoice_items_quantity',
+        'item_detail_id',
+        'serial_number',
     ];
 
     public function advancePayment()

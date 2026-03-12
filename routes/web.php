@@ -22,6 +22,7 @@ use App\Http\Controllers\SalesInvoiceController;
 use App\Http\Controllers\SalesReturnController;
 use App\Http\Controllers\SeriesController;
 use App\Http\Controllers\SettingCoaController;
+use App\Http\Controllers\TableController;
 use App\Http\Controllers\UserController;
 use App\Models\AdvancePayment;
 use Illuminate\Support\Facades\Route;
@@ -72,4 +73,8 @@ Route::middleware('auth')->group(function () {
 
 
     Route::resource('journals', JournalController::class)->names('journals');
+
+
+
+    Route::get('table/get',[TableController::class,'index'])->name('table.index');
 });

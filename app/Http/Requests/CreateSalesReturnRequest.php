@@ -42,7 +42,7 @@ class CreateSalesReturnRequest extends FormRequest
             'sales' => [
                 'nullable',
                 'integer',
-                'exists:contacts,id',
+                'exists:users,id',
             ],
 
             'sub_total' => [
@@ -111,6 +111,8 @@ class CreateSalesReturnRequest extends FormRequest
             'items.*.sub_total'         => ['nullable', 'numeric', 'min:0'],
             'items.*.margin'            => ['nullable', 'numeric'],
             'items.*.margin_percentage' => ['nullable', 'numeric'],
+            'items.*.serial_number' => ['required'],
+            'items.*.item_detail_id' => ['required'],
 
         ];
     }

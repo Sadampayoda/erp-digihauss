@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateSalesReturnRequest;
+use App\Models\ItemDetail;
 use App\Models\Items;
 use App\Models\SalesInvoice;
 use App\Models\SalesReturn;
@@ -30,16 +31,16 @@ class SalesReturnController extends Controller
             'sales_invoice_items_id' => ['label' => ' ', 'type' => 'hidden'],
             'image' => ['label' => 'Gambar', 'type' => 'image'],
             'name' => ['label' => 'Nama Produk'],
-            'variant' => ['label' => 'Varian'],
+            'serial_number' => ['label' => 'Seri'],
             'sale_price' => ['label' => 'Harga Jual', 'edit' => true, 'type' => 'number'],
             'purchase_price' => ['label' => 'Harga Beli', 'type' => 'number'],
             'quantity' => ['label' => 'Qty', 'edit' => true, 'type' => 'number'],
             'si_quantity' => ['label' => 'Qty SI', 'type' => 'number'],
-            'service' => ['label' => 'Servis', 'edit' => true, 'type' => 'number'],
             'sub_total' => ['label' => 'Sub Total', 'type' => 'number'],
             'margin' => ['label' => 'Margin', 'type' => 'number'],
             'margin_percentage' => ['label' => 'Margin (%)', 'type' => 'number'],
-            'action' => ['label' => 'Action', 'delete' => true]
+            'action' => ['label' => 'Action', 'delete' => true],
+            'item_detail_id' => ['label' => ' ', 'type' => 'hidden'],
         ];
     }
     /**
@@ -58,7 +59,7 @@ class SalesReturnController extends Controller
     public function create()
     {
         return view('dashboard.sales.sales_returns.create', [
-            'items' => Items::all(),
+            'items' => ItemDetail::all(),
             'setupColumn' => $this->setupColumn
         ]);
     }
@@ -106,11 +107,11 @@ class SalesReturnController extends Controller
      */
     public function edit(int $id)
     {
-        $data = $this->existsWhereId($this->model, $id, ['items.item']);
+        $data = $this->existsWhereId($this->model, $id, ['items.item.details']);
 
         return view('dashboard.sales.sales_returns.create', [
             'data' => $data,
-            'items' => Items::all(),
+            'items' => ItemDetail::all(),
             'setupColumn' => $this->setupColumn
         ]);
     }

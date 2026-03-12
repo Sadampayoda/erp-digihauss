@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ReceiptInvoiceItems extends Model
 {
+    use HasFactory, SoftDeletes;
     protected $fillable = [
         'receipt_invoice_id',
         'item_id',
@@ -22,7 +25,10 @@ class ReceiptInvoiceItems extends Model
         'service',
         'margin',
         'notes',
+        'item_detail_id',
+        'serial_number'
     ];
+
     public function salesInvoice()
     {
         return $this->belongsTo(SalesInvoice::class, 'receipt_invoice_id');

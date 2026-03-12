@@ -27,6 +27,8 @@ class SalesReturnItems extends Model
         'margin',
 
         'notes',
+        'item_detail_id',
+        'serial_number',
     ];
 
     public function salesReturn()
@@ -38,6 +40,8 @@ class SalesReturnItems extends Model
     {
         return $this->hasOne(SalesInvoiceItems::class,'id','sales_invoice_items_id');
     }
+
+
 
     public function getSiQuantityAttribute()
     {
@@ -51,7 +55,7 @@ class SalesReturnItems extends Model
 
     public function item()
     {
-        return $this->hasOne(Items::class, 'id', 'item_id');
+        return $this->hasOne(Item::class, 'id', 'item_id');
     }
 
     protected $appends = ['si_quantity'];
