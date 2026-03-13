@@ -20,7 +20,7 @@
         </div>
 
         <div>
-            <x-input-select name="advance_payment_id" label="Pilih Transaksi AS" placeholder="Transaksi AP"
+            <x-input-select name="advance_payment_id" label="Pilih Transaksi AP" placeholder="Transaksi AP"
                 columnShowView="transaction_number" :required="true" :route="route('advance-payments.index')" :selected="@$data->advance_payment_id"
                 :paramsInput="['vendor']"
                 :params="['status' => [2,3]]" class="rounded-sm" />

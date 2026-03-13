@@ -17,6 +17,23 @@
                         <p class="text-sm font-medium text-slate-400">Pesanan yang akan dibayar oleh vendor
                         </p>
                     </div>
+                    <a id="btn-receipt-invoices-item-new-modal"
+                        class="
+                            group flex items-center justify-center gap-2
+                            bg-emerald-400 text-white
+                            px-3 py-2 rounded-md
+                            sm:px-4 sm:py-2
+                            lg:px-6 lg:py-3 lg:rounded-xl
+                            transition-all duration-300
+                            hover:bg-emerald-500 hover:shadow-xl hover:scale-105
+                            active:scale-95 cursor-pointer
+                        ">
+                        <i data-lucide="plus" class="w-5 h-5 transition-transform duration-300 group-hover:rotate-90"></i>
+                        <p class="text-sm lg:text-base font-medium">
+                            Barang Baru
+                        </p>
+
+                    </a>
                     <button type="button" id="btn-receipt-invoices-modal"
                         class="
                             group flex items-center justify-center gap-2
@@ -30,7 +47,7 @@
                         ">
                         <i data-lucide="plus" class="w-5 h-5 transition-transform duration-300 group-hover:rotate-90"></i>
                         <p class="text-sm lg:text-base font-medium">
-                            Tambah Barang
+                            Tambah
                         </p>
 
                     </button>
@@ -42,6 +59,7 @@
     </div>
 
     @include('dashboard.purchasing.receipt_invoices.partials.modal')
+    @include('dashboard.purchasing.receipt_invoices.partials.create_items')
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -55,7 +73,7 @@
             setButtonLoading(true, 'receipt-invoices-modal-button', 'btn-text-receipt-invoice');
             const data = new FormData();
 
-            ['generalForm','sourceForm', 'informationForm', 'subTotalForm'].forEach(id => {
+            ['generalForm', 'sourceForm', 'informationForm', 'subTotalForm'].forEach(id => {
                 const form = document.getElementById(id);
                 if (!form) return;
 
