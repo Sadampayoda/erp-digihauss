@@ -110,10 +110,10 @@
 
             if (ids.columnMarginTable) {
 
-                const margin = revenue - cost;
-
-                const marginPercentage = revenue ?
-                    Math.round((margin / revenue) * 100) :
+                const margin = ids.module == 'sales' ? revenue - cost : cost - revenue;
+                const columnModuleMargin = ids.module == 'sales' ? revenue : cost;
+                const marginPercentage = columnModuleMargin ?
+                    Math.round((margin / columnModuleMargin) * 100) :
                     0;
 
                 putInputValue(ids.columnMarginTable, row, margin);
@@ -129,6 +129,7 @@
             const purchasePrice = getInputValue(ids.columnPurchasePriceTable, item);
 
             const basePrice = parsePrice(salePrice, purchasePrice);
+            console.log(basePrice);
 
             return total + (basePrice.base_price * quantity);
 
@@ -156,12 +157,17 @@
 
         }, 0);
 
-        const totalTransaction = subTotal + service;
+        const totalService = service;
+        const totalTransaction = subTotal + (ids.module == 'sales' ? 0 : totalService);
+        const totalTransactionPurchase = purchasePrice + (ids.module == 'sales' ? totalService : 0);
 
-        const margin = totalTransaction - purchasePrice;
+        const margin =
+            ids.module == 'sales'
+                ? (totalTransaction - totalTransactionPurchase) : totalTransactionPurchase - totalTransaction;
 
-        const marginPercentage = totalTransaction ?
-            Math.round((margin / totalTransaction) * 100) :
+        const columnMarginPercentage = ids.module == 'sales' ? totalTransaction : totalTransactionPurchase;
+        const marginPercentage = columnMarginPercentage ?
+            Math.round((margin / columnMarginPercentage) * 100) :
             0;
 
 
@@ -224,7 +230,6 @@
     });
 
     const parsePrice = (salePrice, purchasePrice) => {
-
         if (ids.module === 'sales') {
             return {
                 base_price: salePrice,

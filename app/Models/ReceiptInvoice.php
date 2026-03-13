@@ -36,7 +36,7 @@ class ReceiptInvoice extends Model
 
     public function items()
     {
-        return $this->hasMany(SalesInvoiceItems::class, 'sales_invoice_id', 'id');
+        return $this->hasMany(ReceiptInvoiceItems::class, 'receipt_invoice_id', 'id');
     }
 
     public function vendorRelation()
@@ -44,9 +44,9 @@ class ReceiptInvoice extends Model
         return $this->hasOne(Contact::class, 'id', 'vendor');
     }
 
-    public function AdvanceSale()
+    public function AdvancePayment()
     {
-        return $this->hasOne(AdvanceSale::class, 'id', 'advance_payment_id');
+        return $this->hasOne(AdvancePayment::class, 'id', 'advance_payment_id');
     }
 
     public function getVendorNameAttribute()

@@ -143,13 +143,13 @@
 
             <form id="priceForm" class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-                <x-input-text type="number" name="purchase_price" label="Harga Beli" placeholder="IDR 0"
+                <x-input-text type="number" :required="true" name="purchase_price" label="Harga Beli" placeholder="IDR 0"
                     class="rounded-sm p-1 md:p-2" border_color="border-stone-300" :value="@$data->purchase_price" />
 
-                <x-input-text type="number" name="sale_price" label="Harga Jual" placeholder="IDR 0"
+                <x-input-text type="number" :required="true" name="sale_price" label="Harga Jual" placeholder="IDR 0"
                     class="rounded-sm p-1 md:p-2" border_color="border-stone-300" :value="@$data->sale_price" />
 
-                <x-input-text type="number" name="service" label="Harga Service" placeholder="IDR 0"
+                <x-input-text type="number" :readonly="true" name="service" label="Harga Service" placeholder="IDR 0"
                     class="rounded-sm p-1 md:p-2" border_color="border-stone-300" :value="@$data->service" />
 
             </form>

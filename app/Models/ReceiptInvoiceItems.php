@@ -29,13 +29,13 @@ class ReceiptInvoiceItems extends Model
         'serial_number'
     ];
 
-    public function salesInvoice()
+    public function receiptInvoice()
     {
-        return $this->belongsTo(SalesInvoice::class, 'receipt_invoice_id');
+        return $this->belongsTo(ReceiptInvoice::class, 'receipt_invoice_id');
     }
 
     public function item()
     {
-        return $this->hasOne(Items::class, 'id', 'item_id');
+        return $this->hasOne(Item::class, 'id', 'item_id');
     }
 }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateAdvancePaymentRequest;
 use App\Models\AdvancePayment;
+use App\Models\Item;
+use App\Models\ItemDetail;
 use App\Models\Items;
 use App\Repositories\AdvancePaymentRepository;
 use App\Traits\ApiResponse;
@@ -27,15 +29,16 @@ class AdvancePaymentController extends Controller
             'detail_id' => ['label' => ' ', 'type' => 'hidden'],
             'image' => ['label' => 'Gambar', 'type' => 'image'],
             'name' => ['label' => 'Nama Produk'],
-            'variant' => ['label' => 'Varian'],
-            'sale_price' => ['label' => 'Harga Jual', 'type' => 'hidden'],
-            'purchase_price' => ['label' => 'Harga Beli', 'type' => 'number'],
-            'quantity' => ['label' => 'Qty', 'edit' => true, 'type' => 'number'],
+            'serial_number' => ['label' => 'Seri'],
+            'purchase_price' => ['label' => 'Harga Beli','edit' => true, 'type' => 'number'],
+            'sale_price' => ['label' => 'Harga Jual','edit' => true],
+            'quantity' => ['label' => 'Qty', 'type' => 'number'],
             'service' => ['label' => 'Servis', 'edit' => true, 'type' => 'number'],
             'sub_total' => ['label' => 'Sub Total', 'type' => 'number'],
             'margin' => ['label' => 'Margin', 'type' => 'number'],
             'margin_percentage' => ['label' => 'Margin (%)', 'type' => 'number'],
-            'action' => ['label' => 'Action', 'delete' => true]
+            'action' => ['label' => 'Action', 'delete' => true],
+            'item_detail_id' => ['label' => ' ', 'type' => 'hidden'],
         ];
     }
     /**
@@ -81,7 +84,7 @@ class AdvancePaymentController extends Controller
     public function create()
     {
         return view('dashboard.purchasing.advance_payments.create', [
-            'items' => Items::all(),
+            'items' => ItemDetail::all(),
             'setupColumn' => $this->setupColumn
         ]);
     }
@@ -102,6 +105,9 @@ class AdvancePaymentController extends Controller
                     transactionDate: $data['transaction_date'],
                 ),
                 'grand_total' => $data['sub_total'] + $data['service'],
+                'created_by' => 0,
+                'updated_by' => 0,
+                'deleted_by' => 0,
             ]));
 
             $this->advancePaymentRepo->createOrUpdateItems($advancePayment->fresh(), $data);
@@ -136,8 +142,8 @@ class AdvancePaymentController extends Controller
         $data = $this->existsWhereId($this->model, $id);
         // dd($this->model->with('items.item')->find($id));
         return view('dashboard.purchasing.advance_payments.create', [
-            'data' => $this->model->with('items.item')->find($id),
-            'items' => Items::all(),
+            'data' => $this->model->with('items.item.details')->find($id),
+            'items' => ItemDetail::all(),
             'setupColumn' => $this->setupColumn
         ]);
     }

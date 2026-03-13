@@ -34,18 +34,15 @@ class AdvancePaymentRepository
                 $ids[] = $detail->id;
             } else {
 
-                $dataCreate = [
-                    'advance_sale_id' => $advancePayment->id,
-                    'item_id'         => (int) $item['item_id'],
+                $detail = advancePaymentItems::create(array_merge($item, [
+                    'coa' => 1,
+                    'advance_payment_id' => $advancePayment->id,
                     'item_name'       => $item['name'],
                     'item_code'       => $relatedItem->code ?? $relatedItem->item_code,
-                    'quantity'        => (int) $item['quantity'],
-                    'sale_price'      => (float) $item['sale_price'],
-                    'purchase_price'  => (float) $item['purchase_price'],
-                    'service'         => (float) ($item['service'] ?? 0),
-                    'coa'             => 1,
-                ];
-                $detail = advancePaymentItems::create($dataCreate);
+                    'created_by' => 0,
+                    'updated_by' => 0,
+                    'deleted_by' => 0,
+                ]));
 
 
                 $ids[] = $detail->id;

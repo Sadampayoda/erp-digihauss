@@ -34,7 +34,7 @@ class AdvancePaymentItems extends Model
 
     public function item()
     {
-        return $this->hasOne(Items::class,'id','item_id');
+        return $this->hasOne(Item::class,'id','item_id');
     }
 
     public function getOutstandingQuantityAttribute()

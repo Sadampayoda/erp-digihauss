@@ -96,7 +96,7 @@
                 error: function(err) {
                     const message = err.responseJSON.message;
                     setButtonLoading(false, 'receipt-invoices-modal-button', 'btn-text-receipt-invoice');
-                    showAlert('Gagal Menambahkan Uang Muka', message, 'errors', false);
+                    showAlert('Gagal Modifikasi Invoice Pembelian', message, 'errors', false);
                     resetErrors();
 
                     if (err.responseJSON.errors) {

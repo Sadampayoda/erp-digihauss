@@ -45,6 +45,7 @@ class SettingCoa extends Model
         // SALES
         // ======================
         'payment'           => 'Pembayaran Customer',
+        'vendor_payment'    => 'Pembayaran Vendor',
         'receivable'        => 'Piutang Usaha',
         'advance'           => 'Uang Muka Penjualan',
 

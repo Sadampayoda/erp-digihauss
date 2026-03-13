@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateReceiptInvoiceRequest;
+use App\Models\Item;
+use App\Models\ItemDetail;
 use App\Models\Items;
 use App\Models\ReceiptInvoice;
 use App\Repositories\ReceiptInvoiceRepository;
@@ -26,18 +28,19 @@ class ReceiptInvoiceController extends Controller
         $this->model = new ReceiptInvoice();
         $this->setupColumn = [
             'detail_id' => ['label' => ' ', 'type' => 'hidden'],
-            'advance_sale_items_id' => ['label' => ' ', 'type' => 'hidden'],
+            'advance_payment_items_id' => ['label' => ' ', 'type' => 'hidden'],
             'image' => ['label' => 'Gambar', 'type' => 'image'],
             'name' => ['label' => 'Nama Produk'],
-            'variant' => ['label' => 'Varian'],
-            'sale_price' => ['label' => 'Harga Jual', 'type' => 'number'],
-            'purchase_price' => ['label' => 'Harga Beli', 'type' => 'number'],
-            'quantity' => ['label' => 'Qty', 'edit' => true, 'type' => 'number'],
+            'serial_number' => ['label' => 'Seri'],
+            'sale_price' => ['label' => 'Harga Jual','edit' => true, 'type' => 'number'],
+            'purchase_price' => ['label' => 'Harga Beli','edit' => true, 'type' => 'number'],
+            'quantity' => ['label' => 'Qty', 'type' => 'number'],
             'service' => ['label' => 'Servis', 'edit' => true, 'type' => 'number'],
             'sub_total' => ['label' => 'Sub Total', 'type' => 'number'],
             'margin' => ['label' => 'Margin', 'type' => 'number'],
             'margin_percentage' => ['label' => 'Margin (%)', 'type' => 'number'],
-            'action' => ['label' => 'Action', 'delete' => true]
+            'action' => ['label' => 'Action', 'delete' => true],
+            'item_detail_id' => ['label' => ' ', 'type' => 'hidden'],
         ];
     }
     /**
@@ -83,7 +86,7 @@ class ReceiptInvoiceController extends Controller
     public function create()
     {
         return view('dashboard.purchasing.receipt_invoices.create', [
-            'items' => Items::all(),
+            'items' => ItemDetail::all(),
             'setupColumn' => $this->setupColumn
         ]);
     }
@@ -102,7 +105,7 @@ class ReceiptInvoiceController extends Controller
             $receiptInvoice = $this->model->create(array_merge($data, [
                 'transaction_number' => $this->generateTransactionNumber(
                     model: ReceiptInvoice::class,
-                    prefix: 'SI',
+                    prefix: 'RI',
                     column: 'transaction_number',
                     transactionDate: $data['transaction_date'],
                 ),
@@ -142,7 +145,7 @@ class ReceiptInvoiceController extends Controller
 
         return view('dashboard.purchasing.receipt_invoices.create', [
             'data' => $data,
-            'items' => Items::all(),
+            'items' => ItemDetail::all(),
             'setupColumn' => $this->setupColumn
         ]);
     }
@@ -160,7 +163,7 @@ class ReceiptInvoiceController extends Controller
             if (!$receiptInvoice->transaction_number) {
                 $receiptInvoice->transaction_number = $this->generateTransactionNumber(
                     model: ReceiptInvoice::class,
-                    prefix: 'SI',
+                    prefix: 'RI',
                     column: 'transaction_number',
                     transactionDate: $data['transaction_date']
                 );

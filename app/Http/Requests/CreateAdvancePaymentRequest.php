@@ -11,7 +11,7 @@ class CreateAdvancePaymentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,7 @@ class CreateAdvancePaymentRequest extends FormRequest
         return [
             'vendor'          => ['required', 'integer', 'exists:contacts,id'],
             'transaction_date'  => ['required', 'date'],
-            'sales'             => ['required', 'integer', 'exists:contacts,id'],
+            'sales'             => ['required', 'integer', 'exists:users,id'],
             'payment_method'    => ['required', 'integer'],
             'status'            => ['required'],
             'description'       => ['nullable', 'string', 'max:255'],
@@ -39,10 +39,8 @@ class CreateAdvancePaymentRequest extends FormRequest
 
             'items'                     => ['required', 'array', 'min:1'],
             'items.*.detail_id'           => ['nullable'],
-            'items.*.item_id'                => ['required', 'integer', 'exists:items,id'],
+            'items.*.item_id'                => ['required', 'integer', 'exists:item,id'],
             'items.*.name'              => ['required', 'string', 'max:255'],
-            'items.*.variant'           => ['nullable', 'string', 'max:255'],
-
             'items.*.sale_price'        => ['nullable', 'numeric', 'min:0'],
             'items.*.purchase_price'    => ['nullable', 'numeric', 'min:0'],
             'items.*.quantity'          => ['nullable', 'integer', 'min:1'],
@@ -50,6 +48,8 @@ class CreateAdvancePaymentRequest extends FormRequest
             'items.*.sub_total'         => ['nullable', 'numeric', 'min:0'],
             'items.*.margin'            => ['nullable', 'numeric'],
             'items.*.margin_percentage' => ['nullable', 'numeric'],
+            'items.*.serial_number' => ['required'],
+            'items.*.item_detail_id' => ['required'],
         ];
     }
 }

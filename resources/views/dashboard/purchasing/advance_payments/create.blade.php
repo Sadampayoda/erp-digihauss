@@ -16,6 +16,23 @@
                         <p class="text-sm font-medium text-slate-400">Pesanan yang akan dipesan dengan pembayaran uang muka
                         </p>
                     </div>
+                    <a id="btn-advance-item-new-modal"
+                        class="
+                            group flex items-center justify-center gap-2
+                            bg-emerald-400 text-white
+                            px-3 py-2 rounded-md
+                            sm:px-4 sm:py-2
+                            lg:px-6 lg:py-3 lg:rounded-xl
+                            transition-all duration-300
+                            hover:bg-emerald-500 hover:shadow-xl hover:scale-105
+                            active:scale-95 cursor-pointer
+                        ">
+                        <i data-lucide="plus" class="w-5 h-5 transition-transform duration-300 group-hover:rotate-90"></i>
+                        <p class="text-sm lg:text-base font-medium">
+                            Barang Baru
+                        </p>
+
+                    </a>
                     <a id="btn-advance-item-modal"
                         class="
                             group flex items-center justify-center gap-2
@@ -29,7 +46,7 @@
                         ">
                         <i data-lucide="plus" class="w-5 h-5 transition-transform duration-300 group-hover:rotate-90"></i>
                         <p class="text-sm lg:text-base font-medium">
-                            Tambah Barang
+                            Tambah
                         </p>
 
                     </a>
@@ -41,6 +58,7 @@
     </div>
 
     @include('dashboard.purchasing.advance_payments.partials.modal')
+    @include('dashboard.purchasing.advance_payments.partials.create_items')
 
     <script>
         function openItemModal() {

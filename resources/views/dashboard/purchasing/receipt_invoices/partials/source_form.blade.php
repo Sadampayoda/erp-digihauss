@@ -16,13 +16,13 @@
                 :options="[
                     'receipt-invoice' => 'Receipt Invoice (Invoice Pembelian)',
                     'advance-payments' => 'Advance Payment (Uang Muka Pembelian)',
-                ]" :selected="@$data->source ?? 'receipt-invoice'" class="rounded-sm" />
+                ]" :selected="@$data->advance_payment_id ? 'advance-payments' : 'receipt-invoice'" class="rounded-sm" />
         </div>
 
         <div>
-            <x-input-select name="advance_payment_id" label="Pilih Transaksi AS" placeholder="Transaksi AS"
+            <x-input-select name="advance_payment_id" label="Pilih Transaksi AS" placeholder="Transaksi AP"
                 columnShowView="transaction_number" :required="true" :route="route('advance-payments.index')" :selected="@$data->advance_payment_id"
-                :paramsInput="['customer']"
+                :paramsInput="['vendor']"
                 :params="['status' => [2,3]]" class="rounded-sm" />
 
         </div>
@@ -153,11 +153,10 @@
                         }
 
                         data.items.forEach((item) => {
-                            item.advance_sale_items_id = item.id
+                            item.advance_payment_items_id = item.id
                             item.id = item?.item?.id
                             item.image = item?.item?.image
                             item.name = item.item_name;
-                            item.variant = item.item?.variant
                             item.quantity = item.outstanding_quantity
                             renderDetailRow(item, setup)
                         });

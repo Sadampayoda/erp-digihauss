@@ -31,6 +31,7 @@
                     item.name = item.item?.name
                     item.quantity = 1
                     item.item_detail_id = item.id
+                    item.id = item?.item?.id
                     renderDetailRow(item, setupColumn)
                 })
                 summaryForm();

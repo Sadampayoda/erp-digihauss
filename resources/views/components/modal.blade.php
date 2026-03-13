@@ -2,6 +2,7 @@
     'id' => 'modal',
     'title' => 'Tambah Brand',
     'onSubmit',
+    'typeButton' => 'submit',
     'width' => 'w-[95%] sm:max-w-md'
 ])
 
@@ -43,6 +44,7 @@
 
             <button
                 onclick="{{ $onSubmit }}()"
+                type="{{ $typeButton }}"
                 id="btn-submit-modal"
                 class="
                         w-full sm:w-auto
@@ -67,6 +69,7 @@
 
         [closeBtn, cancelBtn].forEach(btn => {
             btn.addEventListener('click', () => {
+                console.log(btn);
                 modal.classList.add('hidden');
                 modal.classList.remove('flex');
             });

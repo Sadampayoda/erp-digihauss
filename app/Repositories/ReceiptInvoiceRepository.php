@@ -4,9 +4,12 @@ namespace App\Repositories;
 
 use App\Models\AdvancePaymentItems;
 use App\Models\AdvanceSaleItems;
+use App\Models\Item;
+use App\Models\ItemDetail;
 use Illuminate\Validation\ValidationException;
 use App\Traits\Validate;
 use App\Models\Items;
+use Carbon\Carbon;
 
 class ReceiptInvoiceRepository
 {
@@ -61,6 +64,9 @@ class ReceiptInvoiceRepository
 
                 // Handle Status Advance Sale
                 $this->refreshStatus($receiptInvoice);
+
+                // Handle Update Item
+                $this->updateItemDetail($receiptInvoice);
             }
         }
 
@@ -78,6 +84,9 @@ class ReceiptInvoiceRepository
 
                 // Change status advance payment
                 $this->refreshStatus($receiptInvoice);
+
+
+                $this->updateItemDetail($receiptInvoice);
             }
         }
 
@@ -94,6 +103,23 @@ class ReceiptInvoiceRepository
             throw ValidationException::withMessages([
                 'advance_amount' => 'Jumlah pembayaran harus lunas'
             ]);
+        }
+    }
+
+    protected function updateItemDetail($receiptInvoice)
+    {
+        $receiptInvoice = $receiptInvoice->fresh();
+
+        foreach($receiptInvoice->items as $item)
+        {
+            $relatedItemDetail = ItemDetail::find($item->item_detail_id);
+
+            if($relatedItemDetail) {
+                $relatedItemDetail->update([
+                    'service' => $item->service ?? 0,
+                    'purchase_date' => Carbon::now(),
+                ]);
+            }
         }
     }
 
@@ -194,8 +220,8 @@ class ReceiptInvoiceRepository
                     columnPaymentMethod: 'payment_method',
                     columnContact: 'vendor',
                     columnDescription: 'description',
-                    columnNominalDebit: 'sub_total',
-                    columnNominalCredit: 'sub_total'
+                    columnNominalDebit: 'grand_total',
+                    columnNominalCredit: 'grand_total'
                 );
 
                 // Hutang Usaha debit
@@ -205,7 +231,7 @@ class ReceiptInvoiceRepository
                         data: $receiptInvoice,
                         details: $receiptInvoice->items,
                         module: 'receipt-invoice',
-                        action: 'payment',
+                        action: 'vendor_payment',
                         columnPaymentMethod: 'payment_method',
                         columnContact: 'vendor',
                         columnDescription: 'description',
