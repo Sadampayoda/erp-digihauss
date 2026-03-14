@@ -8,10 +8,14 @@
     'selected' => null,
     'border_color' => null,
     'required' => false,
+    'allowed' => [0, 1, 2],
 ])
 
 @php
     $getStatusList = transactionStatus('transaction');
+
+    $getStatusList = collect($getStatusList)->only($allowed)->toArray();
+    $isLocked = $selected !== null && $selected >= 2;
 @endphp
 
 
@@ -27,16 +31,28 @@
         </label>
     @endif
 
-    <select name="{{ $name }}" id="{{ $id ?? $name }}"
-        class="w-full border {{ $errors->has($error ?? $name) ? 'border-red-400' : ($border_color ?? 'border-stone-500') }}
-                focus:border-stone-950 focus:ring-2 focus:ring-stone-300
-                focus:outline-none transition-all duration-300 ease-in-out
-                {{ $class }}">
-        <option {{ $selected ? 'selected' : '' }}>{{ $placeholder ?? 'Pilih Status'}}</option>
-        @foreach ($getStatusList as $key => $value)
-            <option {{ $key == $selected ? 'selected' : ''}} value="{{ $key }}">{{ $value }}</option>
-        @endforeach
-    </select>
+    @if ($isLocked)
+
+        <x-input-text :name="$name" border_color="border-stone-300" class="rounded-sm p-1 md:p-2" :label="$label" :value="$getStatusList[$selected] ?? transactionStatus('transaction')[$selected]" readonly />
+
+    <input type="hidden" name="{{ $name }}" value="{{ $selected }}">
+    @else
+        <select name="{{ $name }}" id="{{ $id ?? $name }}"
+            class="w-full border {{ $errors->has($error ?? $name) ? 'border-red-400' : $border_color ?? 'border-stone-500' }}
+    focus:border-stone-950 focus:ring-2 focus:ring-stone-300
+    focus:outline-none transition-all duration-300 ease-in-out {{ $class }}">
+
+            <option value="">{{ $placeholder ?? 'Pilih Status' }}</option>
+
+            @foreach ($getStatusList as $key => $value)
+                <option value="{{ $key }}" {{ $key == $selected ? 'selected' : '' }}>
+                    {{ $value }}
+                </option>
+            @endforeach
+
+        </select>
+    @endif
+
 
     @error($error ?? $name)
         <p class="text-red-400 text-xs md:text-sm">{{ $message }}</p>

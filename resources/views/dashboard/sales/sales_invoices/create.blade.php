@@ -98,7 +98,7 @@
                 error: function(err) {
                     const message = err.responseJSON.message;
                     setButtonLoading(false, 'sales-invoices-modal-button', 'btn-text-sales-invoice');
-                    showAlert('Gagal Menambahkan Uang Muka', message, 'errors', false);
+                    showAlert('Gagal Modifikasi Invoice Penjualan', message, 'errors', false);
                     resetErrors();
 
                     if (err.responseJSON.errors) {

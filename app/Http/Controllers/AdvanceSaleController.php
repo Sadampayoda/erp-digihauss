@@ -160,6 +160,7 @@ class AdvanceSaleController extends Controller
             DB::beginTransaction();
             $data = $request->validated();
             $advanceSale = $this->existsWhereId($this->model, $id);
+            $this->allowTransaction($advanceSale->status);
 
             if (!$advanceSale->transaction_number) {
                 $advanceSale->transaction_number = $this->generateTransactionNumber(

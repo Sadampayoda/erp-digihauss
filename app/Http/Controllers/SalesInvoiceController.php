@@ -161,6 +161,7 @@ class SalesInvoiceController extends Controller
             DB::beginTransaction();
             $data = $request->validated();
             $salesInvoice = $this->existsWhereId($this->model, $id);
+            $this->allowTransaction($salesInvoice->status);
 
             if (!$salesInvoice->transaction_number) {
                 $salesInvoice->transaction_number = $this->generateTransactionNumber(

@@ -46,4 +46,13 @@ trait Validate
         }
 
     }
+
+    public function allowTransaction($status)
+    {
+        if($status >= 2) {
+            throw ValidationException::withMessages([
+                'status' => 'Data sudah tidak bisa melakukan perubahan dikarenakan bukan status Draft dan Need Appoved',
+            ]);
+        }
+    }
 }

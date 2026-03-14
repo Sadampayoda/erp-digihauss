@@ -159,6 +159,7 @@ class ReceiptInvoiceController extends Controller
             DB::beginTransaction();
             $data = $request->validated();
             $receiptInvoice = $this->existsWhereId($this->model, $id);
+            $this->allowTransaction($receiptInvoice->status);
 
             if (!$receiptInvoice->transaction_number) {
                 $receiptInvoice->transaction_number = $this->generateTransactionNumber(

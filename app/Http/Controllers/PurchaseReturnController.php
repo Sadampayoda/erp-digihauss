@@ -123,6 +123,7 @@ class PurchaseReturnController extends Controller
             DB::beginTransaction();
             $data = $request->validated();
             $purchaseReturn = $this->existsWhereId($this->model, $id);
+            $this->allowTransaction($purchaseReturn->status);
 
             if (!$purchaseReturn->transaction_number) {
                 $purchaseReturn->transaction_number = $this->generateTransactionNumber(

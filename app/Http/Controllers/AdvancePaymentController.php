@@ -156,10 +156,11 @@ class AdvancePaymentController extends Controller
         try {
             DB::beginTransaction();
             $data = $request->validated();
-            $advanceSale = $this->existsWhereId($this->model, $id);
+            $advancePayment = $this->existsWhereId($this->model, $id);
+            $this->allowTransaction($advancePayment->status);
 
-            if (!$advanceSale->transaction_number) {
-                $advanceSale->transaction_number = $this->generateTransactionNumber(
+            if (!$advancePayment->transaction_number) {
+                $advancePayment->transaction_number = $this->generateTransactionNumber(
                     model: AdvancePayment::class,
                     prefix: 'AS',
                     column: 'transaction_number',
@@ -167,12 +168,12 @@ class AdvancePaymentController extends Controller
                 );
             }
 
-            $advanceSale->update([
+            $advancePayment->update([
                 ...$data,
                 'grand_total' => $data['sub_total'] - $data['advance_amount'],
             ]);
 
-            $this->advancePaymentRepo->createOrUpdateItems($advanceSale->fresh(), $data);
+            $this->advancePaymentRepo->createOrUpdateItems($advancePayment->fresh(), $data);
             DB::commit();
 
             return $this->sendSuccess(message: 'Berhasil Mengupdate Uang Muka');

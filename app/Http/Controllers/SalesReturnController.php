@@ -126,7 +126,7 @@ class SalesReturnController extends Controller
             DB::beginTransaction();
             $data = $request->validated();
             $salesReturn = $this->existsWhereId($this->model, $id);
-
+            $this->allowTransaction($salesReturn->status);
             if (!$salesReturn->transaction_number) {
                 $salesReturn->transaction_number = $this->generateTransactionNumber(
                     model: SalesReturn::class,
