@@ -32,11 +32,12 @@ class ItemDetailController extends Controller
     {
         if ((bool) $request->select) {
             try {
+
                 $data = $this->model
                     ->with(['item'])
-                    ->whereDoesntHave('condition')
-                    ->get();
-
+                    ->when(!is_null($request->status),function($query) use ($request){
+                        $query->where('status',$request->status);
+                    })->get();
 
                 $data = $data->map(function ($item) {
                     $id = $item->id;
@@ -46,6 +47,7 @@ class ItemDetailController extends Controller
                         'name' => "{$name} - {$item->serial_number}",
                     ];
                 });
+
                 return $this->sendSuccess($data, message: 'Berhasil Mendapatkan Barang Detail');
             } catch (Exception $e) {
                 return $this->sendErrors(message: $e);

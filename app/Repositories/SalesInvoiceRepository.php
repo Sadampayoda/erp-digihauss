@@ -61,6 +61,7 @@ class SalesInvoiceRepository
                 // Handle Status Advance Sale
                 $this->refreshStatus($salesInvoice);
             }
+            (new ItemRepositrory())->updateItemDetail($salesInvoice);
         }
 
         $this->settingJournal($salesInvoice);
@@ -68,7 +69,7 @@ class SalesInvoiceRepository
 
     public function deleteItems($salesInvoice)
     {
-        $this->settingJournal($salesInvoice,'delete');
+        $this->settingJournal($salesInvoice, 'delete');
         if ($salesInvoice->status >= 2) {
 
 
@@ -79,6 +80,7 @@ class SalesInvoiceRepository
                 // Change status advance sale
                 $this->refreshStatus($salesInvoice);
             }
+            (new ItemRepositrory())->updateItemDetail($salesInvoice, 'delete');
         }
 
         if ($salesInvoice->items()) {
@@ -200,7 +202,7 @@ class SalesInvoiceRepository
 
                 // Kas / Bank debit
                 // Piutang credit
-                if($salesInvoice->paid_amount > 0) {
+                if ($salesInvoice->paid_amount > 0) {
                     $journal->generateJournal(
                         data: $salesInvoice,
                         details: $salesInvoice->items,
@@ -215,7 +217,7 @@ class SalesInvoiceRepository
                 }
 
                 $salesInvoice->sub_total_purchase_price = $salesInvoice->items
-                    ->sum(fn ($item) => $item->purchase_price * $item->quantity);
+                    ->sum(fn($item) => $item->purchase_price * $item->quantity);
 
 
                 // Hpp debit

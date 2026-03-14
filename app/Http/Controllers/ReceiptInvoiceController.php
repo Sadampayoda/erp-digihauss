@@ -86,7 +86,7 @@ class ReceiptInvoiceController extends Controller
     public function create()
     {
         return view('dashboard.purchasing.receipt_invoices.create', [
-            'items' => ItemDetail::all(),
+            'items' => ItemDetail::where('status',0)->get(),
             'setupColumn' => $this->setupColumn
         ]);
     }
@@ -145,7 +145,7 @@ class ReceiptInvoiceController extends Controller
 
         return view('dashboard.purchasing.receipt_invoices.create', [
             'data' => $data,
-            'items' => ItemDetail::all(),
+            'items' => ItemDetail::where('status',0)->get(),
             'setupColumn' => $this->setupColumn
         ]);
     }

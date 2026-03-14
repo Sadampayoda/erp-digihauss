@@ -44,10 +44,14 @@ class ItemDetail extends Model
         'purchase_date',
         'sale_date',
 
+        'status',
+
         // audit
         'created_by',
         'updated_by',
         'deleted_by',
+
+        'reference_service',
     ];
 
     protected $casts = [
@@ -60,12 +64,12 @@ class ItemDetail extends Model
 
     public function item()
     {
-        return $this->belongsTo(Item::class,'item_id');
+        return $this->belongsTo(Item::class, 'item_id');
     }
 
     public function condition()
     {
-        return $this->hasOne(ItemCondition::class,'item_detail_id','id');
+        return $this->hasOne(ItemCondition::class, 'item_detail_id', 'id');
     }
 
 
@@ -78,4 +82,40 @@ class ItemDetail extends Model
     {
         return $this->item?->name ?? null;
     }
+
+    public function journal()
+    {
+        return $this->hasOne(Journal::class, 'journal_number', 'reference_service');
+    }
+
+    public function advanceSale()
+    {
+        return $this->belongsTo(AdvanceSaleItems::class, 'id', 'item_detail_id');
+    }
+
+    public function advancePayment()
+    {
+        return $this->belongsTo(AdvancePaymentItems::class, 'id', 'item_detail_id');
+    }
+
+    public function salesInvoice()
+    {
+        return $this->belongsTo(SalesInvoiceItems::class, 'id', 'item_detail_id');
+    }
+
+    public function salesReturn()
+    {
+        return $this->belongsTo(SalesReturnItems::class, 'id', 'item_detail_id');
+    }
+
+    public function receiptInvoice()
+    {
+        return $this->belongsTo(ReceiptInvoiceItems::class, 'id', 'item_detail_id');
+    }
+
+    public function purchaseReturn()
+    {
+        return $this->belongsTo(PurchaseReturn::class,'id','item_detail_id');
+    }
+
 }

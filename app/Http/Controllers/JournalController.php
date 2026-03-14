@@ -15,6 +15,7 @@ class JournalController extends Controller
     public function index(Request $request)
     {
         $menuKey = $request->menu;
+
         $menuConfig = $menuKey ? config('menu.' . $menuKey, []) : [];
 
         $query = Journal::query();

@@ -2,11 +2,12 @@
 
 namespace App\Repositories;
 
-
+use App\Models\ItemDetail;
 use Illuminate\Validation\ValidationException;
 use App\Traits\Validate;
 use App\Models\Items;
 use App\Models\ReceiptInvoiceItems;
+use Carbon\Carbon;
 
 class PurchaseReturnRepository
 {
@@ -60,6 +61,8 @@ class PurchaseReturnRepository
 
             // Handle Status
             $this->refreshStatus($purchaseReturn);
+
+            (new ItemRepositrory())->updateItemDetail($purchaseReturn,'delete','purchase');
         }
 
         $this->settingJournal($purchaseReturn);
@@ -75,12 +78,16 @@ class PurchaseReturnRepository
 
             // Change status
             $this->refreshStatus($purchaseReturn);
+
+            (new ItemRepositrory())->updateItemDetail($purchaseReturn,'create','purchase');
         }
 
         if ($purchaseReturn->items()) {
             $purchaseReturn->items()->delete();
         }
     }
+
+
 
     protected function validationQuantity($quantity, $maxQuantity)
     {

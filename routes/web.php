@@ -22,6 +22,7 @@ use App\Http\Controllers\ReceiptInvoiceController;
 use App\Http\Controllers\SalesInvoiceController;
 use App\Http\Controllers\SalesReturnController;
 use App\Http\Controllers\SeriesController;
+use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SettingCoaController;
 use App\Http\Controllers\TableController;
 use App\Http\Controllers\UserController;
@@ -59,6 +60,7 @@ Route::middleware('auth')->group(function () {
 
 
     Route::get('items/stock', ItemStockController::class)->name('items.stock');
+    Route::resource('services',ServiceController::class)->names('services');
     Route::resource('item/details',ItemDetailController::class)->names('item.details');
     Route::resource('item/conditions',ItemConditionController::class)->names('item.conditions');
     Route::resource('contacts', ContactController::class)->names('contacts');

@@ -84,7 +84,7 @@ class AdvancePaymentController extends Controller
     public function create()
     {
         return view('dashboard.purchasing.advance_payments.create', [
-            'items' => ItemDetail::all(),
+            'items' => ItemDetail::where('status',0)->get(),
             'setupColumn' => $this->setupColumn
         ]);
     }
@@ -143,7 +143,7 @@ class AdvancePaymentController extends Controller
         // dd($this->model->with('items.item')->find($id));
         return view('dashboard.purchasing.advance_payments.create', [
             'data' => $this->model->with('items.item.details')->find($id),
-            'items' => ItemDetail::all(),
+            'items' => ItemDetail::where('status',0)->get(),
             'setupColumn' => $this->setupColumn
         ]);
     }

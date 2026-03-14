@@ -66,8 +66,8 @@ class ReceiptInvoiceRepository
                 $this->refreshStatus($receiptInvoice);
 
                 // Handle Update Item
-                $this->updateItemDetail($receiptInvoice);
             }
+            (new ItemRepositrory())->updateItemDetail($receiptInvoice, 'create', 'purchase');
         }
 
         $this->settingJournal($receiptInvoice);
@@ -84,10 +84,9 @@ class ReceiptInvoiceRepository
 
                 // Change status advance payment
                 $this->refreshStatus($receiptInvoice);
-
-
-                $this->updateItemDetail($receiptInvoice);
             }
+
+            (new ItemRepositrory())->updateItemDetail($receiptInvoice, 'delete', 'purchase');
         }
 
         if ($receiptInvoice->items()) {
@@ -103,23 +102,6 @@ class ReceiptInvoiceRepository
             throw ValidationException::withMessages([
                 'advance_amount' => 'Jumlah pembayaran harus lunas'
             ]);
-        }
-    }
-
-    protected function updateItemDetail($receiptInvoice)
-    {
-        $receiptInvoice = $receiptInvoice->fresh();
-
-        foreach($receiptInvoice->items as $item)
-        {
-            $relatedItemDetail = ItemDetail::find($item->item_detail_id);
-
-            if($relatedItemDetail) {
-                $relatedItemDetail->update([
-                    'service' => $item->service ?? 0,
-                    'purchase_date' => Carbon::now(),
-                ]);
-            }
         }
     }
 

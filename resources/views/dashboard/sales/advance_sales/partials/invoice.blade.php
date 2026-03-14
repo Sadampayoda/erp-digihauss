@@ -12,7 +12,7 @@
     <div class="flex flex-col gap-4 py-6">
         <form id="informationForm">
             {{-- SALES (SELECT) --}}
-            <x-input-select name="sales" label="Sales" :route="route('contacts.index')" placeholder="Pilih Sales"
+            <x-input-select name="sales" label="Sales" :route="route('users.index')" placeholder="Pilih Sales"
                 border_color="border-stone-300" class="rounded-sm p-1 md:p-2" :selected="$data->sales ?? null" required />
 
             <x-input-text type="number" name="advance_amount" label="Pembayaran Uang Muka"

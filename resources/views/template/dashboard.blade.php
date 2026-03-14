@@ -206,6 +206,10 @@
                 reader.readAsDataURL(input.files[0]);
             }
         }
+
+        const formatRupiah = (angka) =>  {
+            return new Intl.NumberFormat('id-ID').format(angka || 0);
+        }
     </script>
 
 </body>

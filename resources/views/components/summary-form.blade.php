@@ -25,7 +25,7 @@
 
         {{-- ROW 1 --}}
         <div class="md:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-4 pb-4 border-b border-slate-300">
-            <x-input-text :readonly="true" type="number" name="item_quantity" label="Jumlah Barang"
+            <x-input-text :readonly="true" name="item_quantity" label="Jumlah Barang"
                 class="rounded-lg px-3 py-2" value="0" />
 
             <x-input-text :readonly="true" type="number" :name="$parentSubTotal"
@@ -162,8 +162,8 @@
         const totalTransactionPurchase = purchasePrice + (ids.module == 'sales' ? totalService : 0);
 
         const margin =
-            ids.module == 'sales'
-                ? (totalTransaction - totalTransactionPurchase) : totalTransactionPurchase - totalTransaction;
+            ids.module == 'sales' ?
+            (totalTransaction - totalTransactionPurchase) : totalTransactionPurchase - totalTransaction;
 
         const columnMarginPercentage = ids.module == 'sales' ? totalTransaction : totalTransactionPurchase;
         const marginPercentage = columnMarginPercentage ?
@@ -175,15 +175,15 @@
 
         form.querySelector('[name="item_quantity"]').value = rows.length;
 
-        form.querySelector(`[name="${ids.parentSubTotal}"]`).value = subTotal;
-        form.querySelector(`[name="${ids.parentPurchasePrice}"]`).value = purchasePrice;
-        form.querySelector(`[name="${ids.parentService}"]`).value = service;
+        setValue(ids.parentSubTotal, subTotal);
+        setValue(ids.parentPurchasePrice, purchasePrice);
+        setValue(ids.parentService, service);
 
-        form.querySelector(`[name="${ids.parentMargin}"]`).value = margin;
-        form.querySelector(`[name="${ids.parentMarginPercentage}"]`).value = marginPercentage;
+        setValue(ids.parentMargin, margin);
+        setValue(ids.parentMarginPercentage, marginPercentage);
 
         if (ids.parentPaidAmount) {
-            form.querySelector(`[name="${ids.parentPaidAmount}"]`).value = totalTransaction;
+            setValue(ids.parentPaidAmount, totalTransaction);
         }
 
         const advanceEl = document.getElementById(ids.parentAdvanceAmount);
@@ -193,7 +193,14 @@
 
             const advance = Number(advanceEl.value) || 0;
 
-            remainingEl.value = totalTransaction - advance;
+            const remaining = totalTransaction - advance;
+
+            remainingEl.value = remaining;
+
+            const remainingLabel = document.getElementById(`${ids.parentRemainingAmount}-label`);
+            if (remainingLabel) {
+                remainingLabel.value = formatRupiah(remaining);
+            }
 
         }
 
@@ -249,4 +256,18 @@
             compare_price: purchasePrice
         }
     }
+
+    const setValue = (name, value) => {
+        const form = document.getElementById('subTotalForm');
+        const input = form.querySelector(`[name="${name}"]`);
+        if (input) {
+            input.value = value;
+        }
+
+        const label = document.getElementById(`${name}-label`);
+        if (label) {
+            label.value = formatRupiah(value);
+        }
+
+    };
 </script>

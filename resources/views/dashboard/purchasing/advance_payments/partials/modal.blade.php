@@ -7,7 +7,8 @@
         'imei' => 'Imei',
         'sale_price' => 'Harga Jual',
         'purchase_price' => 'Harga Beli',
-    ]" :data="$items" onSearch="{{ route('items.index') }}" onPrefix="detail" :checkbox="true" />
+    ]" :data="$items" onSearch="{{ route('items.index') }}" onPrefix="detail" :checkbox="true"
+        :onSearchParams="['status' => 0]" />
 </x-modal>
 
 

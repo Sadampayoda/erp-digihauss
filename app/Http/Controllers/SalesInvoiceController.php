@@ -33,6 +33,7 @@ class SalesInvoiceController extends Controller
             'serial_number' => ['label' => 'Seri'],
             'sale_price' => ['label' => 'Harga Jual', 'edit' => true, 'type' => 'number'],
             'purchase_price' => ['label' => 'Harga Beli', 'type' => 'number'],
+            'service' => ['label' => 'Service', 'type' => 'number'],
             'quantity' => ['label' => 'Qty', 'edit' => false, 'type' => 'number'],
             'sub_total' => ['label' => 'Sub Total', 'type' => 'number'],
             'margin' => ['label' => 'Margin', 'type' => 'number'],
@@ -84,7 +85,7 @@ class SalesInvoiceController extends Controller
     public function create()
     {
         return view('dashboard.sales.sales_invoices.create', [
-            'items' => ItemDetail::all(),
+            'items' => ItemDetail::where('status', 1)->get(),
             'setupColumn' => $this->setupColumn
         ]);
     }
@@ -146,7 +147,7 @@ class SalesInvoiceController extends Controller
 
         return view('dashboard.sales.sales_invoices.create', [
             'data' => $data,
-            'items' => ItemDetail::all(),
+            'items' => ItemDetail::where('status', 1)->get(),
             'setupColumn' => $this->setupColumn
         ]);
     }

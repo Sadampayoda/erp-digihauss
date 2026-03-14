@@ -72,4 +72,9 @@ class ItemCondition extends Model
     {
         return $this->detail?->color ?? null;
     }
+
+    public function getStatusAttribute()
+    {
+        return $this->detail?->status ?? null;
+    }
 }

@@ -46,13 +46,23 @@
             'imei' => 'Imei',
             'color' => 'Warna',
             'battery_health' => 'Performa Baterai',
-            'ready' => 'Ready'
-        ]" onEdit="openEditItemModal"  />
+            'ready' => 'Ready',
+        ]" onEdit="openEditItemModal" />
 
     </div>
 
     <script>
         function openEditItemModal(id, data) {
+            if (data.status >= 1) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Tidak Bisa Edit',
+                    text: 'Barang sudah diproses atau dijual sehingga tidak dapat diedit.',
+                    confirmButtonText: 'OK'
+                });
+
+                return;
+            }
             let url = "{{ route('item.conditions.edit', ':id') }}";
             url = url.replace(':id', id);
             window.location.href = url;

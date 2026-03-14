@@ -2,6 +2,9 @@
 
 @section('content')
     <div class="flex flex-col  bg-white w-full h-full py-4 lg:py-7 px-1 lg:px-5 shadow rounded-2xl gap-5">
+        <x-alert action="success" key="success" />
+        <x-alert action="errors" key="errors" />
+
         <div class="flex flex-row justify-between items-center">
             <button
                 class="
@@ -20,7 +23,7 @@
                     Filter
                 </p>
             </button>
-            <a href="{{ route('item.details.create') }}"
+            <a id="btn-open-item-service-modal"
                 class="
                     group flex items-center gap-2
                     bg-emerald-400 text-white
@@ -30,44 +33,56 @@
                     transition-all duration-300 ease-in-out
                     hover:bg-emerald-500 hover:shadow-xl hover:scale-105
                     active:scale-95 cursor-pointer
-                    ">
+                ">
                 <i data-lucide="plus" class="w-5 h-5 transition-transform duration-300 group-hover:rotate-90"></i>
-
                 <p class="hidden sm:block text-sm lg:text-base font-medium">
-                    Tambah Detail
+                    Tambah Service
                 </p>
             </a>
         </div>
 
-        <x-table :data="$details" :labels="[
-            'item_code' => 'Kode Barang',
-            'item_name' => 'Nama Barang',
+        <x-table :labels="[
+            'item_code' => 'Kode',
+            'item_name' => 'Nama',
+            'imei' => 'No. Imei',
             'serial_number' => 'No Seri',
-            'color' => 'Warna',
-            'internal_storage' => 'Storage',
-            'status' => 'Status',
-            'purchase_price' => 'Harga beli',
-            'service' => 'Harga Service',
+            'purchase_price' => 'Harga Beli',
             'sale_price' => 'Harga Jual',
-        ]" onEdit="openEditItemModal" onStatus="item_details" />
-
+            'service' => 'Harga Service'
+        ]" :data="$item_details" onDelete="onDelete" />
     </div>
 
+    @include('dashboard.services.items.partials.model')
     <script>
-        function openEditItemModal(id, data) {
-            if (data.status >= 1) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Tidak Bisa Edit',
-                    text: 'Barang sudah diproses atau dijual sehingga tidak dapat diedit.',
-                    confirmButtonText: 'OK'
-                });
 
-                return;
-            }
-            let url = "{{ route('item.details.edit', ':id') }}";
-            url = url.replace(':id', id);
-            window.location.href = url;
+        const onDelete = (id) => {
+            Swal.fire({
+                title: 'Yakin mau hapus?',
+                text: 'Data brand ini akan dihapus permanen!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Ya, hapus',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `/services/${id}`,
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            _method: 'DELETE'
+                        },
+                        success: function(res) {
+                            showAlert('Sukses', res.message);
+                        },
+                        error: function(err) {
+                            showAlert('Gagal', message, 'errors', true);
+                        }
+                    });
+                }
+            });
         }
     </script>
 @endsection

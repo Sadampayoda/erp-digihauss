@@ -25,14 +25,14 @@
                 {{ $title ?? ' ' }}
             </h2>
 
-            <button type="button" id="btn-close-modal" class="text-slate-400 hover:text-slate-600 text-xl cursor-pointer" data-modal-close>
+            <button type="button" id="btn-close-modal-{{ $id }}" class="text-slate-400 hover:text-slate-600 text-xl cursor-pointer" data-modal-close>
                 ✕
             </button>
         </div>
 
         {{ $slot }}
         <div class="flex flex-col sm:flex-row justify-end gap-3 pt-3">
-            <button type="button" id="btn-cancel-modal"
+            <button type="button" id="btn-cancel-modal-{{ $id }}" onclick="onCancel()"
                 class="
                         w-full sm:w-auto
                         px-4 py-2 rounded-lg
@@ -62,10 +62,9 @@
     {
         const idModal = @json($id)
 
-        const closeBtn = document.getElementById('btn-close-modal');
-        const cancelBtn = document.getElementById('btn-cancel-modal');
+        const closeBtn = document.getElementById(`btn-close-modal-${idModal}`);
+        const cancelBtn = document.getElementById(`btn-cancel-modal-${idModal}`);
         const modal = document.getElementById(`${idModal}`);
-
 
         [closeBtn, cancelBtn].forEach(btn => {
             btn.addEventListener('click', () => {

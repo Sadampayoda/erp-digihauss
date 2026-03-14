@@ -60,6 +60,8 @@ class SalesReturnRepository
 
             // Handle Status
             $this->refreshStatus($salesReturn);
+
+            (new ItemRepositrory())->updateItemDetail($salesReturn,'delete');
         }
 
         $this->settingJournal($salesReturn);
@@ -75,6 +77,8 @@ class SalesReturnRepository
 
             // Change status
             $this->refreshStatus($salesReturn);
+
+            (new ItemRepositrory())->updateItemDetail($salesReturn,'create');
         }
 
         if ($salesReturn->items()) {

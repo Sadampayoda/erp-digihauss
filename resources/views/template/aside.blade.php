@@ -54,10 +54,15 @@
                     <i data-lucide="check-circle" class="w-4 h-4"></i>
                     <span>Kondisi Barang</span>
                 </a>
-                <a href="/produk/stok"
+                <a href="{{ route('services.index') }}"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
                     <i data-lucide="wrench" class="w-4 h-4"></i>
                     <span>Service Barang</span>
+                </a>
+                <a href="{{ route('journals.index', ['menu' => 'service']) }}"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg {{ Request::is('journals*') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }} hover:bg-stone-200">
+                    <i data-lucide="trending-up" class="w-4 h-4"></i>
+                    <span>Journal Service</span>
                 </a>
             </div>
         </div>

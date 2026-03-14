@@ -29,6 +29,10 @@ return [
         'condition'   => 'Kondisi Barang',
     ],
 
+    'service' => [
+        'service' => 'Barang Service'
+    ],
+
     'general-affairs' => [
         'administration' => 'Administrasi Umum',
     ],

@@ -34,6 +34,7 @@ class SalesReturnController extends Controller
             'serial_number' => ['label' => 'Seri'],
             'sale_price' => ['label' => 'Harga Jual', 'edit' => true, 'type' => 'number'],
             'purchase_price' => ['label' => 'Harga Beli', 'type' => 'number'],
+            'service' => ['label' => 'Service', 'type' => 'number'],
             'quantity' => ['label' => 'Qty', 'edit' => true, 'type' => 'number'],
             'si_quantity' => ['label' => 'Qty SI', 'type' => 'number'],
             'sub_total' => ['label' => 'Sub Total', 'type' => 'number'],

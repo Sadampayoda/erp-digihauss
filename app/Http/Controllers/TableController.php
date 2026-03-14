@@ -26,8 +26,13 @@ class TableController extends Controller
                             'onDelete' => $request->delete,
                         ]);
                     }
+                    $status = (int) $request->searchParams['status'] ?? null;
 
-                    $data = ItemDetail::where('item_id', $request->search)->get();
+                    $data = ItemDetail::where('item_id', $request->search)
+                        ->when(!is_null($status),function($query) use ($status){
+                            $query->where('status',$status);
+                        })
+                        ->get();
                     break;
 
                 default:

@@ -7,7 +7,9 @@
     'titleEdit' => 'Edit',
     'onPaymentProof' => null,
     'onSearch' => null,
+    'onSearchParams' => [],
     'onPrefix' => null,
+    'onStatus' => 'transaction',
 ])
 <div class="overflow-x-auto w-screen lg:w-full h-120">
     @if ($onSearch)
@@ -46,7 +48,7 @@
                     @foreach ($labels as $key => $value)
                         @if ($key === 'status')
                             @php
-                                $status = transactionStatusBadge($item->$key);
+                                $status = transactionStatusBadge($item->$key, $onStatus);
                             @endphp
                             <td class="px-4 py-3">
                                 <span class="px-3 py-1 rounded-full text-xs font-medium {{ $status['class'] }}">
@@ -67,7 +69,9 @@
                                 @endif
                             </td>
                         @else
-                            <td class="px-4 py-3">{{ $item->$key }}</td>
+                            <td class="px-4 py-3">
+                                {{ is_numeric($item->$key) ? rupiah($item->$key) : $item->$key }}
+                            </td>
                         @endif
                     @endforeach
                     @if ($onEdit || $onDelete)
@@ -212,6 +216,7 @@
     const checkbox = @json($checkbox);
     const onSearchEdit = @json($onEdit);
     const onSearchDelete = @json($onDelete);
+    const onSearchParams = @json($onSearchParams);
     document.getElementById('search').addEventListener('change', function() {
         if (!onSearch) {
             return;
@@ -227,6 +232,7 @@
                 checkbox: checkbox,
                 edit: onSearchEdit,
                 delete: onSearchDelete,
+                searchParams: onSearchParams
             },
             method: 'GET',
             headers: {

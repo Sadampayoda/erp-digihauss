@@ -32,6 +32,7 @@ class AdvanceSaleController extends Controller
             'serial_number' => ['label' => 'Seri'],
             'sale_price' => ['label' => 'Harga Jual', 'edit' => true, 'type' => 'number'],
             'purchase_price' => ['label' => 'Harga Beli', 'type' => 'number'],
+            'service' => ['label' => 'Service' ,'type' => 'number'],
             'quantity' => ['label' => 'Qty', 'type' => 'number'],
             'sub_total' => ['label' => 'Sub Total', 'type' => 'number'],
             'margin' => ['label' => 'Margin', 'type' => 'number'],
@@ -85,7 +86,7 @@ class AdvanceSaleController extends Controller
     {
 
         return view('dashboard.sales.advance_sales.create', [
-            'items' => ItemDetail::all(),
+            'items' => ItemDetail::where('status',1)->get(),
             'setupColumn' => $this->setupColumn
         ]);
     }
@@ -145,7 +146,7 @@ class AdvanceSaleController extends Controller
         // dd($this->model->with('items.item')->find($id));
         return view('dashboard.sales.advance_sales.create', [
             'data' => $this->model->with('items.item.details')->find($id),
-            'items' => ItemDetail::all(),
+            'items' => ItemDetail::where('status',1)->get(),
             'setupColumn' => $this->setupColumn
         ]);
     }

@@ -39,7 +39,7 @@
                                 value="{{ @$data->item_detail_id }}">
                         @else
                             <x-input-select name="item_detail_id" label="SN / IMEI"
-                                route="{{ route('item.details.index') }}" :selected="@$data->item_detail_id" :required="true" />
+                                route="{{ route('item.details.index') }}" :params="['status' => 0]" :selected="@$data->item_detail_id" :required="true" />
                         @endif
 
                         <x-input-text name="battery_health" type="number" label="Kesehatan Baterai (%)"

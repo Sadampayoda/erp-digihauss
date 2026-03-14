@@ -26,7 +26,7 @@ class CreateAdvanceSaleRequest extends FormRequest
         return [
             'customer'          => ['required', 'integer', 'exists:contacts,id'],
             'transaction_date'  => ['required', 'date'],
-            'sales'             => ['required', 'integer', 'exists:contacts,id'],
+            'sales'             => ['required', 'integer', 'exists:users,id'],
             'payment_method'    => ['required', 'integer'],
             'status'            => ['required'],
             'description'       => ['nullable', 'string', 'max:255'],

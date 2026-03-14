@@ -23,7 +23,7 @@ class JournalRepository
 
     public function generateJournal(
         $data,
-        $details,
+        $details = [],
         $module,
         $action,
         $columnPaymentMethod = null,
@@ -73,8 +73,12 @@ class JournalRepository
         $amountDebit  = $data->$columnNominalDebit;
         $amountCredit = $data->$columnNominalCredit;
 
+        $relateContact = null;
 
-        $relateContact = Contact::find($data->$columnContact);
+        if ($columnContact) {
+            $contactId = $data->$columnContact ?? null;
+            $relateContact = Contact::find($contactId);
+        }
 
         $journal = $this->model->updateOrCreate(
             [
