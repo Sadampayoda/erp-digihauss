@@ -128,8 +128,8 @@
                     <i data-lucide="receipt" class="w-4 h-4"></i>
                     <span>Receipt Invoice</span>
                 </a>
-                <a href="{{ route('receipt-invoices.index') }}"
-                    class="flex items-center gap-2 p-2 text-sm rounded-lg  {{ Request::is('receipt-invoices*') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }}  hover:bg-stone-200">
+                <a href="{{ route('purchase-returns.index') }}"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg  {{ Request::is('purchase-returns*') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }}  hover:bg-stone-200">
                     <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
                     <span>Purchase Return</span>
                 </a>

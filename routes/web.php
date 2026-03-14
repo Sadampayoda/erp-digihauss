@@ -17,6 +17,7 @@ use App\Http\Controllers\ItemStockController;
 use App\Http\Controllers\JournalController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\PurchaseReturnController;
 use App\Http\Controllers\ReceiptInvoiceController;
 use App\Http\Controllers\SalesInvoiceController;
 use App\Http\Controllers\SalesReturnController;
@@ -50,6 +51,7 @@ Route::middleware('auth')->group(function () {
     // Purchasing
     Route::resource('advance-payments',AdvancePaymentController::class)->names('advance-payments');
     Route::resource('receipt-invoices',ReceiptInvoiceController::class)->names('receipt-invoices');
+    Route::resource('purchase-returns',PurchaseReturnController::class)->names('purchase-returns');
 
     // Finance
     Route::resource('cashs',CashController::class)->names('cashs');

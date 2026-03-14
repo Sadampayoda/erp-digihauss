@@ -100,7 +100,7 @@ class JournalRepository
                 ]);
             }
 
-            if ($module == 'sales-return') {
+            if ($module == 'sales-return' || $module == 'purchase_return') {
                 // Debit
                 [$debit, $credit] = $this->normalizeAmount($amountDebit, 0);
 

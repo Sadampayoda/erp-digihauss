@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateReceiptInvoiceRequest extends FormRequest
+class CreatePurchaseReturnRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -19,19 +19,19 @@ class CreateReceiptInvoiceRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
+
     public function rules(): array
     {
-
         return [
             'transaction_date' => [
                 'required',
                 'date',
             ],
 
-            'advance_payment_id' => [
-                'nullable',
+            'receipt_invoice_id' => [
+                'required',
                 'integer',
-                'exists:advance_payments,id',
+                'exists:receipt_invoices,id',
             ],
 
             'vendor' => [
@@ -48,12 +48,6 @@ class CreateReceiptInvoiceRequest extends FormRequest
 
             'sub_total' => [
                 'required',
-                'numeric',
-                'min:0',
-            ],
-
-            'advance_amount' => [
-                'nullable',
                 'numeric',
                 'min:0',
             ],
@@ -82,10 +76,6 @@ class CreateReceiptInvoiceRequest extends FormRequest
                 'min:0',
             ],
 
-            'remaining_amount' => [
-                'required',
-                'numeric',
-            ],
 
             'payment_method' => [
                 'nullable',
@@ -112,11 +102,12 @@ class CreateReceiptInvoiceRequest extends FormRequest
 
             'items'                     => ['required', 'array', 'min:1'],
             'items.*.detail_id'           => ['nullable'],
-            'items.*.advance_payment_items_id' => ['nullable'],
+            'items.*.receipt_invoice_items_id'=> ['nullable'],
             'items.*.item_id'                => ['required', 'integer', 'exists:items,id'],
             'items.*.sale_price'        => ['nullable', 'numeric', 'min:0'],
             'items.*.purchase_price'    => ['nullable', 'numeric', 'min:0'],
             'items.*.quantity'          => ['nullable', 'integer', 'min:1'],
+            'items.*.ri_quantity'          => ['nullable', 'integer'],
             'items.*.service'           => ['nullable', 'numeric', 'min:0'],
             'items.*.sub_total'         => ['nullable', 'numeric', 'min:0'],
             'items.*.margin'            => ['nullable', 'numeric'],
@@ -124,26 +115,6 @@ class CreateReceiptInvoiceRequest extends FormRequest
             'items.*.serial_number' => ['required'],
             'items.*.item_detail_id' => ['required'],
 
-        ];
-    }
-
-    protected function prepareForValidation(): void
-    {
-        $this->merge([
-            'sub_total'        => $this->sub_total ?? 0,
-            'service'          => $this->service ?? 0,
-            'discount'         => $this->discount ?? 0,
-            'paid_amount'      => $this->paid_amount ?? 0,
-            'remaining_amount' => $this->remaining_amount ?? 0,
-        ]);
-    }
-
-    public function messages(): array
-    {
-        return [
-            'transaction_number.unique' => 'Nomor transaksi sudah digunakan.',
-            'paid_amount.min'           => 'Pembayaran tidak boleh bernilai negatif.',
-            'remaining_amount.min'      => 'Sisa pembayaran tidak boleh bernilai negatif.',
         ];
     }
 }
