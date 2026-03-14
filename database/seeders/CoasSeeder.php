@@ -29,6 +29,8 @@ class CoasSeeder extends Seeder
             ['code' => '1.1.00', 'name' => 'Kas', 'type' => 'asset', 'level' => 2, 'parent' => '1.0.00'],
             ['code' => '1.2.00', 'name' => 'Bank', 'type' => 'asset', 'level' => 2, 'parent' => '1.0.00'],
             ['code' => '1.3.00', 'name' => 'E-Wallet', 'type' => 'asset', 'level' => 2, 'parent' => '1.0.00'],
+            ['code' => '1.4.00', 'name' => 'Persediaan', 'type' => 'asset', 'level' => 2, 'parent' => '1.0.00'],
+            ['code' => '1.5.00', 'name' => 'Piutang Usaha', 'type' => 'asset', 'level' => 2, 'parent' => '1.0.00'],
 
 
             // LEVEL 3 - KAS
@@ -48,6 +50,13 @@ class CoasSeeder extends Seeder
             ['code' => '1.3.02', 'name' => 'ShopeePay', 'type' => 'asset', 'level' => 3, 'parent' => '1.3.00'],
             ['code' => '1.3.03', 'name' => 'GoPay', 'type' => 'asset', 'level' => 3, 'parent' => '1.3.00'],
 
+            // LEVEL 3 - PERSEDIAAN
+            ['code' => '1.4.01', 'name' => 'Persediaan Iphone', 'type' => 'asset', 'level' => 3, 'parent' => '1.4.00'],
+            ['code' => '1.4.02', 'name' => 'Persediaan Aksesoris', 'type' => 'asset', 'level' => 3, 'parent' => '1.4.00'],
+            ['code' => '1.4.03', 'name' => 'Persediaan Trade In', 'type' => 'asset', 'level' => 3, 'parent' => '1.4.00'],
+
+            // LEVEL 3 - PIUTANG USAHA
+            ['code' => '1.5.01', 'name' => 'Piutang Customer', 'type' => 'asset', 'level' => 3, 'parent' => '1.5.00'],
 
             // ======================
             // LEVEL 2 - KEWAJIBAN
@@ -55,6 +64,7 @@ class CoasSeeder extends Seeder
             ['code' => '2.1.00', 'name' => 'Hutang Usaha', 'type' => 'liability', 'level' => 2, 'parent' => '2.0.00'],
             ['code' => '2.2.00', 'name' => 'Hutang Bank', 'type' => 'liability', 'level' => 2, 'parent' => '2.0.00'],
             ['code' => '2.3.00', 'name' => 'Hutang Staff', 'type' => 'liability', 'level' => 2, 'parent' => '2.0.00'],
+            ['code' => '2.4.00', 'name' => 'Uang Muka Penjualan', 'type' => 'liability', 'level' => 2, 'parent' => '2.0.00'],
 
 
             // LEVEL 3 - HUTANG USAHA
@@ -72,6 +82,9 @@ class CoasSeeder extends Seeder
             ['code' => '2.3.01', 'name' => 'Hutang Gaji', 'type' => 'liability', 'level' => 3, 'parent' => '2.3.00'],
             ['code' => '2.3.02', 'name' => 'Hutang Bonus', 'type' => 'liability', 'level' => 3, 'parent' => '2.3.00'],
             ['code' => '2.3.03', 'name' => 'Hutang Reimburse', 'type' => 'liability', 'level' => 3, 'parent' => '2.3.00'],
+
+            // LEVEL 3 - UANG MUKA PENJUALAN
+            ['code' => '2.4.01', 'name' => 'DP Customer', 'type' => 'liability', 'level' => 3, 'parent' => '2.4.00'],
 
 
             // ======================
@@ -91,12 +104,19 @@ class CoasSeeder extends Seeder
             // ======================
             ['code' => '4.1.00', 'name' => 'Penjualan Produk', 'type' => 'income', 'level' => 2, 'parent' => '4.0.00'],
             ['code' => '4.2.00', 'name' => 'Pendapatan Lain', 'type' => 'income', 'level' => 2, 'parent' => '4.0.00'],
+            ['code' => '4.3.00', 'name' => 'Pendapatan Service', 'type' => 'income', 'level' => 2, 'parent' => '4.0.00'],
 
 
-            // LEVEL 3 - PENDAPATAN
+            // LEVEL 3 - PENDAPATAN PRODUK
             ['code' => '4.1.01', 'name' => 'Penjualan Iphone', 'type' => 'income', 'level' => 3, 'parent' => '4.1.00'],
             ['code' => '4.1.02', 'name' => 'Penjualan Aksesoris', 'type' => 'income', 'level' => 3, 'parent' => '4.1.00'],
+
+            // LEVEL 3 - PENDAPATAN LAIN
             ['code' => '4.2.01', 'name' => 'Pendapatan Lain', 'type' => 'income', 'level' => 3, 'parent' => '4.2.00'],
+
+            // LEVEL 3 - PENDAPATAN SERVICE
+            ['code' => '4.3.01', 'name' => 'Service Iphone', 'type' => 'income', 'level' => 3, 'parent' => '4.3.00'],
+
 
 
             // ======================
@@ -107,6 +127,7 @@ class CoasSeeder extends Seeder
             ['code' => '5.3.00', 'name' => 'Beban Penjualan', 'type' => 'expense', 'level' => 2, 'parent' => '5.0.00'],
             ['code' => '5.4.00', 'name' => 'Administrasi', 'type' => 'expense', 'level' => 2, 'parent' => '5.0.00'],
             ['code' => '5.5.00', 'name' => 'Beban Keuangan', 'type' => 'expense', 'level' => 2, 'parent' => '5.0.00'],
+            ['code' => '5.6.00', 'name' => 'Diskon Penjualan', 'type' => 'expense', 'level' => 2, 'parent' => '5.0.00'],
 
 
             // LEVEL 3 - HPP
@@ -138,6 +159,10 @@ class CoasSeeder extends Seeder
             ['code' => '5.5.01', 'name' => 'Beban Bank', 'type' => 'expense', 'level' => 3, 'parent' => '5.5.00'],
             ['code' => '5.5.02', 'name' => 'Beban Bunga Pinjaman', 'type' => 'expense', 'level' => 3, 'parent' => '5.5.00'],
             ['code' => '5.5.03', 'name' => 'Beban Potongan Bank', 'type' => 'expense', 'level' => 3, 'parent' => '5.5.00'],
+            ['code' => '5.5.04', 'name' => 'Biaya Admin Payment Gateway', 'type' => 'expense', 'level' => 3, 'parent' => '5.5.00'],
+
+            // LEVEL 3 - DISKON PENJUALAN
+            ['code' => '5.6.01', 'name' => 'Diskon Penjualan Produk', 'type' => 'expense', 'level' => 3, 'parent' => '5.6.00'],
         ];
 
         // Insert berurutan supaya parent ada dulu
