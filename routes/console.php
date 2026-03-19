@@ -3,6 +3,7 @@
 
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schedule;
 
 Artisan::command('inspire', function () {
@@ -15,10 +16,6 @@ Schedule::command('app:auto-create-for-next-day-item-responbility')
     ->appendOutputTo(storage_path('logs/cron.log'));
 
 
-$schedule->call(function () {
-    \Log::info('Cron jalan: ' . now());
-})->everyMinute();
-
 Schedule::call(function () {
-    \Log::info('Cron jalan: ' . now());
+    Log::info('Cron jalan: ' . now());
 })->everyMinute();
