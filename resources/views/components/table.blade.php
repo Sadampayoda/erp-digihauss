@@ -10,6 +10,7 @@
     'onSearchParams' => [],
     'onPrefix' => null,
     'onStatus' => 'transaction',
+    'onParamsInput' => []
 ])
 <div class="overflow-x-auto w-screen lg:w-full h-120">
     @if ($onSearch)
@@ -217,9 +218,23 @@
     const onSearchEdit = @json($onEdit);
     const onSearchDelete = @json($onDelete);
     const onSearchParams = @json($onSearchParams);
+    const onParamsInput = @json($onParamsInput);
     document.getElementById('search').addEventListener('change', function() {
         if (!onSearch) {
             return;
+        }
+
+        if (onParamsInput.length > 0) {
+            onParamsInput.forEach((input) => {
+                const el = document.getElementById(input);
+
+                if (!el) return;
+                const value = el.value;
+
+                if (value !== null && value !== '') {
+                    onSearchParams[input] = value;
+                }
+            });
         }
 
         const search = this.value ?? ''

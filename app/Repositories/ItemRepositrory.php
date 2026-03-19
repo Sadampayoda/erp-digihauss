@@ -48,6 +48,13 @@ class ItemRepositrory
         });
     }
 
+    public function canDeleteItemDetail($detail)
+    {
+        if($detail->status >= 2) {
+
+        }
+    }
+
 
     public function updateItemDetail($transaction, $method = 'create', $module = 'sales')
     {
@@ -83,7 +90,7 @@ class ItemRepositrory
                 if ($method == 'create') {
                     // Sales Invoice
                     $data['sale_date'] = Carbon::now();
-                    $data['status'] = 2; // sold
+                    $data['status'] = 3; // sold
                 } else {
                     // Sales Return
                     $data['sale_date'] = null;

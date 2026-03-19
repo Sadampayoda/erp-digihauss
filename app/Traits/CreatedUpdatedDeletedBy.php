@@ -26,9 +26,11 @@ trait CreatedUpdatedDeletedBy
         });
 
         static::deleting(function ($model) {
-            if (Auth::check() && $model->isForceDeleting() === false) {
+            if (Auth::check() && !$model->isForceDeleting()) {
                 $model->deleted_by = Auth::id();
-                $model->save();
+
+                $model->timestamps = false;
+                $model->saveQuietly();
             }
         });
     }

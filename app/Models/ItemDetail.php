@@ -118,4 +118,21 @@ class ItemDetail extends Model
         return $this->belongsTo(PurchaseReturn::class,'id','item_detail_id');
     }
 
+    public function itemResponsibility()
+    {
+        return $this->hasMany(ItemResponsibility::class,'item_detail_id','id');
+    }
+
+    public function todayResponsibility()
+    {
+        return $this->hasOne(ItemResponsibility::class, 'item_detail_id', 'id')
+            ->whereDate('assigned_at', today())
+            ->whereNull('deleted_at');
+    }
+
+    public function getTodayResponsibleNameAttribute()
+    {
+        return $this->todayResponsibility?->user?->name;
+    }
+
 }

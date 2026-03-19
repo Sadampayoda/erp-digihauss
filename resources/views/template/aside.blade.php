@@ -44,11 +44,6 @@
                     <i data-lucide="smartphone" class="w-4 h-4"></i>
                     <span>Detail Barang</span>
                 </a>
-                <a href="{{ route('items.stock') }}"
-                    class="flex items-center gap-2 p-2 text-sm rounded-lg {{ Request::is('items/stock') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }} hover:bg-stone-200">
-                    <i data-lucide="boxes" class="w-4 h-4"></i>
-                    <span>Stok Barang</span>
-                </a>
                 <a href="{{ route('item.conditions.index') }}"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
                     <i data-lucide="check-circle" class="w-4 h-4"></i>
@@ -208,6 +203,32 @@
                     <span>Journal Finance</span>
                 </a>
 
+            </div>
+        </div>
+
+
+        <div>
+            <button onclick="toggleMenu('inventory')"
+                class="flex w-full items-center justify-between p-4 rounded-xl text-md text-slate-400 hover:bg-stone-200 transition">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="clipboard-list" class="w-5 h-5"></i>
+                    <span>Persediaan</span>
+                </div>
+                <i data-lucide="chevron-down" id="icon-inventory" class="w-4 h-4 transition-transform"></i>
+            </button>
+
+            <div id="menu-inventory" class="ml-10 mt-1 space-y-1 overflow-hidden max-h-0 transition-all duration-300">
+
+                <a href="{{ route('item-responsibilities.index') }}"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg {{ Request::is('item-responsibilities*') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }} hover:bg-stone-200">
+                    <i data-lucide="user-cog" class="w-4 h-4"></i>
+                    <span>Penanggung Jawab Stok</span>
+                </a>
+                <a href="{{ route('items.stock') }}"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg {{ Request::is('items/stock') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }} hover:bg-stone-200">
+                    <i data-lucide="boxes" class="w-4 h-4"></i>
+                    <span>Stok Barang</span>
+                </a>
             </div>
         </div>
 

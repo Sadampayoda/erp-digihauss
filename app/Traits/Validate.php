@@ -55,4 +55,16 @@ trait Validate
             ]);
         }
     }
+
+    public function allowItemDetail($detail)
+    {
+        if ($detail->status >= 2) {
+
+            $statusLabel = transactionStatus('item_details', $detail->status);
+
+            throw ValidationException::withMessages([
+                'status' => "Item dengan nomor seri {$detail->serial_number} tidak bisa diubah / hapus karena status sudah {$statusLabel}."
+            ]);
+        }
+    }
 }

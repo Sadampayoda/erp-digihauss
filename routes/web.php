@@ -12,6 +12,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ItemConditionController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ItemDetailController;
+use App\Http\Controllers\ItemResponsibilitiController;
 use App\Http\Controllers\ItemsController;
 use App\Http\Controllers\ItemStockController;
 use App\Http\Controllers\JournalController;
@@ -81,4 +82,7 @@ Route::middleware('auth')->group(function () {
 
 
     Route::get('table/get',[TableController::class,'index'])->name('table.index');
+
+    // Persediaan
+    Route::resource('item-responsibilities',ItemResponsibilitiController::class)->names('item-responsibilities');
 });

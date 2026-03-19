@@ -84,56 +84,73 @@
     {
         const onClickDelete = @json($setupColumn['action']['onClickDelete'] ?? null);
         const initialTable = @json($initialTable);
-        window.renderDetailRow = function(item, setupColumn, nameTable = 'itemsTable') {
+        window.renderDetailRow = function(item, setupColumn, duplicateColumn = 'item_detail_id', nameTable =
+            'itemsTable') {
             const table = nameTable ?? initialTable;
             const tableBody = document.getElementById(`${table}-body`);
+            let uid = `${item.id}-${generateUID()}`;
             if (!tableBody) return;
 
             const emptyRow = tableBody.querySelector('.empty-row');
             if (emptyRow) emptyRow.remove();
 
-            if (!document.querySelector(`tr[data-id="${item.id}"]`)) {
+            if (duplicateColumn) {
+                const rows = tableBody.querySelectorAll('tr[data-id]');
 
-                let row = `<tr class="hover:bg-slate-50" data-id="${item.id}">`;
+                const isDuplicate = Array.from(rows).some(row => {
+                    const input = row.querySelector(`[name="${duplicateColumn}[]"]`);
+                    return input && input.value == item[duplicateColumn];
+                });
 
-                Object.keys(setupColumn).forEach(column => {
+                if (isDuplicate) {
+                    console.warn(`Duplicate ${duplicateColumn}:`, item[duplicateColumn]);
+                    return;
+                }
+            }
 
-                    let config = setupColumn[column];
-                    let type = config.type ?? 'text';
-                    let isEdit = config.edit ?? false;
-                    let isDelete = config.delete ?? false;
+            let row = `<tr class="hover:bg-slate-50"
+                data-id="${uid}"
+                data-real-id="${item.id}">`;
 
-                    // ACTION COLUMN
-                    if (column === 'action') {
 
-                        if (isDelete) {
-                            row += `
+            Object.keys(setupColumn).forEach(column => {
+
+                let config = setupColumn[column];
+                let type = config.type ?? 'text';
+                let isEdit = config.edit ?? false;
+                let isDelete = config.delete ?? false;
+
+                // ACTION COLUMN
+                if (column === 'action') {
+
+                    if (isDelete) {
+                        row += `
                                 <td class="px-6 py-4 text-center">
                                     <button
                                         type="button"
-                                        onclick="onDeleteDetail(${item.id})"
+                                        onclick="onDeleteDetail('${uid}')"
                                         class="text-red-500 hover:text-red-700 delete-row cursor-pointer">
                                         <i data-lucide="trash-2" class="w-5 h-5"></i>
                                     </button>
                                 </td>
                             `;
-                        }
-
                     }
-                    // IMAGE COLUMN
-                    else if (type === 'image') {
 
-                        row += `
+                }
+                // IMAGE COLUMN
+                else if (type === 'image') {
+
+                    row += `
                     <td class="px-6 py-4">
                         <img src="/storage/${item[column] ?? ''}"
                             class="w-14 h-14 rounded-lg object-cover">
                     </td>
                 `;
-                    }
-                    // EDITABLE COLUMN
-                    else if (isEdit) {
+                }
+                // EDITABLE COLUMN
+                else if (isEdit) {
 
-                        row += `
+                    row += `
                     <td class="px-6 py-4">
                         <input type="${type}"
                             name="${column}[]"
@@ -141,11 +158,11 @@
                             value="${item[column] ?? 0}">
                     </td>
                 `;
-                    }
-                    // NORMAL COLUMN
-                    else {
+                }
+                // NORMAL COLUMN
+                else {
 
-                        row += `
+                    row += `
                         <td class="px-6 py-4">
                             <input
                                 type="${type}"
@@ -155,23 +172,23 @@
                                 class="w-24 text-center bg-transparent border-none font-medium text-slate-800 focus:outline-none pointer-events-none ${column}">
                         </td>
                 `;
-                    }
+                }
 
-                });
+            });
 
-                row += `</tr>`;
+            row += `</tr>`;
 
 
-                document
-                    .getElementById(`${initialTable}-body`)
-                    .insertAdjacentHTML('beforeend', row);
-            }
+            document
+                .getElementById(`${initialTable}-body`)
+                .insertAdjacentHTML('beforeend', row);
+
 
 
             lucide.createIcons();
         };
 
-        window.onDeleteDetail = (id) => {
+        window.onDeleteDetail = (uid) => {
             Swal.fire({
                 title: "Yakin dihapus ?",
                 showCancelButton: true,
@@ -180,18 +197,18 @@
                 if (!result.isConfirmed) return;
 
                 if (onClickDelete && typeof window[onClickDelete] === 'function') {
-                    window[onClickDelete](id);
+                    window[onClickDelete](uid);
                 }
 
-                removeRowAndCheckEmpty(id);
+                removeRowAndCheckEmpty(uid);
             });
 
         }
 
-        function removeRowAndCheckEmpty(id) {
+        function removeRowAndCheckEmpty(uid) {
             const tbody = document.getElementById(`${initialTable}-body`);
 
-            const row = tbody.querySelector(`tr[data-id="${id}"]`);
+            const row = tbody.querySelector(`tr[data-id="${uid}"]`);
             if (row) row.remove();
 
             const dataRows = tbody.querySelectorAll('tr[data-id]');
@@ -206,7 +223,9 @@
                 </tr>
         `;
             }
-            summaryForm();
+            if (typeof summaryForm === 'function') {
+                summaryForm()
+            }
         }
 
         window.getDetailTableData = function() {
@@ -218,7 +237,7 @@
 
             rows.forEach(row => {
                 const rowData = {
-                    item_id: row.dataset.id
+                    item_id: row.dataset.realId
                 };
 
                 const inputs = row.querySelectorAll('input[name$="[]"]');
@@ -312,6 +331,10 @@
                     )
                 })
             })
+        }
+
+        window.generateUID = (length = 6) => {
+            return Math.random().toString(36).substring(2, 2 + length);
         }
     }
 </script>
