@@ -186,7 +186,6 @@ class ItemResponsibilitiController extends Controller
 
             return $this->sendSuccess(message: 'Berhasil Modifikasi Penanggung Jawab');
         } catch (QueryException $e) {
-            dd($e);
             DB::rollBack();
             return $this->sendErrors(message: $this->handleDatabaseError($e));
         }
