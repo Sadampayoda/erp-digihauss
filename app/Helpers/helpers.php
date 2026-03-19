@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Setting;
+use Illuminate\Support\Facades\Schema;
 
 if (! function_exists('transactionStatus')) {
     function transactionStatus($type, $key = null)
@@ -95,6 +96,10 @@ if (! function_exists('setting')) {
     function setting($key, $default = null)
     {
         static $cache = null;
+        if (!Schema::hasTable('settings')) {
+            return $default;
+        }
+
 
         if ($cache === null) {
             $cache = Setting::pluck('value', 'key')->toArray();
