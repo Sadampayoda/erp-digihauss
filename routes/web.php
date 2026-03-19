@@ -25,6 +25,7 @@ use App\Http\Controllers\SalesReturnController;
 use App\Http\Controllers\SeriesController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SettingCoaController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TableController;
 use App\Http\Controllers\UserController;
 use App\Models\AdvancePayment;
@@ -79,10 +80,16 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('journals', JournalController::class)->names('journals');
 
+    Route::resource('settings',SettingController::class)->names('settings');
+
 
 
     Route::get('table/get',[TableController::class,'index'])->name('table.index');
 
     // Persediaan
     Route::resource('item-responsibilities',ItemResponsibilitiController::class)->names('item-responsibilities');
+
+
+    //Closing
+
 });

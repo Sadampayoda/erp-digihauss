@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Setting;
+
 if (! function_exists('transactionStatus')) {
     function transactionStatus($type, $key = null)
     {
@@ -92,12 +94,20 @@ if (! function_exists('rupiah')) {
 if (! function_exists('setting')) {
     function setting($key, $default = null)
     {
-        $settings = [
+        static $cache = null;
+
+        if ($cache === null) {
+            $cache = Setting::pluck('value', 'key')->toArray();
+        }
+
+        $defaults = [
             'closing_day_time' => '23:00',
             'closing_months_time' => '23:59',
-            'closing_year_time' => '23:00', 
+            'closing_year_time' => '23:00',
         ];
 
-        return $settings[$key] ?? $default;
+        return $cache[$key]
+            ?? $defaults[$key]
+            ?? $default;
     }
 }

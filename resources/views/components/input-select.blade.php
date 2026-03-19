@@ -12,6 +12,7 @@
     'paramsInput' => [],
     'required' => false,
     'columnShowView' => 'name',
+    'description' => null,
 ])
 
 
@@ -43,7 +44,9 @@
         data-route="{{ $route }}" data-params='@json($params)'>
         <i data-lucide="refresh-cw" class="w-4 h-4 reload-icon"></i>
     </a>
-
+    @if ($description)
+        <p class="text-stone-400 text-xs md:text-sm">{{ $description }}</p>
+    @endif
     @error($error ?? $name)
         <p class="text-red-400 text-xs md:text-sm">{{ $message }}</p>
     @enderror
