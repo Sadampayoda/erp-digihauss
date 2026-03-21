@@ -28,7 +28,7 @@ class AutoCreateForNextDayItemResponbility extends Command
 
     protected function logChannel(): string
     {
-        return 'cron';
+        return 'stack';
     }
 
     /**
