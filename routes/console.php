@@ -3,9 +3,9 @@
 
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache as FacadesCache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schedule;
-use Opcodes\LogViewer\Facades\Cache;
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
@@ -14,7 +14,7 @@ Artisan::command('inspire', function () {
 
 Schedule::call(function () {
     Log::info('closing day: '.now());
-    $lock = Cache::lock('auto-create-item-responsibility', 3600);
+    $lock = FacadesCache::lock('auto-create-item-responsibility', 3600);
 
     if (!$lock->get()) {
         return;
