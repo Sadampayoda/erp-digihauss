@@ -54,9 +54,9 @@ class DailyClosingRepository
                     'notes' => 'sales-invoice',
                 ]);
 
-                $itemResponsibility = ItemResponsibility::where('item_detail_id',$item->item_detail_id)
-                    ->whereDate('assigned_at',$closingDay->closed_at)
-                    ->where('user_id',$closingDay->user_id)
+                $itemResponsibility = ItemResponsibility::where('item_detail_id', $item->item_detail_id)
+                    ->whereDate('assigned_at', $closingDay->closed_at)
+                    ->where('user_id', $closingDay->user_id)
                     ->first();
 
                 DailyClosingResponsibility::create([
@@ -71,7 +71,7 @@ class DailyClosingRepository
                 ]);
             }
 
-            $totalPayment += $salesInvoice->paid_amount ?? 0;
+            $totalPayment += ($salesInvoice->paid_amount ?? 0) + ($salesInvoice->advance_amount ?? 0);
             $totalTransaction += $salesInvoice->grand_total ?? 0;
         }
 
@@ -92,14 +92,14 @@ class DailyClosingRepository
         ]);
     }
 
-    public function syncClosingDay(Request $request)
+    public function syncClosingDay($request)
     {
         $dailyClosing = DailyClosing::with(['dailyClosingItems', 'dailyClosingResponsibility'])
-            ->where('user_id', $request->user_id)
-            ->whereDate('transaction_date', $request->transaction_date)
+            ->where('user_id', $request['user_id'])
+            ->whereDate('transaction_date', $request['transaction_date'])
             ->firstOrFail();
 
-        $date = $request->transaction_date;
+        $date = $request['transaction_date'];
 
         $this->isLocked($dailyClosing);
 
@@ -107,17 +107,21 @@ class DailyClosingRepository
             'dailyClosingDay' => function ($q) use ($date) {
                 $q->whereDate('transaction_date', $date);
             },
+            'dailyClosingDay.dailyClosingItems',
+            'dailyClosingDay.dailyClosingResponsibility',
             'salesInvoices' => function ($q) use ($date) {
                 $q->whereDate('transaction_date', $date);
             },
             'salesInvoices.items',
-            'itemResponsibility.itemDetail' => function ($q) use ($date) {
+            'itemResponsibility' => function ($q) use ($date) {
                 $q->whereDate('assigned_at', $date);
-            }
-        ])->find($request->user_id);
+            },
+            'itemResponsibility.itemDetail'
+        ])->find($request['user_id']);
 
-        $dailyClosing->dailyClosingItems->delete();
-        $dailyClosing->dailyClosingResponsibility->delete();
+        $dailyClosing->dailyClosingItems()->delete();
+        $dailyClosing->dailyClosingResponsibility()->delete();
+
         $this->CreateClosingDayForItems($dailyClosing, $user);
     }
 
@@ -128,8 +132,10 @@ class DailyClosingRepository
             throw new \Exception('Closing sudah dikunci');
         }
 
+        $hours = (int) (setting('closing_day_lock_after_hours') ?? 0);
+
         $lockTime = Carbon::parse($dailyClosing->closed_at)
-            ->addHours(setting('closing_day_lock_after_hours'));
+            ->addHours($hours);
 
         if (now()->greaterThan($lockTime)) {
 

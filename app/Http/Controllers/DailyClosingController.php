@@ -91,16 +91,21 @@ class DailyClosingController extends Controller
             'transaction_number' => ['label' => 'No. Transaksi'],
             'name' => ['label' => 'Nama Produk'],
             'serial_number' => ['label' => 'Seri'],
-            'sale_price_base' => ['label' => 'Harga Jual Awal', 'edit' => true, 'type' => 'number'],
+            'sale_price_base' => ['label' => 'Harga Jual Awal', 'type' => 'number'],
             'purchase_price_base' => ['label' => 'Harga Beli Awal', 'type' => 'number'],
             'service_base' => ['label' => 'Service Awal', 'type' => 'number'],
-            'sale_price' => ['label' => 'Harga Jual', 'edit' => true, 'type' => 'number'],
+            'sale_price' => ['label' => 'Harga Jual', 'type' => 'number'],
             'purchase_price' => ['label' => 'Harga Beli', 'type' => 'number'],
             'service' => ['label' => 'Service', 'type' => 'number'],
         ];
 
         return view('dashboard.closings.days.create', [
-            'closing' => $this->existsWhereId($this->model,$id),
+            'closing' => $this->existsWhereId($this->model,$id,[
+                'dailyClosingItems.itemDetail',
+                'dailyClosingItems.item',
+                'dailyClosingItems.salesInvoice',
+                'dailyClosingResponsibility'
+            ]),
             'setupColumnTransaction' => $setupColumnTransaction,
         ]);
     }

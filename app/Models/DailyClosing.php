@@ -46,10 +46,10 @@ class DailyClosing extends Model
 
     public function dailyClosingItems()
     {
-        return $this->hasMany(DailyClosingItem::class,'closing_day','id');
+        return $this->hasMany(DailyClosingItem::class,'closing_id','id');
     }
     public function dailyClosingResponsibility()
     {
-        return $this->hasMany(DailyClosingResponsibility::class,'closing_day','id');
+        return $this->hasMany(DailyClosingResponsibility::class,'closing_id','id');
     }
 }

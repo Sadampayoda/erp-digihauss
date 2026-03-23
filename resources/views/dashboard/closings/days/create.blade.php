@@ -38,12 +38,12 @@
         px-2 py-1 mx-3 sm:mx-5 my-1 gap-4">
             <div class="sm:col-span-2">
                 <x-input-text name="user_name" label="User" placeholder="User" :readonly="true"
-                    border_color="border-stone-300" class="rounded-sm p-1 md:p-2" />
-                <input type="hidden" name="user_id" id="user_id">
+                    border_color="border-stone-300" :value="$closing->user_name" class="rounded-sm p-1 md:p-2" />
+                <input type="hidden" name="user_id" id="user_id" value="{{ $closing->user_id }}">
             </div>
             <div class="sm:col-span-1">
                 <x-input-text type="date" :readonly="true" border_color="border-stone-300" name="transaction_date"
-                    label="Tanggal Closing" class="rounded-sm p-1 md:p-2" />
+                    label="Tanggal Closing" class="rounded-sm p-1 md:p-2" :value="\Carbon\Carbon::parse($closing->transaction_date)->format('Y-m-d')" />
             </div>
         </form>
 
@@ -73,7 +73,7 @@
         const editMode = @json($closing);
         const id = @json($closing->id);
         const submit = () => {
-            setButtonLoading(true, 'syncs-modal-button', 'btn-text-sync');
+            setButtonLoading(true, 'sycns-modal-button', 'btn-text-sycn');
             const data = new FormData();
 
             ['generalForm'].forEach(id => {
@@ -103,14 +103,14 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(res) {
-                    setButtonLoading(false, 'syncs-modal-button', 'btn-text-sync');
+                    setButtonLoading(false, 'sycns-modal-button', 'btn-text-sycn');
                     showAlert('Sukses', res.message, 'success', false,
                         "{{ route('daily-closings.index') }}");
                 },
                 error: function(err) {
                     const message = err.responseJSON.message;
-                    setButtonLoading(false, 'syncs-modal-button', 'btn-text-sync');
-                    showAlert('Gagal Syncronisasi Closing Day', message, 'errors', false);
+                    setButtonLoading(false, 'sycns-modal-button', 'btn-text-sycn');
+                    showAlert('Gagal Syncronisasi Closing Day', message, 'errors', true);
                     resetErrors();
 
                     if (err.responseJSON.errors) {

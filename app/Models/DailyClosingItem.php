@@ -20,4 +20,19 @@ class DailyClosingItem extends Model
 
         'notes',
     ];
+
+    public function itemDetail()
+    {
+        return $this->hasOne(ItemDetail::class,'id','item_detail_id');
+    }
+
+    public function item()
+    {
+        return $this->hasOne(Item::class,'id','item_id');
+    }
+
+    public function salesInvoice()
+    {
+        return $this->hasOne(SalesInvoice::class,'id','transaction_id');
+    }
 }
