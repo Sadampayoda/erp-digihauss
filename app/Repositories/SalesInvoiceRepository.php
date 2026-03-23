@@ -61,10 +61,10 @@ class SalesInvoiceRepository
                 // Handle Status Advance Sale
                 $this->refreshStatus($salesInvoice);
             }
-            (new ItemRepositrory())->updateItemDetail($salesInvoice);
         }
 
         $this->settingJournal($salesInvoice);
+        (new ItemRepositrory())->updateItemDetail($salesInvoice);
     }
 
     public function deleteItems($salesInvoice)
@@ -80,8 +80,8 @@ class SalesInvoiceRepository
                 // Change status advance sale
                 $this->refreshStatus($salesInvoice);
             }
-            (new ItemRepositrory())->updateItemDetail($salesInvoice, 'delete');
         }
+        (new ItemRepositrory())->updateItemDetail($salesInvoice);
 
         if ($salesInvoice->items()) {
             $salesInvoice->items()->delete();

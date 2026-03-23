@@ -8,6 +8,7 @@ use App\Models\Item;
 use App\Models\ItemDetail;
 use App\Models\Items;
 use App\Repositories\AdvancePaymentRepository;
+use App\Repositories\ItemRepositrory;
 use App\Traits\ApiResponse;
 use App\Traits\AutoNumberTransaction;
 use App\Traits\HandleErroMessage;
@@ -195,6 +196,7 @@ class AdvancePaymentController extends Controller
             $advancePayment = $this->existsWhereId($this->model, $id);
 
             $this->advancePaymentRepo->settingJournal($advancePayment, 'delete');
+            (new ItemRepositrory())->updateItemDetail($advancePayment);
 
             if ($advancePayment->items()->exists()) {
                 $advancePayment->items()->delete();

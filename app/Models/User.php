@@ -51,4 +51,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(ItemResponsibility::class,'user_id');
     }
+
+    public function dailyClosingDay()
+    {
+        return $this->hasMany(DailyClosing::class,'user_id');
+    }
+
+    public function salesInvoices()
+    {
+        return $this->hasMany(SalesInvoice::class,'sales','id');
+    }
 }

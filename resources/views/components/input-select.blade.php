@@ -100,6 +100,7 @@
             if (paramsInput.length > 0) {
                 paramsInput.forEach((input) => {
                     const el = document.getElementById(input);
+                    console.log(el,input)
 
                     if (!el) return;
                     const value = el.value;

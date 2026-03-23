@@ -40,13 +40,26 @@ class SettingClosingSeeder extends Seeder
                 'sort_order' => 3,
                 'description' => 'Waktu closing untuk akhir tahun',
             ],
+            [
+                'key' => 'closing_day_lock_after_hours',
+                'label' => 'Batas Lock Closing Harian (Jam)',
+                'value' => '12',
+                'type' => 'number',
+                'group' => 'closing',
+                'sort_order' => 4,
+                'description' => 'Batas waktu (dalam jam) setelah closing harian sebelum sistem mengunci data',
+            ],
         ];
 
         foreach ($settings as $setting) {
-            \App\Models\Setting::updateOrCreate(
-                ['key' => $setting['key']],
-                $setting
-            );
+
+            $exists = \App\Models\Setting::where('key', $setting['key'])->exists();
+
+            if ($exists) {
+                continue;
+            }
+
+            \App\Models\Setting::create($setting);
         }
     }
 }

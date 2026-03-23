@@ -22,7 +22,7 @@
         <div>
             <x-input-select name="advance_sale_id" label="Pilih Transaksi AS" placeholder="Transaksi AS"
                 columnShowView="transaction_number" :required="true" :route="route('advance-sales.index')" :selected="@$data->advance_sale_id"
-                :paramsInput="['customer']"
+                :paramsInput="['customer','sales']"
                 :params="['status' => [2,3]]" class="rounded-sm" />
 
         </div>

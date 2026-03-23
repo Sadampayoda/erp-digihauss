@@ -50,6 +50,8 @@ class AdvanceSaleRepository
         $advanceSale->items()->whereNotIn('id', $ids)->delete();
 
         $this->settingJournal($advanceSale);
+
+        (new ItemRepositrory())->updateItemDetail($advanceSale);
     }
 
     protected function ensureInvoicePaidIn($advanceSale)

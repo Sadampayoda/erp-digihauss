@@ -12,8 +12,14 @@
     <div class="flex flex-col gap-4 py-6">
         <form id="informationForm" class="flex flex-col gap-4">
             {{-- SALES (SELECT) --}}
-            <x-input-select name="sales" label="Sales" :route="route('users.index')" placeholder="Pilih Sales"
-                border_color="border-stone-300" class="rounded-sm p-1 md:p-2" :selected="$data->sales ?? null" required />
+            @if (auth()->user()->itemResponsibility()->whereDate('assigned_at', today())->exists())
+                <x-input-text :readonly="true" name="sales_name" label="Sales" border_color="border-stone-300" class="rounded-sm p-1 md:p-2"
+                    :value="auth()->user()->name ?? null" required />
+                <input type="hidden" name="sales" value="{{ auth()->user()->id }}">
+            @else
+                <x-input-select name="sales" label="Sales" :route="route('users.index')" placeholder="Pilih Sales"
+                    border_color="border-stone-300" class="rounded-sm p-1 md:p-2" :selected="$data->sales ?? null" required />
+            @endif
 
             <x-input-text type="number" name="paid_amount" label="Pembayaran Invoice" border_color="border-stone-300"
                 class="rounded-sm p-1 md:p-2" :value="$data->paid_amount ?? 0" required />

@@ -33,4 +33,23 @@ class DailyClosing extends Model
 
         'notes',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function getUserNameAttribute()
+    {
+        return $this->user?->name ?? null;
+    }
+
+    public function dailyClosingItems()
+    {
+        return $this->hasMany(DailyClosingItem::class,'closing_day','id');
+    }
+    public function dailyClosingResponsibility()
+    {
+        return $this->hasMany(DailyClosingResponsibility::class,'closing_day','id');
+    }
 }

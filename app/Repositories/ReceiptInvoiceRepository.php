@@ -43,8 +43,16 @@ class ReceiptInvoiceRepository
                 ]));
 
 
+
                 $ids[] = $detail->id;
             }
+
+            // Update if change price
+            $relatedItem->update([
+                'sale_price' => $item['sale_price'],
+                'purchase_price' => $item['purchase_price'],
+                'service' => $item['service'],
+            ]);
         }
 
         $receiptInvoice->items()->whereNotIn('id', $ids)->delete();
@@ -67,8 +75,8 @@ class ReceiptInvoiceRepository
 
                 // Handle Update Item
             }
-            (new ItemRepositrory())->updateItemDetail($receiptInvoice, 'create', 'purchase');
         }
+        (new ItemRepositrory())->updateItemDetail($receiptInvoice);
 
         $this->settingJournal($receiptInvoice);
     }
@@ -85,10 +93,9 @@ class ReceiptInvoiceRepository
                 // Change status advance payment
                 $this->refreshStatus($receiptInvoice);
             }
-
-            (new ItemRepositrory())->updateItemDetail($receiptInvoice, 'delete', 'purchase');
         }
 
+        (new ItemRepositrory())->updateItemDetail($receiptInvoice);
         if ($receiptInvoice->items()) {
             $receiptInvoice->items()->delete();
         }

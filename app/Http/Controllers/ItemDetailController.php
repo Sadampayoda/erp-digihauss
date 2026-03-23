@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateItemDetailRequest;
 use App\Models\ItemDetail;
+use App\Repositories\ItemRepositrory;
 use App\Traits\ApiResponse;
 use App\Traits\HandleErroMessage;
 use App\Traits\Validate;
@@ -35,8 +36,8 @@ class ItemDetailController extends Controller
 
                 $data = $this->model
                     ->with(['item'])
-                    ->when(!is_null($request->status),function($query) use ($request){
-                        $query->where('status',$request->status);
+                    ->when(!is_null($request->status), function ($query) use ($request) {
+                        $query->where('status', $request->status);
                     })->get();
 
                 $data = $data->map(function ($item) {
@@ -54,10 +55,27 @@ class ItemDetailController extends Controller
             }
         }
 
+        if ((bool) $request->sync_status) {
+            try {
+                $repository = new ItemRepositrory();
+                DB::beginTransaction();
+                $this->model->chunk(100, function ($items) use ($repository) {
+                    foreach ($items as $item) {
+                        $repository->syncStatus($item->id);
+                    }
+                });
+                DB::commit();
+                return $this->sendSuccess([], message: 'Berhasil Syncronisasi Barang Detail');
+            } catch (Exception $e) {
+                DB::rollBack();
+                return $this->sendErrors(message: $e);
+            }
+        }
+
         if ((bool) $request->transaction) {
             try {
                 $data = $this->model
-                    ->with(['item','condition'])
+                    ->with(['item', 'condition'])
                     ->find($request->items);
 
                 return $this->sendSuccess($data, message: 'Berhasil Mendapatkan Barang Detail');

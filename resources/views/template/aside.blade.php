@@ -249,7 +249,7 @@
 
             <div id="menu-closing" class="ml-10 mt-1 space-y-1 overflow-hidden max-h-0 transition-all duration-300">
 
-                <a href="#" class="flex items-center gap-2 p-2 text-sm rounded-lg hover:bg-stone-200 text-slate-400">
+                <a href="{{ route('daily-closings.index') }}" class="flex items-center gap-2 p-2 text-sm rounded-lg hover:bg-stone-200 text-slate-400">
                     <i data-lucide="calendar" class="w-4 h-4"></i>
                     <span>Harian</span>
                 </a>

@@ -61,9 +61,8 @@ class PurchaseReturnRepository
 
             // Handle Status
             $this->refreshStatus($purchaseReturn);
-
-            (new ItemRepositrory())->updateItemDetail($purchaseReturn,'delete','purchase');
         }
+        (new ItemRepositrory())->updateItemDetail($purchaseReturn);
 
         $this->settingJournal($purchaseReturn);
     }
@@ -78,9 +77,8 @@ class PurchaseReturnRepository
 
             // Change status
             $this->refreshStatus($purchaseReturn);
-
-            (new ItemRepositrory())->updateItemDetail($purchaseReturn,'create','purchase');
         }
+        (new ItemRepositrory())->updateItemDetail($purchaseReturn);
 
         if ($purchaseReturn->items()) {
             $purchaseReturn->items()->delete();

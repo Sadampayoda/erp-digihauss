@@ -10,38 +10,36 @@ if (! function_exists('transactionStatus')) {
             case 'transaction':
                 $status = [
                     0 => 'Draft',
-                    1 => 'Need Appoved',
-                    2 => 'Appoved',
-                    3 => 'Inprogress',
+                    1 => 'Need Approved',
+                    2 => 'Approved',
+                    3 => 'In Progress',
                     4 => 'Completed',
                     5 => 'Pending',
                     6 => 'Close',
                 ];
                 break;
+
             case 'item_details':
                 $status = [
-                    0 => 'Pending Receipt',   // barang dibuat tapi belum masuk receipt
-                    1 => 'In Stock',          // barang sudah masuk dan siap dijual
+                    0 => 'Pending Receipt',
+                    1 => 'In Stock',
                     2 => 'In Progress',
-                    3 => 'Sold',              // barang sudah terjual
-                    4 => 'Service',           // barang sedang diservice
-                    5 => 'Returned',          // barang return dari customer
-                    6 => 'Broken',            // barang rusak
+                    3 => 'Sold',
+                    4 => 'Service',
+                    5 => 'Returned',
+                    6 => 'Broken',
                 ];
                 break;
+
             default:
                 $status = [];
         }
 
-        if (!isset($statuses[$type])) {
-            return null;
-        }
-
         if ($key !== null) {
-            return $statuses[$type][$key] ?? null;
+            return $status[$key] ?? null;
         }
 
-        return $statuses[$type];
+        return $status;
     }
 }
 
@@ -109,6 +107,7 @@ if (! function_exists('setting')) {
             'closing_day_time' => '23:00',
             'closing_months_time' => '23:59',
             'closing_year_time' => '23:00',
+            'closing_day_lock_after_hours' => 12
         ];
 
         return $cache[$key]

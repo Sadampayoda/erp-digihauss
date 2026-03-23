@@ -8,6 +8,7 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CashController;
 use App\Http\Controllers\CoaController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\DailyClosingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ItemConditionController;
 use App\Http\Controllers\ItemController;
@@ -91,5 +92,6 @@ Route::middleware('auth')->group(function () {
 
 
     //Closing
+    Route::resource('daily-closings',DailyClosingController::class)->names('daily-closings');
 
 });

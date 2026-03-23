@@ -49,6 +49,7 @@ class AutoCreateForNextDayItemResponbility extends Command
                 'itemResponsibility.item'
             ])->get();
 
+
             $totalInsert = 0;
 
             DB::transaction(function () use ($users, &$totalInsert) {

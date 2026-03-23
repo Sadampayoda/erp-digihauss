@@ -14,6 +14,7 @@ use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use App\Models\ItemDetail;
+use App\Repositories\ItemRepositrory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -32,7 +33,7 @@ class AdvanceSaleController extends Controller
             'serial_number' => ['label' => 'Seri'],
             'sale_price' => ['label' => 'Harga Jual', 'edit' => true, 'type' => 'number'],
             'purchase_price' => ['label' => 'Harga Beli', 'type' => 'number'],
-            'service' => ['label' => 'Service' ,'type' => 'number'],
+            'service' => ['label' => 'Service', 'type' => 'number'],
             'quantity' => ['label' => 'Qty', 'type' => 'number'],
             'sub_total' => ['label' => 'Sub Total', 'type' => 'number'],
             'margin' => ['label' => 'Margin', 'type' => 'number'],
@@ -56,9 +57,12 @@ class AdvanceSaleController extends Controller
                     );
                 }
 
-
                 $data = $this->model
                     ->where('customer', $request->customer)
+                    ->when($request->sales || auth()->user()->id,function($q) use ($request) {
+                        $sales = $request->sales ?? auth()->user()->id;
+                        $q->where('sales',$sales);
+                    })
                     ->whereIn('status', $request->status)
                     ->whereHas('items', function ($q) {
                         $q->whereColumn(
@@ -84,9 +88,12 @@ class AdvanceSaleController extends Controller
      */
     public function create()
     {
-
+        $itemDetail = ItemDetail::with('itemResponsibility')
+            ->where('status', 1)
+            ->assignedToday(auth()->user()->id)
+            ->get();
         return view('dashboard.sales.advance_sales.create', [
-            'items' => ItemDetail::where('status',1)->get(),
+            'items' => $itemDetail,
             'setupColumn' => $this->setupColumn
         ]);
     }
@@ -143,10 +150,14 @@ class AdvanceSaleController extends Controller
     public function edit(int $id)
     {
         $data = $this->existsWhereId($this->model, $id);
+        $itemDetail = ItemDetail::with('itemResponsibility')
+            ->where('status', 1)
+            ->assignedToday(auth()->user()->id)
+            ->get();
         // dd($this->model->with('items.item')->find($id));
         return view('dashboard.sales.advance_sales.create', [
             'data' => $this->model->with('items.item.details')->find($id),
-            'items' => ItemDetail::where('status',1)->get(),
+            'items' => $itemDetail,
             'setupColumn' => $this->setupColumn
         ]);
     }
@@ -204,6 +215,8 @@ class AdvanceSaleController extends Controller
             }
 
             $this->advanceSaleRepo->settingJournal($advanceSale, 'delete');
+
+            (new ItemRepositrory())->updateItemDetail($advanceSale);
 
             if ($advanceSale->items()->exists()) {
                 $advanceSale->items()->delete();

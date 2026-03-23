@@ -144,11 +144,13 @@ class ItemResponsibilitiController extends Controller
                 ->toArray();
 
             $existing = $this->model->where('user_id', $userId)
+                ->whereDate('assigned_at', $assignedAt)
                 ->pluck('item_detail_id')
                 ->toArray();
 
             $toInsert = array_diff($incomingDetailIds, $existing);
             $toDelete = array_diff($existing, $incomingDetailIds);
+
 
             if (!empty($toInsert)) {
                 $insertData = collect($data['items'])

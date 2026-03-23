@@ -2,6 +2,7 @@
 
 
 use Illuminate\Foundation\Inspiring;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache as FacadesCache;
 use Illuminate\Support\Facades\Log;
@@ -13,7 +14,13 @@ Artisan::command('inspire', function () {
 
 
 Schedule::call(function () {
-    Log::info('closing day: '.now());
+    Log::info('closing day: ' . now());
+
+    if (App::environment('local')) {
+        Artisan::call('app:auto-create-for-next-day-item-responbility');
+        return;
+    }
+
     $lock = FacadesCache::lock('auto-create-item-responsibility', 3600);
 
     if (!$lock->get()) {
@@ -25,7 +32,37 @@ Schedule::call(function () {
     } finally {
         $lock->release();
     }
-})->dailyAt(setting('closing_day_time'));
+})
+    ->when(function () {
+        return App::environment('production')
+            ? now()->format('H:i') === setting('closing_day_time')
+            : true;
+    })
+    ->everyMinute();
+
+Schedule::call(function () {
+
+    if (App::environment('local')) {
+        Artisan::call('app:auto-closing-day-command');
+        return;
+    }
+
+    $lock = FacadesCache::lock('auto-closing-day', 3600);
+
+    if (!$lock->get()) return;
+
+    try {
+        Artisan::call('app:auto-closing-day-command');
+    } finally {
+        $lock->release();
+    }
+})
+    ->when(
+        fn() => App::environment('production')
+            ? now()->format('H:i') === setting('closing_day_time')
+            : true
+    )
+    ->everyMinute();
 
 Schedule::call(function () {
     Log::info('Cron jalan: ' . now());

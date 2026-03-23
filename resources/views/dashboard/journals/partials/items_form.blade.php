@@ -14,7 +14,7 @@
         const key = @json($key);
         item.details.forEach(detail => {
             detail.transaction_date = item.journal_date
-            renderDetailRow(detail, setup, `itemsTable-${key}`)
+            renderDetailRow(detail, setup,false ,`itemsTable-${key}`)
         })
     })();
 

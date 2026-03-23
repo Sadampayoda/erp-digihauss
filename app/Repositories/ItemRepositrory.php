@@ -50,55 +50,69 @@ class ItemRepositrory
 
     public function canDeleteItemDetail($detail)
     {
-        if($detail->status >= 2) {
-
+        if ($detail->status >= 2) {
         }
     }
 
 
-    public function updateItemDetail($transaction, $method = 'create', $module = 'sales')
+    public function updateItemDetail($transaction)
     {
         $transaction = $transaction->fresh();
 
         foreach ($transaction->items as $item) {
-
-            $itemDetail = ItemDetail::find($item->item_detail_id);
-
-            if (!$itemDetail) {
-                continue;
-            }
-
-            $data = [];
-
-            if ($module == 'purchase') {
-
-                if ($method == 'create') {
-                    // Purchase Invoice
-                    $data['purchase_price'] = $item->purchase_price;
-                    $data['purchase_date'] = Carbon::now();
-                    $data['status'] = 1; // in stock
-
-                    $data['service'] = $item->service ?? 0;
-                } else {
-                    // Purchase Return
-                    $data['purchase_date'] = null;
-                    $data['status'] = 0; // pending
-                }
-            }
-            if ($module == 'sales') {
-
-                if ($method == 'create') {
-                    // Sales Invoice
-                    $data['sale_date'] = Carbon::now();
-                    $data['status'] = 3; // sold
-                } else {
-                    // Sales Return
-                    $data['sale_date'] = null;
-                    $data['status'] = 1; // back to stock
-                }
-            }
-
-            $itemDetail->update($data);
+            $this->syncStatus($item->item_detail_id,$item->purchase_price, $item->sale_price,$item->service);
         }
+    }
+
+
+    public function syncStatus($id,$purchasePrice = null, $salePrice = null, $service = null)
+    {
+        $itemDetail = ItemDetail::with([
+            'advancePayment',
+            'receiptInvoice',
+            'purchaseReturn',
+            'advanceSale',
+            'salesInvoice',
+            'salesReturn'
+        ])->find($id);
+
+        if (!$itemDetail) {
+            return;
+        }
+
+        $data = [];
+
+        $status = 0;
+
+        $salesReturn = optional($itemDetail->salesReturn)->salesReturn;
+        $salesInvoice = optional($itemDetail->salesInvoice)->salesInvoice;
+
+        $advanceSale = optional($itemDetail->advanceSale)->advanceSale;
+        $receiptInvoice = optional($itemDetail->receiptInvoice)->receiptInvoice;
+        $purchaseReturn = optional($itemDetail->purchaseReturn)->purchaseReturn;
+
+        if ($salesReturn && in_array($salesReturn->status, [2, 4])) {
+            $status = 2;
+        } elseif ($salesInvoice && in_array($salesInvoice->status, [2, 4])) {
+            $status = 3;
+            $data['sale_price'] = $salePrice ?? $itemDetail->salesInvoice?->sale_price ?? null;
+            $data['sale_date'] = Carbon::now();
+        } elseif ($advanceSale) {
+            $status = 2;
+        } elseif ($purchaseReturn && in_array($purchaseReturn->status, [2, 4])) {
+            $status = 0;
+            $data['purchase_date'] = null;
+        } elseif ($receiptInvoice && in_array($receiptInvoice->status, [2, 4])) {
+            $status = 1;
+            $data['purchase_price'] = $purchasePrice;
+            $data['purchase_date'] = Carbon::now();
+            $data['sale_price'] = $salePrice;
+            $data['service'] = $service;
+        }
+
+        $data['status'] = $status;
+
+
+        $itemDetail->update($data);
     }
 }

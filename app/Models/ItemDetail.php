@@ -115,12 +115,12 @@ class ItemDetail extends Model
 
     public function purchaseReturn()
     {
-        return $this->belongsTo(PurchaseReturn::class,'id','item_detail_id');
+        return $this->belongsTo(PurchaseReturnItems::class, 'id', 'item_detail_id');
     }
 
     public function itemResponsibility()
     {
-        return $this->hasMany(ItemResponsibility::class,'item_detail_id','id');
+        return $this->hasMany(ItemResponsibility::class, 'item_detail_id', 'id');
     }
 
     public function todayResponsibility()
@@ -135,4 +135,11 @@ class ItemDetail extends Model
         return $this->todayResponsibility?->user?->name;
     }
 
+    public function scopeAssignedToday($query, $userId)
+    {
+        return $query->whereHas('itemResponsibility', function ($q) use ($userId) {
+            $q->where('user_id', $userId)
+                ->whereDate('assigned_at', today());
+        });
+    }
 }
