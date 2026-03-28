@@ -30,6 +30,13 @@ if (! function_exists('transactionStatus')) {
                     6 => 'Broken',
                 ];
                 break;
+            case 'item_type':
+                $status = [
+                    0 => 'Barang Habis Pakai',   // ATK (Alat Tulis Kantor)
+                    1 => 'Barang Dagang',        // untuk dijual
+                    2 => 'Aset Tetap',           // aset perusahaan
+                ];
+                break;
 
             default:
                 $status = [];
@@ -104,10 +111,14 @@ if (! function_exists('setting')) {
         }
 
         $defaults = [
+            // Closing
             'closing_day_time' => '23:00',
             'closing_months_time' => '23:59',
             'closing_year_time' => '23:00',
-            'closing_day_lock_after_hours' => 12
+            'closing_day_lock_after_hours' => 12,
+
+            // GA
+            'appoved_atk' => 1,
         ];
 
         return $cache[$key]

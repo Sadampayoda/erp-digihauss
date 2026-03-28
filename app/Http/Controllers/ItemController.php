@@ -33,7 +33,17 @@ class ItemController extends Controller
     {
         if ((bool) $request->advance_sale) {
             try {
-                $items = $this->model->whereIn('id',$request->items)
+                $items = $this->model->with(['unit'])->whereIn('id',$request->items)
+                    ->get();
+
+                return $this->sendSuccess($items, message: 'Berhasil menambahkan barang');
+            } catch (Exception $e) {
+                return $this->sendErrors(message: $e);
+            }
+        }
+        if ((bool) $request->transaction) {
+            try {
+                $items = $this->model->with(['unit'])->whereIn('id',$request->items)
                     ->get();
 
                 return $this->sendSuccess($items, message: 'Berhasil menambahkan barang');

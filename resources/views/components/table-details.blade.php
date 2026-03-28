@@ -8,7 +8,7 @@
     <thead class="bg-slate-50 text-slate-500 uppercase text-xs sticky top-0 z-10">
         <tr>
             @foreach ($setupColumn as $column)
-                <th class="px-6 py-4 text-left">
+                <th class="px-6 py-4 {{ ($column['type'] ?? '') === 'number' ? 'text-right' : 'text-left' }}">
                     {{ $column['label'] ?? '#' }}
                 </th>
             @endforeach
@@ -149,29 +149,33 @@
                 }
                 // EDITABLE COLUMN
                 else if (isEdit) {
+                    const alignClass = type === 'number' ? 'text-right' : 'text-left';
 
                     row += `
-                    <td class="px-6 py-4">
-                        <input type="${type}"
-                            name="${column}[]"
-                            class="w-20 text-center border rounded-md p-1 ${column}"
-                            value="${item[column] ?? 0}">
-                    </td>
-                `;
+                        <td class="px-6 py-4 ${alignClass}">
+                            <input type="${type}"
+                                name="${column}[]"
+                                class="w-20 border rounded-md p-1 ${alignClass} ${column}"
+                                value="${item[column] ?? 0}">
+                        </td>
+                        `;
+
                 }
                 // NORMAL COLUMN
                 else {
 
+                    const alignClass = type === 'number' ? 'text-right' : 'text-left';
+
                     row += `
-                        <td class="px-6 py-4">
+                        <td class="px-6 py-4 ${alignClass}">
                             <input
                                 type="${type}"
                                 name="${column}[]"
                                 value="${item[column] ?? ''}"
                                 readonly
-                                class="w-24 text-center bg-transparent border-none font-medium text-slate-800 focus:outline-none pointer-events-none ${column}">
+                                class="w-24 bg-transparent border-none font-medium text-slate-800 focus:outline-none pointer-events-none ${alignClass} ${column}">
                         </td>
-                `;
+                    `;
                 }
 
             });

@@ -131,6 +131,7 @@ class DashboardController extends Controller
             ->whereDate('transaction_date', today()->subDay())
             ->sum('grand_total');
 
+
         return $yesterdaySales
             ? round((($todaySales - $yesterdaySales) / $yesterdaySales) * 100, 2)
             : 0;
@@ -171,9 +172,12 @@ class DashboardController extends Controller
             ->whereDate('journal_details.created_at', today()->subDay())
             ->sum(DB::raw('journal_details.debit - journal_details.credit'));
 
-        $cashPercent = $yesterdayCash
-            ? (($todayCash - $yesterdayCash) / $yesterdayCash) * 100
-            : 0;
+
+        if ((float) $yesterdayCash != 0) {
+            $cashPercent = (($todayCash - $yesterdayCash) / $yesterdayCash) * 100;
+        } else {
+            $cashPercent = 0;
+        }
         return $cashPercent;
     }
 

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdvancePaymentController;
 use App\Http\Controllers\AdvanceSaleController;
+use App\Http\Controllers\AtkRequestController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BankController;
 use App\Http\Controllers\BrandController;
@@ -28,6 +29,7 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\SettingCoaController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TableController;
+use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use App\Models\AdvancePayment;
 use Illuminate\Support\Facades\Route;
@@ -62,6 +64,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('banks',BankController::class)->names('banks');
 
 
+
     Route::get('items/stock', ItemStockController::class)->name('items.stock');
     Route::resource('services',ServiceController::class)->names('services');
     Route::resource('item/details',ItemDetailController::class)->names('item.details');
@@ -72,6 +75,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('brands', BrandController::class)->names('brands');
     Route::resource('series', SeriesController::class)->names('series');
+    Route::resource('units',UnitController::class)->names('units');
     Route::resource('coas', CoaController::class)->names('coas');
     Route::resource('payment-methods', PaymentMethodController::class)->names('payment-methods');
     Route::resource('setting-coas', SettingCoaController::class)->names('setting-coas');
@@ -91,7 +95,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('item-responsibilities',ItemResponsibilitiController::class)->names('item-responsibilities');
 
 
-    //Closing
+    // Closing
     Route::resource('daily-closings',DailyClosingController::class)->names('daily-closings');
+
+    // GA
+    Route::resource('atk-requests',AtkRequestController::class)->names('atk-requests');
 
 });

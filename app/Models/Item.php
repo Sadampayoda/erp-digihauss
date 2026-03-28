@@ -25,6 +25,9 @@ class Item extends Model
         'created_by',
         'updated_by',
         'deleted_by',
+
+        'unit_id',
+        'type'
     ];
 
     protected $casts = [
@@ -41,8 +44,18 @@ class Item extends Model
         return $this->belongsTo(Brand::class,'brand');
     }
 
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class,'unit_id');
+    }
+
     public function getBrandNameAttribute()
     {
         return $this->brandRelation ? $this->brandRelation?->name : null;
+    }
+
+    public function getUnitNameAttribute()
+    {
+        return $this->unit?->name ?? '';
     }
 }

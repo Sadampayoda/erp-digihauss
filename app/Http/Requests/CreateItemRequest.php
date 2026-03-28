@@ -43,6 +43,15 @@ class CreateItemRequest extends FormRequest
 
             'images'   => 'nullable|array|max:3',
             'images.*' => 'nullable|image|mimes:jpg,jpeg,png|max:100120',
+
+            'unit_id' => 'nullable|exists:units,id',
+
+            'type' => [
+                'required',
+                'integer',
+                Rule::in([0, 1, 2]),
+            ],
+
         ];
     }
 

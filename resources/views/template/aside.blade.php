@@ -249,22 +249,26 @@
 
             <div id="menu-closing" class="ml-10 mt-1 space-y-1 overflow-hidden max-h-0 transition-all duration-300">
 
-                <a href="{{ route('daily-closings.index') }}" class="flex items-center gap-2 p-2 text-sm rounded-lg hover:bg-stone-200 text-slate-400">
+                <a href="{{ route('daily-closings.index') }}"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg hover:bg-stone-200 text-slate-400">
                     <i data-lucide="calendar" class="w-4 h-4"></i>
                     <span>Harian</span>
                 </a>
 
-                <a href="#" class="flex items-center gap-2 p-2 text-sm rounded-lg hover:bg-stone-200 text-slate-400">
+                <a href="#"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg hover:bg-stone-200 text-slate-400">
                     <i data-lucide="calendar-days" class="w-4 h-4"></i>
                     <span>Bulanan</span>
                 </a>
 
-                <a href="#" class="flex items-center gap-2 p-2 text-sm rounded-lg hover:bg-stone-200 text-slate-400">
+                <a href="#"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg hover:bg-stone-200 text-slate-400">
                     <i data-lucide="calendar-range" class="w-4 h-4"></i>
                     <span>Tahunan</span>
                 </a>
 
-                <a href="{{ route('settings.index',['group' => 'closing']) }}" class="flex items-center gap-2 p-2 text-sm rounded-lg hover:bg-stone-200 text-slate-400">
+                <a href="{{ route('settings.index', ['group' => 'closing']) }}"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg hover:bg-stone-200 text-slate-400">
                     <i data-lucide="settings" class="w-4 h-4"></i>
                     <span>Setting Closing</span>
                 </a>
@@ -272,11 +276,64 @@
             </div>
         </div>
 
-        <a href="/administrasi"
-            class="flex items-center gap-3 p-4 rounded-xl text-md text-slate-400 hover:bg-stone-200 transition">
-            <i data-lucide="settings" class="w-5 h-5"></i>
-            <span>Administrasi Umum</span>
-        </a>
+        <div>
+            <button onclick="toggleMenu('operational')"
+                class="flex w-full items-center justify-between p-4 rounded-xl text-md text-slate-400 hover:bg-stone-200 transition">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="briefcase" class="w-5 h-5"></i>
+                    <span>Operasional</span>
+                </div>
+                <i data-lucide="chevron-down" id="icon-operational" class="w-4 h-4 transition-transform"></i>
+            </button>
+
+            <div id="menu-operational"
+                class="ml-10 mt-1 space-y-1 overflow-hidden max-h-0 transition-all duration-300">
+
+                <!-- ATK -->
+                <a href="{{ route('atk-requests.index') }}"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg hover:bg-stone-200 text-slate-400">
+                    <i data-lucide="pencil" class="w-4 h-4"></i>
+                    <span>ATK</span>
+                </a>
+
+                <!-- Asset -->
+                <a href="#"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg hover:bg-stone-200 text-slate-400">
+                    <i data-lucide="monitor" class="w-4 h-4"></i>
+                    <span>Asset</span>
+                </a>
+
+                <!-- Perawatan -->
+                <a href="#"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg hover:bg-stone-200 text-slate-400">
+                    <i data-lucide="wrench" class="w-4 h-4"></i>
+                    <span>Perawatan</span>
+                </a>
+
+                <!-- Pinjaman -->
+                <a href="#"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg hover:bg-stone-200 text-slate-400">
+                    <i data-lucide="hand-coins" class="w-4 h-4"></i>
+                    <span>Pinjaman</span>
+                </a>
+
+                <!-- Journal -->
+                <a href="{{ route('journals.index', ['menu' => 'operational']) }}"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg
+            {{ Request::is('journals*') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }}
+            hover:bg-stone-200">
+                    <i data-lucide="book-open-text" class="w-4 h-4"></i>
+                    <span>Journal Finance</span>
+                </a>
+
+                <!-- COA -->
+                <a href="{{ route('setting-coas.index') }}"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg {{ Request::is('setting-coas*') ? 'bg-stone-200 text-slate-800' : 'text-slate-400' }} hover:bg-stone-200">
+                    <i data-lucide="list-tree" class="w-4 h-4"></i>
+                    <span>Pengaturan COA</span>
+                </a>
+            </div>
+        </div>
 
         <a href="/tukar-tambah"
             class="flex items-center gap-3 p-4 rounded-xl text-md text-slate-400 hover:bg-stone-200 transition">
@@ -299,6 +356,18 @@
                     class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
                     <i data-lucide="badge" class="w-4 h-4"></i>
                     <span>Brand</span>
+                </a>
+
+                <a href="{{ route('series.index') }}"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
+                    <i data-lucide="layers" class="w-4 h-4"></i>
+                    <span>Series</span>
+                </a>
+
+                <a href="{{ route('units.index') }}"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
+                    <i data-lucide="ruler" class="w-4 h-4"></i>
+                    <span>Unit</span>
                 </a>
 
                 <a href="{{ route('series.index') }}"

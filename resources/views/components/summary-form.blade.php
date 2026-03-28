@@ -208,7 +208,8 @@
 
 
     window.getInputValue = (className, row) => {
-        console.log(className, row);
+        if (!row || !className) return 0;
+
         const el = row.querySelector(`.${className}`);
         return el ? Number(el.value) || 0 : 0;
     };

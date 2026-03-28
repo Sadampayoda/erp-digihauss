@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\Item;
 use App\Models\ItemDetail;
 use App\Traits\Validate;
 use Carbon\Carbon;
@@ -10,43 +11,27 @@ class ItemRepositrory
 {
     use Validate;
 
-    public function getStockOnHandInItem($items)
+    public function getStockSummary($items)
     {
         return $items->map(function ($item) {
-            $item->stock = $item->details->where('status', 1)->count();
+            $isProduct = $item->type == 1;
+
+            $item->stock = $isProduct
+                ? $item->details->whereIn('status', [1, 2, 4, 5])->count()
+                : $item->stock_on_hand;
+
+            $item->stock_sell = $isProduct
+                ? $item->details->where('status', 3)->count()
+                : 0;
+
+            $item->stock_available = $isProduct
+                ? $item->details->where('status', 1)->count()
+                : $item->stock_on_hand;
+
             return $item;
         });
     }
 
-    public function getStockOnAvailableInItem($items)
-    {
-        return $items->map(function ($item) {
-
-            $available = $item->details->filter(function ($detail) {
-
-                // hanya ambil item yang statusnya In Stock
-                if ($detail->status != 1) {
-                    return false;
-                }
-
-                // jika kondisi barang tidak ready
-                if ($detail->condition && $detail->condition->ready === 0) {
-                    return false;
-                }
-
-                // jika sudah dipakai di transaksi
-                if ($detail->advanceSale || $detail->salesInvoice) {
-                    return false;
-                }
-
-                return true;
-            });
-
-            $item->stock_available = $available->count();
-
-            return $item;
-        });
-    }
 
     public function canDeleteItemDetail($detail)
     {
@@ -60,12 +45,15 @@ class ItemRepositrory
         $transaction = $transaction->fresh();
 
         foreach ($transaction->items as $item) {
-            $this->syncStatus($item->item_detail_id,$item->purchase_price, $item->sale_price,$item->service);
+            $relatedItem = Item::findOrFail($item->item_id);
+            if($relatedItem->type == 1) {
+                $this->syncStatus($item->item_detail_id, $item->purchase_price, $item->sale_price, $item->service);
+            }
         }
     }
 
 
-    public function syncStatus($id,$purchasePrice = null, $salePrice = null, $service = null)
+    public function syncStatus($id, $purchasePrice = null, $salePrice = null, $service = null)
     {
         $itemDetail = ItemDetail::with([
             'advancePayment',

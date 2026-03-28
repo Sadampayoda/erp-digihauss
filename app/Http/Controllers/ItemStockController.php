@@ -17,9 +17,7 @@ class ItemStockController extends Controller
         $itemRepo = app(ItemRepositrory::class);
 
         $items = Item::with('details')->get();
-        $items = $itemRepo->getStockOnHandInItem($items);
-        $items = $itemRepo->getStockOnAvailableInItem($items);
-
+        $items = $itemRepo->getStockSummary($items);
 
         return view('dashboard.items.stock.index',[
             'items' => $items,

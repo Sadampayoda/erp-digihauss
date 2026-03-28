@@ -37,6 +37,8 @@ class SettingCoa extends Model
 
         'bank-in'          => 'Bank Masuk',
         'bank-out'         => 'Bank Keluar',
+
+        'atk-request'      => 'Permintaan ATK'
     ];
 
     public static array $action = [
@@ -91,6 +93,9 @@ class SettingCoa extends Model
         'rounding'          => 'Pembulatan',
         'adjustment'        => 'Penyesuaian',
         'other'             => 'Penyesuaian Lainnya',
+
+        'atk_expense'        => 'Beban ATK',
+        'office_supplies'    => 'Beban Perlengkapan Kantor',
     ];
 
     public function coa()

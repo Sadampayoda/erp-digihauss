@@ -1,6 +1,7 @@
 @props([
     'name',
     'label' => null,
+    'transactionStatus' => 'transaction',
     'id' => null,
     'placeholder' => null,
     'class' => '',
@@ -12,10 +13,14 @@
 ])
 
 @php
-    $getStatusList = transactionStatus('transaction');
+    $getStatusList = transactionStatus($transactionStatus);
 
     $getStatusList = collect($getStatusList)->only($allowed)->toArray();
-    $isLocked = $selected !== null && $selected >= 2;
+
+    $isLocked = false;
+    if($transactionStatus == 'transaction') {
+        $isLocked = $selected !== null && $selected >= 2;
+    }
 @endphp
 
 

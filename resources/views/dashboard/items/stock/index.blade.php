@@ -24,9 +24,9 @@
 
         <x-table :data="$items" titleEdit="Stok Terakhir" :labels="[
             'name' => 'Nama Barang',
-            'variant' => 'Varian',
             'stock' => 'Stok Tersedia',
-            'stock_available' => 'Stok Siap Pakai'
+            'stock_available' => 'Stok Siap Pakai',
+            'stock_sell' => 'Stok Terjual',
         ]" onEdit="onEdit"  />
 
     </div>

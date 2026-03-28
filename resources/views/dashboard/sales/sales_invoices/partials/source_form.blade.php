@@ -172,11 +172,7 @@
                             remainingAmount.value = paidTotal - data.advance_amount;
                         }
 
-                        lockDetailTableColumns(
-                            ['sale_price', 'service'], {
-                                mode: 'readonly'
-                            }
-                        )
+                        c
                     },
                     error: function(err) {
                         showAlert('Gagal', message, 'errors', true);
