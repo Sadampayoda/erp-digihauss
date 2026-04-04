@@ -64,6 +64,10 @@ Schedule::call(function () {
     )
     ->everyMinute();
 
+Schedule::command('queue:work --stop-when-empty --tries=3 --timeout=120')
+    ->everyMinute()
+    ->withoutOverlapping();
+
 Schedule::call(function () {
     Log::info('Cron jalan: ' . now());
 })->everyMinute();
