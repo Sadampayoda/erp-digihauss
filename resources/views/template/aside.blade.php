@@ -413,6 +413,16 @@
             </button>
 
             <div id="menu-report" class="ml-10 mt-1 space-y-1 overflow-hidden max-h-0 transition-all duration-300">
+                <a href="{{ route('reports',['type' => 'invoice']) }}"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
+                    <i data-lucide="file-text" class="w-4 h-4"></i>
+                    <span>Penjualan</span>
+                </a>
+                <a href="/report/journal"
+                    class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
+                    <i data-lucide="file-text" class="w-4 h-4"></i>
+                    <span>Pembelian</span>
+                </a>
                 <a href="/report/journal"
                     class="flex items-center gap-2 p-2 text-sm rounded-lg text-slate-400 hover:bg-stone-200">
                     <i data-lucide="file-text" class="w-4 h-4"></i>

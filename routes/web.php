@@ -11,6 +11,7 @@ use App\Http\Controllers\CoaController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DailyClosingController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ExportController;
 use App\Http\Controllers\ItemConditionController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ItemDetailController;
@@ -22,6 +23,7 @@ use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PurchaseReturnController;
 use App\Http\Controllers\ReceiptInvoiceController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SalesInvoiceController;
 use App\Http\Controllers\SalesReturnController;
 use App\Http\Controllers\SeriesController;
@@ -55,50 +57,58 @@ Route::middleware('auth')->group(function () {
     Route::resource('sales-returns', SalesReturnController::class)->names('sales-returns');
 
     // Purchasing
-    Route::resource('advance-payments',AdvancePaymentController::class)->names('advance-payments');
-    Route::resource('receipt-invoices',ReceiptInvoiceController::class)->names('receipt-invoices');
-    Route::resource('purchase-returns',PurchaseReturnController::class)->names('purchase-returns');
+    Route::resource('advance-payments', AdvancePaymentController::class)->names('advance-payments');
+    Route::resource('receipt-invoices', ReceiptInvoiceController::class)->names('receipt-invoices');
+    Route::resource('purchase-returns', PurchaseReturnController::class)->names('purchase-returns');
 
     // Finance
-    Route::resource('cashs',CashController::class)->names('cashs');
-    Route::resource('banks',BankController::class)->names('banks');
+    Route::resource('cashs', CashController::class)->names('cashs');
+    Route::resource('banks', BankController::class)->names('banks');
 
 
 
     Route::get('items/stock', ItemStockController::class)->name('items.stock');
-    Route::resource('services',ServiceController::class)->names('services');
-    Route::resource('item/details',ItemDetailController::class)->names('item.details');
-    Route::resource('item/conditions',ItemConditionController::class)->names('item.conditions');
+    Route::resource('services', ServiceController::class)->names('services');
+    Route::resource('item/details', ItemDetailController::class)->names('item.details');
+    Route::resource('item/conditions', ItemConditionController::class)->names('item.conditions');
     Route::resource('contacts', ContactController::class)->names('contacts');
     Route::resource('items', ItemController::class)->names('items');
 
 
     Route::resource('brands', BrandController::class)->names('brands');
     Route::resource('series', SeriesController::class)->names('series');
-    Route::resource('units',UnitController::class)->names('units');
+    Route::resource('units', UnitController::class)->names('units');
     Route::resource('coas', CoaController::class)->names('coas');
     Route::resource('payment-methods', PaymentMethodController::class)->names('payment-methods');
     Route::resource('setting-coas', SettingCoaController::class)->names('setting-coas');
     Route::resource('users', UserController::class)->names('users');
-    Route::resource('permissions',PermissionController::class)->names('permissions');
+    Route::resource('permissions', PermissionController::class)->names('permissions');
 
 
     Route::resource('journals', JournalController::class)->names('journals');
 
-    Route::resource('settings',SettingController::class)->names('settings');
+    Route::resource('settings', SettingController::class)->names('settings');
 
 
 
-    Route::get('table/get',[TableController::class,'index'])->name('table.index');
+    Route::get('table/get', [TableController::class, 'index'])->name('table.index');
 
     // Persediaan
-    Route::resource('item-responsibilities',ItemResponsibilitiController::class)->names('item-responsibilities');
+    Route::resource('item-responsibilities', ItemResponsibilitiController::class)->names('item-responsibilities');
 
 
     // Closing
-    Route::resource('daily-closings',DailyClosingController::class)->names('daily-closings');
+    Route::resource('daily-closings', DailyClosingController::class)->names('daily-closings');
 
     // GA
-    Route::resource('atk-requests',AtkRequestController::class)->names('atk-requests');
+    Route::resource('atk-requests', AtkRequestController::class)->names('atk-requests');
 
+
+    // Laporan
+    Route::get('/export/loading/{id}', [ExportController::class, 'loading'])->name('export.loading');
+    Route::get('/export/status/{id}', [ExportController::class, 'status']);
+    Route::get('/export/download/{id}', [ExportController::class, 'download']);
+
+    Route::get('reports', [ReportController::class, 'index'])->name('reports');
+    Route::get('reports/export-excel', [ReportController::class, 'exportExcel'])->name('reports.excel');
 });

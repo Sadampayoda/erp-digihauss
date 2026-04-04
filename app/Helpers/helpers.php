@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Setting;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 
 if (! function_exists('transactionStatus')) {
@@ -124,5 +125,59 @@ if (! function_exists('setting')) {
         return $cache[$key]
             ?? $defaults[$key]
             ?? $default;
+    }
+}
+
+
+if (!function_exists('progressExport')) {
+    function progressExport(
+        $exportId,
+        $percent,
+        $message = null,
+        $status = null,
+        $extra = []
+    ) {
+        try {
+            $export = \App\Models\Export::find($exportId);
+            if (!$export) {
+                return;
+            }
+
+            if ($percent < $export->progress) {
+                $percent = $export->progress;
+            }
+
+            $data = [
+                'progress' => min($percent, 100),
+                'message' => $message ?? $export->message,
+            ];
+
+            if ($status) {
+                $data['status'] = $status;
+
+                // otomatis set waktu
+                if ($status === 'processing' && !$export->started_at) {
+                    $data['started_at'] = now();
+                }
+
+                if (in_array($status, ['done', 'failed'])) {
+                    $data['finished_at'] = now();
+                }
+            }
+
+
+            $data = array_merge($data, $extra, [
+                'user_id' => auth()->id()
+            ]);
+
+            $export->update($data);
+            Log::info('update export');
+        } catch (\Throwable $e) {
+            Log::error('progressExport error', [
+                'export_id' => $exportId,
+                'message' => $e->getMessage(),
+                'error' => $e,
+            ]);
+        }
     }
 }
