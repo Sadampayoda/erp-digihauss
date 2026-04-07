@@ -19,6 +19,22 @@
             </div>
         @break
 
+        @case('error')
+            <div
+                class="w-full rounded-xl p-4 mb-4
+                       bg-green-50 text-green-800 border border-green-300
+                       text-sm md:text-base
+                       {{ $justify_text }}"
+            >
+                <strong class="block font-semibold text-base md:text-lg">
+                    Gagal!
+                </strong>
+                <p class="mt-1">
+                    {{ $message ?? session($key) }}
+                </p>
+            </div>
+        @break
+
         @case('errors')
             <div
                 class="w-full rounded-xl p-4 mb-4

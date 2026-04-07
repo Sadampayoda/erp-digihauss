@@ -6,6 +6,7 @@ use App\Repositories\ReportRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ReportController extends Controller
 {
@@ -73,6 +74,7 @@ class ReportController extends Controller
         } catch (\Throwable $e) {
 
             DB::rollBack();
+            Log::error($e);
 
             return redirect()->back()->with('error', 'Gagal memulai export: ' . $e->getMessage());
         }
