@@ -51,7 +51,7 @@
                         @endif
                     </div>
                 </div>
-                <x-alert action="error" />
+                <x-alert key="error" action="error" />
                 <form id="generalForm"
                     class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3
                     px-2 py-1 mx-3 sm:mx-5 my-1 gap-8">
