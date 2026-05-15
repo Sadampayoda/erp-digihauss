@@ -42,7 +42,7 @@
                 </div>
 
                 <div class="grid grid-cols-2 gap-2">
-                    <x-input-select name="coa_debit" label="Kas Tujuan" :route="route('coas.index')" :params="['level' => 3, 'type' => 'asset']"
+                    <x-input-select name="coa_debit" label="Kas Tujuan" :route="route('coas.index')" :params="['level' => 3]"
                         :required="true" />
 
                     <x-input-select name="coa_credit" label="Sumber Dana" :route="route('coas.index')" :params="['level' => 3]"
