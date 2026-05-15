@@ -114,7 +114,7 @@ class CreateSalesInvoiceRequest extends FormRequest
             'items'                     => ['required', 'array', 'min:1'],
             'items.*.detail_id'           => ['nullable'],
             'items.*.advance_sale_items_id'=> ['nullable'],
-            'items.*.item_id'                => ['required', 'integer', 'exists:items,id'],
+            'items.*.item_id'                => ['required', 'integer', 'exists:item,id'],
             'items.*.sale_price'        => ['nullable', 'numeric', 'min:0'],
             'items.*.purchase_price'    => ['nullable', 'numeric', 'min:0'],
             'items.*.quantity'          => ['nullable', 'integer', 'min:1'],
