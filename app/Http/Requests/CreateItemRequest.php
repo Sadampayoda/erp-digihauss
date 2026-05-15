@@ -38,7 +38,7 @@ class CreateItemRequest extends FormRequest
             'model'  => 'required|string|max:100',
 
             'image' => $this->isMethod('post')
-                ? 'required|image|mimes:jpg,jpeg,png|max:100120'
+                ? 'nullable|image|mimes:jpg,jpeg,png|max:100120'
                 : 'nullable|image|mimes:jpg,jpeg,png|max:100120',
 
             'images'   => 'nullable|array|max:3',
