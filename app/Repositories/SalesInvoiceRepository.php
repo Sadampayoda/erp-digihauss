@@ -5,7 +5,7 @@ namespace App\Repositories;
 use App\Models\AdvanceSaleItems;
 use Illuminate\Validation\ValidationException;
 use App\Traits\Validate;
-use App\Models\Items;
+use App\Models\Item;
 
 class SalesInvoiceRepository
 {
@@ -16,7 +16,7 @@ class SalesInvoiceRepository
         $ids = [];
         foreach ($data['items'] as $item) {
             $this->ensureSellingPriceNotBelowCost($item);
-            $relatedItem = $this->existsWhereId(new Items(), $item['item_id']);
+            $relatedItem = $this->existsWhereId(new Item(), $item['item_id']);
 
             if ($item['detail_id']) {
                 $detail = $salesInvoice->items()->where('id', $item['detail_id'])->firstOrFail();
