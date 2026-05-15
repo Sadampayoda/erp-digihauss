@@ -8,7 +8,6 @@ use App\Models\Item;
 use App\Models\ItemDetail;
 use Illuminate\Validation\ValidationException;
 use App\Traits\Validate;
-use App\Models\Items;
 use Carbon\Carbon;
 
 class ReceiptInvoiceRepository
@@ -20,7 +19,7 @@ class ReceiptInvoiceRepository
         $ids = [];
         foreach ($data['items'] as $item) {
             $this->ensureSellingPriceNotBelowCost($item);
-            $relatedItem = $this->existsWhereId(new Items(), $item['item_id']);
+            $relatedItem = $this->existsWhereId(new Item(), $item['item_id']);
 
             if ($item['detail_id']) {
                 $detail = $receiptInvoice->items()->where('id', $item['detail_id'])->firstOrFail();
